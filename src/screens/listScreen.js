@@ -6,17 +6,21 @@ import ItemContainer from '../components/itemContainer';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 class ListScreen extends React.Component {
-  static navigationOptions = {
-    headerTitle: 'Adam',
-    headerRight: (
-      <Icon
-        style={{marginRight: 10}}
-        size={32}
-        name={'settings'}
-        color={'black'}
-        onPress={() => {}}
-      />
-    ),
+  static navigationOptions = ({navigation}) => {
+    return {
+      headerTitle: 'Adam',
+      headerRight: (
+        <Icon
+          style={{marginRight: 10}}
+          size={32}
+          name={'settings'}
+          color={'black'}
+          onPress={() => {
+            navigation.navigate('Settings');
+          }}
+        />
+      ),
+    };
   };
 
   render() {
