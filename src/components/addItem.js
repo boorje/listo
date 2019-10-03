@@ -2,20 +2,45 @@ import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import ItemDetails from '../components/itemDetails';
 
-const AddItem = props => {
-  return (
-    <View style={styles.container}>
-      <TouchableOpacity>
-        <Text>Lägg till vara...</Text>
-      </TouchableOpacity>
-      <View style={{flexDirection: 'row'}}>
-        <Icon size={32} name={'camera'} color={'black'} onPress={() => {}} />
-        <Icon size={32} name={'image'} color={'black'} onPress={() => {}} />
+class AddItem extends React.Component {
+  state = {
+    addItem: false,
+  };
+
+  showDetails = () => {
+    if (this.state.addItem === false) {
+      this.setState({addItem: true});
+    } else {
+      this.setState({addItem: false});
+    }
+  };
+
+  render() {
+    return (
+      <View style={styles.container}>
+        {!this.state.addItem ? (
+          <TouchableOpacity onPress={() => this.showDetails()}>
+            <Text>Lägg till vara...</Text>
+          </TouchableOpacity>
+        ) : (
+          <ItemDetails />
+        )}
+
+        <View style={{flexDirection: 'row'}}>
+          <Icon
+            size={32}
+            name={'photo-camera'}
+            color={'black'}
+            onPress={() => {}}
+          />
+          <Icon size={32} name={'image'} color={'black'} onPress={() => {}} />
+        </View>
       </View>
-    </View>
-  );
-};
+    );
+  }
+}
 
 export default AddItem;
 

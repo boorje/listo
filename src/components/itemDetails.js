@@ -1,8 +1,6 @@
 import React from 'react';
 import {View, StyleSheet, TextInput} from 'react-native';
 
-import Icon from 'react-native-vector-icons/MaterialIcons';
-
 // TODO: Add KeyboardNavigator. See beta project.
 const ItemDetails = props => {
   return (
@@ -13,6 +11,7 @@ const ItemDetails = props => {
         }}
         onFocus={() => {}}
         placeholder="Vara"
+        //placeholder={this.props.placeholder}
         placeholderTextColor="black"
         returnKeyType="done"
         autoCorrect={false}
