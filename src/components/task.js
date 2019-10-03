@@ -12,7 +12,7 @@ class Task extends React.Component {
         backgroundColor={'white'}
         underlayColor={'transparent'}
         fontSize={50}
-        onPress={() => {}}>
+        onPress={() => this.props.selectTask()}>
         <View style={styles.container2}>
           <Text style={styles.text}>{this.props.name}</Text>
           <Badge value={3} />

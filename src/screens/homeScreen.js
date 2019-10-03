@@ -31,7 +31,9 @@ class HomeScreen extends React.Component {
           />
         )}
         <ScrollView>
-          <TaskContainer />
+          <TaskContainer
+            selectTask={() => this.props.navigation.navigate('List')}
+          />
           <AddTask addTask={() => this.showModal()} />
         </ScrollView>
       </View>

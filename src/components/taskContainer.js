@@ -17,7 +17,7 @@ class TaskContainer extends React.Component {
   };
 
   renderList(user) {
-    return <Task name={user.item} />;
+    return <Task name={user.item} selectTask={() => this.props.selectTask()} />;
   }
 
   FlatListItemSeparator = () => {
