@@ -2,6 +2,7 @@ import React from 'react';
 import {StyleSheet, View, ScrollView, Button} from 'react-native';
 
 import Headline from '../components/headline';
+import AddItem from '../components/addItem';
 
 class ListScreen extends React.Component {
   static navigationOptions = {
@@ -13,7 +14,7 @@ class ListScreen extends React.Component {
       <View style={styles.container}>
         <Headline title={'Adam'} />
         <ScrollView>
-          <Button title="Lägg till vara..." />
+          <AddItem />
         </ScrollView>
       </View>
     );
