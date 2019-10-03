@@ -1,23 +1,19 @@
 import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 
-import Icon from 'react-native-vector-icons/MaterialIcons';
-
-const AddItem = props => {
+const AddTask = props => {
   return (
     <View style={styles.container}>
-      <TouchableOpacity>
+      <TouchableOpacity
+        style={{underlayColor: 'transparent'}}
+        onPress={() => props.addTask()}>
         <Text>Lägg till vara...</Text>
       </TouchableOpacity>
-      <View style={{flexDirection: 'row'}}>
-        <Icon size={32} name={'camera'} color={'black'} onPress={() => {}} />
-        <Icon size={32} name={'image'} color={'black'} onPress={() => {}} />
-      </View>
     </View>
   );
 };
 
-export default AddItem;
+export default AddTask;
 
 const styles = StyleSheet.create({
   container: {

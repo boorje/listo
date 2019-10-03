@@ -1,7 +1,6 @@
 import React from 'react';
 import {StyleSheet, View, ScrollView, Button} from 'react-native';
 
-import Headline from '../components/headline';
 import AddItem from '../components/addItem';
 
 class ListScreen extends React.Component {
@@ -12,7 +11,6 @@ class ListScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Headline title={'Adam'} />
         <ScrollView>
           <AddItem />
         </ScrollView>
