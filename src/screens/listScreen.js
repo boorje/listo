@@ -3,10 +3,20 @@ import {StyleSheet, View, ScrollView, Button} from 'react-native';
 
 import AddItem from '../components/addItem';
 import ItemContainer from '../components/itemContainer';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 class ListScreen extends React.Component {
   static navigationOptions = {
-    title: 'List',
+    headerTitle: 'Adam',
+    headerRight: (
+      <Icon
+        style={{marginRight: 10}}
+        size={32}
+        name={'settings'}
+        color={'black'}
+        onPress={() => {}}
+      />
+    ),
   };
 
   render() {

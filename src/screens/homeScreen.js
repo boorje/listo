@@ -10,7 +10,7 @@ class HomeScreen extends React.Component {
     modalOpen: false,
   };
   static navigationOptions = {
-    title: 'Home',
+    headerTitle: 'Mina listor',
   };
 
   showModal = () => {
