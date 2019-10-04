@@ -4,6 +4,7 @@ import {StyleSheet, View, ScrollView, Button} from 'react-native';
 import AddItem from '../components/addItem';
 import ItemContainer from '../components/itemContainer';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import ItemDetails from '../components/itemDetails';
 
 class ListScreen extends React.Component {
   static navigationOptions = ({navigation}) => {
@@ -26,7 +27,7 @@ class ListScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <ScrollView>
+        <ScrollView keyboardShouldPersistTaps="always">
           <ItemContainer />
           <AddItem />
         </ScrollView>

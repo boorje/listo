@@ -2,6 +2,7 @@ import React from 'react';
 import {StyleSheet, View, Text, FlatList} from 'react-native';
 
 import Item from './item';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 class ItemContainer extends React.Component {
   state = {
@@ -26,6 +27,7 @@ class ItemContainer extends React.Component {
           }}
           keyExtractor={item => item}
           ItemSeparatorComponent={this.FlatListItemSeparator}
+          keyboardShouldPersistTaps="always"
         />
       </View>
     );

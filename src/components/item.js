@@ -5,17 +5,15 @@ import {
   Text,
   TouchableHighlight,
   TextInput,
+  ScrollView,
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import KeyboardNavigator from '../components/keyboardNavigator';
 import ItemDetails from '../components/itemDetails';
 
 class Item extends React.Component {
   state = {
     showDetails: false,
-    isFocused: '',
-    inputId: 'inputId',
   };
 
   showDetails = () => {
@@ -39,7 +37,7 @@ class Item extends React.Component {
             {!this.state.showDetails ? (
               <Text style={styles.text}>{this.props.name}</Text>
             ) : (
-              <ItemDetails />
+              <ItemDetails open={this.state.showDetails} />
             )}
           </View>
           <Icon
