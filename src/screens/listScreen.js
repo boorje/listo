@@ -1,19 +1,33 @@
 import React from 'react';
 import {StyleSheet, View, ScrollView, Button} from 'react-native';
 
-import Headline from '../components/headline';
 import AddItem from '../components/addItem';
+import ItemContainer from '../components/itemContainer';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 class ListScreen extends React.Component {
-  static navigationOptions = {
-    title: 'List',
+  static navigationOptions = ({navigation}) => {
+    return {
+      headerTitle: 'Adam',
+      headerRight: (
+        <Icon
+          style={{marginRight: 10}}
+          size={32}
+          name={'settings'}
+          color={'black'}
+          onPress={() => {
+            navigation.navigate('Settings');
+          }}
+        />
+      ),
+    };
   };
 
   render() {
     return (
       <View style={styles.container}>
-        <Headline title={'Adam'} />
         <ScrollView>
+          <ItemContainer />
           <AddItem />
         </ScrollView>
       </View>

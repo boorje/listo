@@ -4,7 +4,7 @@ import {StyleSheet, View, Text, TouchableHighlight} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {Badge} from 'react-native-elements';
 
-class List extends React.Component {
+class Task extends React.Component {
   render() {
     return (
       <TouchableHighlight
@@ -12,7 +12,7 @@ class List extends React.Component {
         backgroundColor={'white'}
         underlayColor={'transparent'}
         fontSize={50}
-        onPress={() => {}}>
+        onPress={() => this.props.selectTask()}>
         <View style={styles.container2}>
           <Text style={styles.text}>{this.props.name}</Text>
           <Badge value={3} />
@@ -22,7 +22,7 @@ class List extends React.Component {
   }
 }
 
-export default List;
+export default Task;
 
 const styles = StyleSheet.create({
   container: {

@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 // Screens
 import HomeScreen from './src/screens/homeScreen';
 import ListScreen from './src/screens/listScreen';
+import SettingsScreen from './src/screens/settingsScreen';
 
 Icon.loadFont();
 
@@ -16,6 +17,9 @@ const MainStack = createStackNavigator(
     },
     List: {
       screen: ListScreen,
+    },
+    Settings: {
+      screen: SettingsScreen,
     },
   },
   {

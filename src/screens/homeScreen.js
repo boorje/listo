@@ -1,30 +1,40 @@
 import React from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  TouchableHighlight,
-  Button,
-  ScrollView,
-} from 'react-native';
+import {StyleSheet, View, ScrollView} from 'react-native';
 
-import ListOfLists from '../components/listOfLists';
-import Headline from '../components/headline';
+import TaskContainer from '../components/taskContainer';
+import AddTask from '../components/addTask';
+import AddTaskModal from '../components/addTaskModal';
 
 class HomeScreen extends React.Component {
-  static navigationOptions = {
-    title: 'Home',
+  state = {
+    modalOpen: false,
   };
+  static navigationOptions = {
+    headerTitle: 'Mina listor',
+  };
+
+  showModal = () => {
+    if (this.state.modalOpen === false) {
+      this.setState({modalOpen: true});
+    } else {
+      this.setState({modalOpen: false});
+    }
+  };
+
   render() {
     return (
       <View style={styles.container}>
-        <Headline title={'Listor'} />
-        <ScrollView>
-          <ListOfLists />
-          <Button
-            title="Lägg till lista..."
-            onPress={() => this.props.navigation.navigate('List')}
+        {this.state.modalOpen && (
+          <AddTaskModal
+            closeModal={() => this.showModal()}
+            placeholder="Lägg till lista..."
           />
+        )}
+        <ScrollView>
+          <TaskContainer
+            selectTask={() => this.props.navigation.navigate('List')}
+          />
+          <AddTask addTask={() => this.showModal()} />
         </ScrollView>
       </View>
     );

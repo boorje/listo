@@ -9,15 +9,15 @@ import {
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import List from '../components/list';
+import Task from './task';
 
-class ListOfLists extends React.Component {
+class TaskContainer extends React.Component {
   state = {
     lists: ['Adam', 'Eric', 'Simon'],
   };
 
   renderList(user) {
-    return <List name={user.item} />;
+    return <Task name={user.item} selectTask={() => this.props.selectTask()} />;
   }
 
   FlatListItemSeparator = () => {
@@ -40,7 +40,7 @@ class ListOfLists extends React.Component {
   }
 }
 
-export default ListOfLists;
+export default TaskContainer;
 
 const styles = StyleSheet.create({
   container: {
