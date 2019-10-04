@@ -4,9 +4,12 @@ import {StyleSheet, View, ScrollView, Button} from 'react-native';
 import AddItem from '../components/addItem';
 import ItemContainer from '../components/itemContainer';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import ItemDetails from '../components/itemDetails';
 
 class ListScreen extends React.Component {
+  state = {
+    items: [],
+  };
+
   static navigationOptions = ({navigation}) => {
     return {
       headerTitle: 'Adam',
@@ -24,12 +27,19 @@ class ListScreen extends React.Component {
     };
   };
 
+  addItem = content => {
+    this.setState({items: [...this.state.items, content]});
+  };
+
   render() {
     return (
       <View style={styles.container}>
         <ScrollView keyboardShouldPersistTaps="always">
-          <ItemContainer />
-          <AddItem />
+          <ItemContainer
+            items={this.state.items}
+            addItem={content => this.props.addItem(content)}
+          />
+          <AddItem addItem={content => this.addItem(content)} />
         </ScrollView>
       </View>
     );

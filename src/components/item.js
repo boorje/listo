@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  TouchableHighlight,
-  TextInput,
-  ScrollView,
-} from 'react-native';
+import {StyleSheet, View, Text, TouchableHighlight} from 'react-native';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ItemDetails from '../components/itemDetails';
@@ -37,7 +30,11 @@ class Item extends React.Component {
             {!this.state.showDetails ? (
               <Text style={styles.text}>{this.props.name}</Text>
             ) : (
-              <ItemDetails open={this.state.showDetails} />
+              <ItemDetails
+                open={this.state.showDetails}
+                closeDetails={() => this.showDetails()}
+                addItem={content => this.props.addItem(content)}
+              />
             )}
           </View>
           <Icon

@@ -12,12 +12,8 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import Task from './task';
 
 class TaskContainer extends React.Component {
-  state = {
-    lists: ['Adam', 'Eric', 'Simon'],
-  };
-
-  renderList(user) {
-    return <Task name={user.item} selectTask={() => this.props.selectTask()} />;
+  renderList(task) {
+    return <Task name={task.item} selectTask={() => this.props.selectTask()} />;
   }
 
   FlatListItemSeparator = () => {
@@ -28,11 +24,11 @@ class TaskContainer extends React.Component {
     return (
       <View>
         <FlatList
-          data={this.state.lists}
-          renderItem={user => {
-            return this.renderList(user);
+          data={this.props.lists}
+          renderItem={task => {
+            return this.renderList(task);
           }}
-          keyExtractor={user => user}
+          keyExtractor={task => task}
           ItemSeparatorComponent={this.FlatListItemSeparator}
         />
       </View>

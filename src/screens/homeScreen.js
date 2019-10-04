@@ -4,10 +4,12 @@ import {StyleSheet, View, ScrollView} from 'react-native';
 import TaskContainer from '../components/taskContainer';
 import AddTask from '../components/addTask';
 import AddTaskModal from '../components/addTaskModal';
+import {Input} from 'react-native-elements';
 
 class HomeScreen extends React.Component {
   state = {
     modalOpen: false,
+    lists: ['Adam', 'Eric', 'Simon'],
   };
   static navigationOptions = {
     headerTitle: 'Mina listor',
@@ -21,6 +23,10 @@ class HomeScreen extends React.Component {
     }
   };
 
+  addTask = task => {
+    this.setState({lists: [...this.state.lists, task]});
+  };
+
   render() {
     return (
       <View style={styles.container}>
@@ -28,10 +34,12 @@ class HomeScreen extends React.Component {
           <AddTaskModal
             closeModal={() => this.showModal()}
             placeholder="Lägg till lista..."
+            addTask={task => this.addTask(task)}
           />
         )}
         <ScrollView>
           <TaskContainer
+            lists={this.state.lists}
             selectTask={() => this.props.navigation.navigate('List')}
           />
           <AddTask addTask={() => this.showModal()} />

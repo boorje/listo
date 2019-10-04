@@ -25,7 +25,11 @@ class AddItem extends React.Component {
             <Text>Lägg till vara...</Text>
           </TouchableOpacity>
         ) : (
-          <ItemDetails open={this.state.addItem} />
+          <ItemDetails
+            open={this.state.addItem}
+            closeDetails={() => this.showDetails()}
+            addItem={content => this.props.addItem(content)}
+          />
         )}
 
         <View style={{flexDirection: 'row'}}>

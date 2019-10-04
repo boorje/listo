@@ -5,12 +5,10 @@ import Item from './item';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 class ItemContainer extends React.Component {
-  state = {
-    items: ['Cola', 'Bärs', 'Kiwi'],
-  };
-
   renderList(item) {
-    return <Item name={item.item} />;
+    return (
+      <Item name={item.item} addItem={content => this.props.addItem(content)} />
+    );
   }
 
   FlatListItemSeparator = () => {
@@ -21,7 +19,7 @@ class ItemContainer extends React.Component {
     return (
       <View>
         <FlatList
-          data={this.state.items}
+          data={this.props.items}
           renderItem={item => {
             return this.renderList(item);
           }}

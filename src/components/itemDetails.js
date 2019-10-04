@@ -13,6 +13,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 class ItemDetails extends React.Component {
   state = {
+    content: '',
     isFocused: '',
     open: this.props.open,
   };
@@ -38,10 +39,16 @@ class ItemDetails extends React.Component {
           autoCorrect={false}
           enablesReturnKeyAutomatically={true}
           autoFocus={true}
-          onSubmitEditing={() => {}}
+          onSubmitEditing={() => {
+            this.props.addItem(this.state.content);
+          }}
           inputAccessoryViewID={inputID}
-          onChangeText={() => {}}
-          //value={'vara1'}
+          onChangeText={text => {
+            text.length === 0
+              ? this.setState({content: text, open: false})
+              : this.setState({content: text, open: true});
+          }}
+          value={this.state.content}
         />
 
         {this.props.open && (
@@ -132,6 +139,7 @@ class ItemDetails extends React.Component {
               name={'close'}
               onPress={() => {
                 Keyboard.dismiss();
+                this.props.closeDetails();
               }}
             />
           </View>
