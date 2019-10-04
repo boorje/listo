@@ -27,7 +27,7 @@ class ListScreen extends React.Component {
     };
   };
 
-  addItem = content => {
+  addItem = (content, quantity, unit) => {
     this.setState({items: [...this.state.items, content]});
   };
 
@@ -37,9 +37,15 @@ class ListScreen extends React.Component {
         <ScrollView keyboardShouldPersistTaps="always">
           <ItemContainer
             items={this.state.items}
-            addItem={content => this.props.addItem(content)}
+            addItem={(content, quantity, unit) =>
+              this.props.addItem(content, quantity, unit)
+            }
           />
-          <AddItem addItem={content => this.addItem(content)} />
+          <AddItem
+            addItem={(content, quantity, unit) =>
+              this.addItem(content, quantity, unit)
+            }
+          />
         </ScrollView>
       </View>
     );

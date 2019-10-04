@@ -14,13 +14,15 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 class ItemDetails extends React.Component {
   state = {
     content: '',
+    quantity: '',
+    unit: '',
     isFocused: '',
     open: this.props.open,
   };
 
   render() {
     const inputID = 'inputID';
-    const {isFocused} = this.state;
+    const {isFocused, content, quantity, unit} = this.state;
 
     return (
       <View>
@@ -31,7 +33,6 @@ class ItemDetails extends React.Component {
           onFocus={() => {
             this.setState({isFocused: '1'});
           }}
-          //style={styles.input}
           placeholder={'Vara'}
           placeholderTextColor={'black'}
           borderColor={'black'}
@@ -40,7 +41,7 @@ class ItemDetails extends React.Component {
           enablesReturnKeyAutomatically={true}
           autoFocus={true}
           onSubmitEditing={() => {
-            this.props.addItem(this.state.content);
+            this.props.addItem(content, quantity, unit);
           }}
           inputAccessoryViewID={inputID}
           onChangeText={text => {
@@ -68,14 +69,21 @@ class ItemDetails extends React.Component {
               placeholder={'Antal...'}
               placeholderTextColor={'black'}
               borderColor={'black'}
+              keyboardType={'numeric'}
               returnKeyType="done"
               autoCorrect={false}
               enablesReturnKeyAutomatically={true}
               autoFocus={false}
-              onSubmitEditing={() => {}}
+              onSubmitEditing={() => {
+                this.props.addItem(content, quantity, unit);
+              }}
               inputAccessoryViewID={inputID}
-              onChangeText={() => {}}
-              //value={this.state.content}
+              onChangeText={text => {
+                text.length === 0
+                  ? this.setState({quantity: text, open: false})
+                  : this.setState({quantity: text, open: true});
+              }}
+              value={this.state.quantity}
             />
             <TextInput
               ref={input => {
@@ -92,10 +100,16 @@ class ItemDetails extends React.Component {
               autoCorrect={false}
               enablesReturnKeyAutomatically={true}
               autoFocus={false}
-              onSubmitEditing={() => {}}
+              onSubmitEditing={() => {
+                this.props.addItem(content, quantity, unit);
+              }}
               inputAccessoryViewID={inputID}
-              onChangeText={() => {}}
-              //value={this.state.content}
+              onChangeText={text => {
+                text.length === 0
+                  ? this.setState({unit: text, open: false})
+                  : this.setState({unit: text, open: true});
+              }}
+              value={this.state.unit}
             />
           </View>
         )}

@@ -7,7 +7,12 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 class ItemContainer extends React.Component {
   renderList(item) {
     return (
-      <Item name={item.item} addItem={content => this.props.addItem(content)} />
+      <Item
+        name={item.item}
+        addItem={(content, quantity, unit) =>
+          this.props.addItem(content, quantity, unit)
+        }
+      />
     );
   }
 

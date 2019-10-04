@@ -1,14 +1,6 @@
 import React from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  FlatList,
-  TouchableHighlight,
-  Button,
-} from 'react-native';
+import {StyleSheet, View, FlatList} from 'react-native';
 
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import Task from './task';
 
 class TaskContainer extends React.Component {

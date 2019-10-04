@@ -33,7 +33,9 @@ class Item extends React.Component {
               <ItemDetails
                 open={this.state.showDetails}
                 closeDetails={() => this.showDetails()}
-                addItem={content => this.props.addItem(content)}
+                addItem={(content, quantity, unit) =>
+                  this.props.addItem(content, quantity, unit)
+                }
               />
             )}
           </View>
