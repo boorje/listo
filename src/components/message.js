@@ -6,9 +6,11 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import * as colors from '../config/colors';
 
 const Message = props => (
-  <View style={styles.container}>
-    <Icon size={34} name="warning" color="#fff" />
-    <Text style={styles.message}>{props.message}</Text>
+  <View style={styles.wrapper}>
+    <View style={styles.container}>
+      <Icon size={34} name="warning" color="#fff" />
+      <Text style={styles.message}>{props.message}</Text>
+    </View>
   </View>
 );
 
@@ -19,11 +21,13 @@ Message.propTypes = {
 };
 
 const styles = StyleSheet.create({
-  container: {
+  wrapper: {
     padding: 20,
-    paddingLeft: 30,
-    paddingRight: 30,
     backgroundColor: colors.errorColor,
+    display: 'flex',
+    alignItems: 'center',
+  },
+  container: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'flex-start',

@@ -63,6 +63,7 @@ const BaseForm = props => {
               disabled={!isValid}
               onPress={handleSubmit}
               type="submit"
+              loading={props.loading}
             />
           </React.Fragment>
         )}
@@ -73,13 +74,21 @@ const BaseForm = props => {
 
 export const SignupForm = props => (
   <View style={styles.formContainer}>
-    <BaseForm handleSubmit={props.handleSubmit} submitTitle="SIGN UP" />
+    <BaseForm
+      handleSubmit={props.handleSubmit}
+      submitTitle="SIGN UP"
+      loading={props.loading}
+    />
   </View>
 );
 
 export const LoginForm = props => (
   <View style={styles.formContainer}>
-    <BaseForm handleSubmit={props.handleSubmit} submitTitle="LOGIN" />
+    <BaseForm
+      handleSubmit={props.handleSubmit}
+      submitTitle="LOGIN"
+      loading={props.loading}
+    />
   </View>
 );
 
@@ -101,12 +110,15 @@ const styles = StyleSheet.create({
 BaseForm.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
   submitTitle: PropTypes.string.isRequired,
+  loading: PropTypes.bool.isRequired,
 };
 
 SignupForm.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
+  loading: PropTypes.bool.isRequired,
 };
 
 LoginForm.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
+  loading: PropTypes.bool.isRequired,
 };

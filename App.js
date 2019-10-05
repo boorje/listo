@@ -26,12 +26,15 @@ const MainStack = createStackNavigator({
   Settings: SettingsScreen,
 });
 
-const AuthStack = createStackNavigator({
-  Start: StartScreen,
-  Signup: SignupScreen,
-  Login: LoginScreen,
-  Verify: VerifyScreen,
-});
+const AuthStack = createStackNavigator(
+  {
+    Start: StartScreen,
+    Signup: SignupScreen,
+    Login: LoginScreen,
+    Verify: VerifyScreen,
+  },
+  //{headerMode: 'none'},
+);
 
 export default createAppContainer(
   createSwitchNavigator(
