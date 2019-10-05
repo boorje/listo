@@ -18,7 +18,9 @@ class ItemContainer extends React.Component {
         backgroundColor={'white'}
         underlayColor={'transparent'}
         fontSize={50}
-        onPress={() => {}}>
+        onPress={() => {
+          this.props.removeItem();
+        }}>
         <View style={styles.container2}>
           <View style={styles.info}>
             {!item.details ? (

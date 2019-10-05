@@ -38,11 +38,11 @@ class ListScreen extends React.Component {
     });
   };
 
-  //[{id, content, quantity, unit},{id, content, quantity, unit}]
-  updateItem = (updatedItem, index) => {
+  updateItem = (updatedItem, updatedItemIndex) => {
     try {
-      const newItems = this.state.items.map(item => {
-        if (item.index === updatedItem.index) {
+      const copy = [...this.state.items];
+      const newItems = copy.map((item, index) => {
+        if (index === updatedItemIndex) {
           item.content = updatedItem.content;
           item.quantity = updatedItem.quantity;
           item.unit = updatedItem.unit;
@@ -53,6 +53,12 @@ class ListScreen extends React.Component {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  removeItem = index => {
+    const itemsCopy = this.state.items;
+    itemsCopy.splice(index, 1);
+    this.setState({items: itemsCopy});
   };
 
   showDetails = (item, index) => {
@@ -74,6 +80,7 @@ class ListScreen extends React.Component {
           <ItemContainer
             items={this.state.items}
             updateItem={(item, index) => this.updateItem(item, index)}
+            removeItem={index => this.removeItem(index)}
             showDetails={(item, index) => this.showDetails(item, index)}
           />
           <AddItem addItem={item => this.addItem(item)} />
