@@ -19,7 +19,7 @@ class ItemContainer extends React.Component {
         underlayColor={'transparent'}
         fontSize={50}
         onPress={() => {
-          this.props.removeItem();
+          this.props.removeItem(index);
         }}>
         <View style={styles.container2}>
           <View style={styles.info}>
@@ -106,5 +106,6 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 20,
+    fontFamily: 'Avenir Next',
   },
 });

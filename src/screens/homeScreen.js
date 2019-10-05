@@ -4,15 +4,27 @@ import {StyleSheet, View, ScrollView} from 'react-native';
 import TaskContainer from '../components/taskContainer';
 import AddTask from '../components/addTask';
 import AddTaskModal from '../components/addTaskModal';
-import {Input} from 'react-native-elements';
+import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 
 class HomeScreen extends React.Component {
   state = {
     modalOpen: false,
-    lists: ['Adam', 'Eric', 'Simon'],
+    tasks: ['Adam', 'Eric', 'Simon'],
   };
-  static navigationOptions = {
-    headerTitle: 'Mina listor',
+  static navigationOptions = ({navigation}) => {
+    return {
+      headerTitle: 'Mina listor',
+      headerRight: (
+        <IoniconsIcon
+          size={32}
+          name="md-settings"
+          onPress={() => {
+            navigation.navigate('Settings');
+          }}
+          style={{marginRight: 15}}
+        />
+      ),
+    };
   };
 
   showModal = () => {
@@ -24,7 +36,13 @@ class HomeScreen extends React.Component {
   };
 
   addTask = task => {
-    this.setState({lists: [...this.state.lists, task]});
+    this.setState({tasks: [...this.state.tasks, task]});
+  };
+
+  removeTask = index => {
+    const tasksCopy = this.state.tasks;
+    tasksCopy.splice(index, 1);
+    this.setState({tasks: tasksCopy});
   };
 
   render() {
@@ -39,7 +57,8 @@ class HomeScreen extends React.Component {
         )}
         <ScrollView>
           <TaskContainer
-            lists={this.state.lists}
+            lists={this.state.tasks}
+            removeTask={index => this.removeTask(index)}
             selectTask={() => this.props.navigation.navigate('List')}
           />
           <AddTask addTask={() => this.showModal()} />
