@@ -9,10 +9,10 @@ import ListScreen from './src/screens/listScreen';
 import SettingsScreen from './src/screens/settingsScreen';
 
 import AuthScreen from './src/screens/auth/authScreen';
-import StartScreen from './src/screens/auth/startScreen';
-import SignupScreen from './src/screens/auth/signupScreen';
 import LoginScreen from './src/screens/auth/loginScreen';
+import SignupScreen from './src/screens/auth/signupScreen';
 import VerifyScreen from './src/screens/auth/verifyScreen';
+import SignedupScreen from './src/screens/auth/signupFinishedScreen';
 
 // -- AMPLIFY SETUP --
 import aws_exports from './aws-exports';
@@ -28,10 +28,10 @@ const MainStack = createStackNavigator({
 
 const AuthStack = createStackNavigator(
   {
-    Start: StartScreen,
-    Signup: SignupScreen,
     Login: LoginScreen,
+    Signup: SignupScreen,
     Verify: VerifyScreen,
+    Signedup: SignedupScreen,
   },
   //{headerMode: 'none'},
 );

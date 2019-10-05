@@ -10,6 +10,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "amazon-cognito-identity-js": "^3.0.15",
     "aws-amplify": "^1.1.40",
     "formik": "^1.5.8",
     "prop-types": "^15.7.2",

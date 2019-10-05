@@ -1,18 +1,19 @@
 import React from 'react';
 import {StyleSheet, Text, TextInput, View} from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import PropTypes from 'prop-types';
 import {Formik} from 'formik';
 import * as yup from 'yup';
 
-import ButtonLarge from './buttons/buttonLarge';
+import SubmitButton from '../buttons/submitButton';
 
 /**
  * The BaseForm has a email field and a password field
  * @param {*} props props has handleSubmit() and submitTitle
  */
-const BaseForm = props => {
+const AuthForm = props => {
   return (
-    <View style={styles.formContainer}>
+    <View>
       <Formik
         initialValues={{email: '', password: ''}}
         onSubmit={values => props.handleSubmit(values)}
@@ -58,7 +59,8 @@ const BaseForm = props => {
             {touched.password && errors.password && (
               <Text style={styles.error}>{errors.password}</Text>
             )}
-            <ButtonLarge
+
+            <SubmitButton
               title={props.submitTitle}
               disabled={!isValid}
               onPress={handleSubmit}
@@ -72,31 +74,11 @@ const BaseForm = props => {
   );
 };
 
-export const SignupForm = props => (
-  <View style={styles.formContainer}>
-    <BaseForm
-      handleSubmit={props.handleSubmit}
-      submitTitle="SIGN UP"
-      loading={props.loading}
-    />
-  </View>
-);
-
-export const LoginForm = props => (
-  <View style={styles.formContainer}>
-    <BaseForm
-      handleSubmit={props.handleSubmit}
-      submitTitle="LOGIN"
-      loading={props.loading}
-    />
-  </View>
-);
+export default AuthForm;
 
 const styles = StyleSheet.create({
-  formContainer: {margin: 10},
   textInput: {
-    margin: 20,
-    marginBottom: 5,
+    marginBottom: 20,
     padding: 10,
     fontSize: 14,
     borderWidth: 1,
@@ -107,18 +89,8 @@ const styles = StyleSheet.create({
   error: {fontSize: 11, color: 'red', marginLeft: 20},
 });
 
-BaseForm.propTypes = {
+AuthForm.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
   submitTitle: PropTypes.string.isRequired,
-  loading: PropTypes.bool.isRequired,
-};
-
-SignupForm.propTypes = {
-  handleSubmit: PropTypes.func.isRequired,
-  loading: PropTypes.bool.isRequired,
-};
-
-LoginForm.propTypes = {
-  handleSubmit: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
 };
