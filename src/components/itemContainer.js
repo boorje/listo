@@ -1,15 +1,53 @@
 import React from 'react';
-import {StyleSheet, View, Text, FlatList} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  FlatList,
+  TouchableHighlight,
+} from 'react-native';
 
-import Item from './item';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import ItemDetails from '../components/itemDetails';
 
 class ItemContainer extends React.Component {
-  state = {
-    items: ['Cola', 'Bärs', 'Kiwi'],
-  };
-
-  renderList(item) {
-    return <Item name={item.item} />;
+  renderList(item, index) {
+    return (
+      <TouchableHighlight
+        style={styles.container1}
+        backgroundColor={'white'}
+        underlayColor={'transparent'}
+        fontSize={50}
+        onPress={() => {
+          this.props.removeItem();
+        }}>
+        <View style={styles.container2}>
+          <View style={styles.info}>
+            {!item.details ? (
+              <Text style={styles.text}>{item.content}</Text>
+            ) : (
+              <ItemDetails
+                closeDetails={() => this.props.showDetails(item, index)}
+                addItem={updatedItem =>
+                  this.props.updateItem(updatedItem, index)
+                }
+                content={item.content}
+                quantity={item.quantity}
+                unit={item.unit}
+              />
+            )}
+          </View>
+          <Icon
+            size={32}
+            name={!item.details ? 'expand-more' : 'expand-less'}
+            color={'black'}
+            onPress={() => {
+              this.props.showDetails(item, index);
+            }}
+          />
+        </View>
+      </TouchableHighlight>
+    );
   }
 
   FlatListItemSeparator = () => {
@@ -20,12 +58,13 @@ class ItemContainer extends React.Component {
     return (
       <View>
         <FlatList
-          data={this.state.items}
-          renderItem={item => {
-            return this.renderList(item);
+          data={this.props.items}
+          renderItem={({item, index}) => {
+            return this.renderList(item, index);
           }}
           keyExtractor={item => item}
           ItemSeparatorComponent={this.FlatListItemSeparator}
+          keyboardShouldPersistTaps="always"
         />
       </View>
     );
@@ -51,5 +90,21 @@ const styles = StyleSheet.create({
     marginLeft: '3%',
     marginRight: '0%',
     backgroundColor: '#607D8B',
+  },
+  container1: {
+    flex: 1,
+  },
+  info: {},
+  container2: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingLeft: '3%',
+    paddingRight: '3%',
+    paddingBottom: '3%',
+  },
+  text: {
+    fontSize: 20,
   },
 });

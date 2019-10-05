@@ -7,7 +7,7 @@ class AddTaskModal extends React.Component {
   };
 
   render() {
-    const {input} = this.state;
+    const input = this.state;
     return (
       <Modal animationType="fade" transparent={true} visible={true}>
         <TouchableOpacity
@@ -20,7 +20,10 @@ class AddTaskModal extends React.Component {
             returnKeyType="done"
             enablesReturnKeyAutomatically={true}
             autoFocus={true}
-            //onSubmitEditing={() => this.props.addData(input)}
+            onSubmitEditing={() => {
+              this.props.addTask(this.state.input);
+              this.props.closeModal();
+            }}
             onChangeText={text => this.setState({input: text})}
             style={{
               height: 50,
