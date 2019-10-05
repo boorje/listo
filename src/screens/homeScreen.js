@@ -1,10 +1,11 @@
 import React from 'react';
 import {StyleSheet, View, ScrollView} from 'react-native';
+import IoniconsIcon from 'react-native-vector-icons/Ionicons';
+import {Auth} from 'aws-amplify';
 
 import TaskContainer from '../components/taskContainer';
 import AddTask from '../components/addTask';
 import AddTaskModal from '../components/addTaskModal';
-import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 
 class HomeScreen extends React.Component {
   state = {
@@ -18,8 +19,13 @@ class HomeScreen extends React.Component {
         <IoniconsIcon
           size={32}
           name="md-settings"
-          onPress={() => {
-            navigation.navigate('Settings');
+          onPress={async () => {
+            try {
+              await Auth.signOut();
+              navigation.navigate('Auth');
+            } catch (error) {
+              console.log(error);
+            }
           }}
           style={{marginRight: 15}}
         />
