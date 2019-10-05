@@ -4,6 +4,8 @@ import {StyleSheet, View, ScrollView, Button} from 'react-native';
 import AddItem from '../components/addItem';
 import ItemContainer from '../components/itemContainer';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import update from 'immutability-helper';
+import * as shortid from 'shortid';
 
 class ListScreen extends React.Component {
   state = {
@@ -26,9 +28,43 @@ class ListScreen extends React.Component {
       ),
     };
   };
+  addItem = async item => {
+    const {content, quantity, unit} = item;
+    await this.setState({
+      items: [
+        ...this.state.items,
+        {content, quantity, unit, details: false, id: shortid.generate()},
+      ],
+    });
+  };
 
-  addItem = item => {
-    this.setState({items: [...this.state.items, item]});
+  //[{id, content, quantity, unit},{id, content, quantity, unit}]
+  updateItem = (updatedItem, index) => {
+    try {
+      const newItems = this.state.items.map(item => {
+        if (item.index === updatedItem.index) {
+          item.content = updatedItem.content;
+          item.quantity = updatedItem.quantity;
+          item.unit = updatedItem.unit;
+        }
+        return item;
+      });
+      this.setState({items: newItems});
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  showDetails = (item, index) => {
+    let itemsCopy = JSON.parse(JSON.stringify(this.state.items));
+    if (item.details) {
+      itemsCopy[index].details = false;
+    } else {
+      itemsCopy[index].details = true;
+    }
+    this.setState({
+      items: itemsCopy,
+    });
   };
 
   render() {
@@ -37,7 +73,8 @@ class ListScreen extends React.Component {
         <ScrollView keyboardShouldPersistTaps="always">
           <ItemContainer
             items={this.state.items}
-            addItem={item => this.addItem(item)}
+            updateItem={(item, index) => this.updateItem(item, index)}
+            showDetails={(item, index) => this.showDetails(item, index)}
           />
           <AddItem addItem={item => this.addItem(item)} />
         </ScrollView>

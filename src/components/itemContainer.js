@@ -11,18 +11,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import ItemDetails from '../components/itemDetails';
 
 class ItemContainer extends React.Component {
-  state = {
-    showDetails: false,
-  };
-
-  showDetails = () => {
-    if (this.state.showDetails === false) {
-      this.setState({showDetails: true});
-    } else {
-      this.setState({showDetails: false});
-    }
-  };
-  renderList(item) {
+  renderList(item, index) {
     return (
       <TouchableHighlight
         style={styles.container1}
@@ -32,22 +21,26 @@ class ItemContainer extends React.Component {
         onPress={() => {}}>
         <View style={styles.container2}>
           <View style={styles.info}>
-            {!this.state.showDetails ? (
-              <Text style={styles.text}>Hej</Text>
+            {!item.details ? (
+              <Text style={styles.text}>{item.content}</Text>
             ) : (
               <ItemDetails
-                open={this.state.showDetails}
-                closeDetails={() => this.showDetails()}
-                addItem={items => this.props.addItem(items)}
+                closeDetails={() => this.props.showDetails(item, index)}
+                addItem={updatedItem =>
+                  this.props.updateItem(updatedItem, index)
+                }
+                content={item.content}
+                quantity={item.quantity}
+                unit={item.unit}
               />
             )}
           </View>
           <Icon
             size={32}
-            name={!this.state.showDetails ? 'expand-more' : 'expand-less'}
+            name={!item.details ? 'expand-more' : 'expand-less'}
             color={'black'}
             onPress={() => {
-              this.showDetails();
+              this.props.showDetails(item, index);
             }}
           />
         </View>
@@ -64,8 +57,8 @@ class ItemContainer extends React.Component {
       <View>
         <FlatList
           data={this.props.items}
-          renderItem={item => {
-            return this.renderList(item);
+          renderItem={({item, index}) => {
+            return this.renderList(item, index);
           }}
           keyExtractor={item => item}
           ItemSeparatorComponent={this.FlatListItemSeparator}

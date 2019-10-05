@@ -26,7 +26,6 @@ class AddItem extends React.Component {
           </TouchableOpacity>
         ) : (
           <ItemDetails
-            open={this.state.addItem}
             closeDetails={() => this.showDetails()}
             addItem={item => this.props.addItem(item)}
           />

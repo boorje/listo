@@ -13,11 +13,10 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 class ItemDetails extends React.Component {
   state = {
-    content: '',
-    quantity: '',
-    unit: '',
+    content: this.props.content || '',
+    quantity: this.props.quantity || '',
+    unit: this.props.unit || '',
     isFocused: '',
-    open: this.props.open,
   };
 
   render() {
@@ -42,77 +41,78 @@ class ItemDetails extends React.Component {
           autoFocus={true}
           onSubmitEditing={() => {
             this.props.addItem({content, quantity, unit});
+            this.props.closeDetails();
           }}
           inputAccessoryViewID={inputID}
           onChangeText={text => {
             text.length === 0
-              ? this.setState({content: text, open: false})
-              : this.setState({content: text, open: true});
+              ? this.setState({content: text})
+              : this.setState({content: text});
           }}
           value={this.state.content}
         />
 
-        {this.props.open && (
-          <View
-            style={{
-              flexDirection: 'row',
-              marginTop: 5,
-            }}>
-            <TextInput
-              ref={input => {
-                this.secondTextInput = input;
-              }}
-              onFocus={() => {
-                this.setState({isFocused: '2'});
-              }}
-              //style={styles.input}
-              placeholder={'Antal...'}
-              placeholderTextColor={'black'}
-              borderColor={'black'}
-              keyboardType={'numeric'}
-              returnKeyType="done"
-              autoCorrect={false}
-              enablesReturnKeyAutomatically={true}
-              autoFocus={false}
-              onSubmitEditing={() => {
-                this.props.addItem(content, quantity, unit);
-              }}
-              inputAccessoryViewID={inputID}
-              onChangeText={text => {
-                text.length === 0
-                  ? this.setState({quantity: text, open: false})
-                  : this.setState({quantity: text, open: true});
-              }}
-              value={this.state.quantity}
-            />
-            <TextInput
-              ref={input => {
-                this.thirdTextInput = input;
-              }}
-              onFocus={() => {
-                this.setState({isFocused: '3'});
-              }}
-              //style={styles.input}
-              placeholder={'Enhet...'}
-              placeholderTextColor={'black'}
-              borderColor={'black'}
-              returnKeyType="done"
-              autoCorrect={false}
-              enablesReturnKeyAutomatically={true}
-              autoFocus={false}
-              onSubmitEditing={() => {
-                this.props.addItem(content, quantity, unit);
-              }}
-              inputAccessoryViewID={inputID}
-              onChangeText={text => {
-                text.length === 0
-                  ? this.setState({unit: text, open: false})
-                  : this.setState({unit: text, open: true});
-              }}
-              value={this.state.unit}
-            />
-          </View>
-        )}
+        <View
+          style={{
+            flexDirection: 'row',
+            marginTop: 5,
+          }}>
+          <TextInput
+            ref={input => {
+              this.secondTextInput = input;
+            }}
+            onFocus={() => {
+              this.setState({isFocused: '2'});
+            }}
+            //style={styles.input}
+            placeholder={'Antal...'}
+            placeholderTextColor={'black'}
+            borderColor={'black'}
+            keyboardType={'numeric'}
+            returnKeyType="done"
+            autoCorrect={false}
+            enablesReturnKeyAutomatically={true}
+            autoFocus={false}
+            onSubmitEditing={() => {
+              this.props.addItem({content, quantity, unit});
+              this.props.closeDetails();
+            }}
+            inputAccessoryViewID={inputID}
+            onChangeText={text => {
+              text.length === 0
+                ? this.setState({quantity: text})
+                : this.setState({quantity: text});
+            }}
+            value={this.state.quantity}
+          />
+          <TextInput
+            ref={input => {
+              this.thirdTextInput = input;
+            }}
+            onFocus={() => {
+              this.setState({isFocused: '3'});
+            }}
+            //style={styles.input}
+            placeholder={'Enhet...'}
+            placeholderTextColor={'black'}
+            borderColor={'black'}
+            returnKeyType="done"
+            autoCorrect={false}
+            enablesReturnKeyAutomatically={true}
+            autoFocus={false}
+            onSubmitEditing={() => {
+              this.props.addItem({content, quantity, unit});
+              this.props.closeDetails();
+            }}
+            inputAccessoryViewID={inputID}
+            onChangeText={text => {
+              text.length === 0
+                ? this.setState({unit: text})
+                : this.setState({unit: text});
+            }}
+            value={this.state.unit}
+          />
+        </View>
 
         <InputAccessoryView
           nativeID={inputID}
@@ -127,13 +127,11 @@ class ItemDetails extends React.Component {
                 size={40}
                 name={'navigate-before'}
                 onPress={() => {
-                  isFocused === '1' && this.props.open
+                  isFocused === '1'
                     ? this.thirdTextInput.focus()
                     : isFocused === '2'
                     ? this.firstTextInput.focus()
-                    : this.props.open
-                    ? this.secondTextInput.focus()
-                    : null;
+                    : this.secondTextInput.focus();
                 }}
               />
               <Icon
