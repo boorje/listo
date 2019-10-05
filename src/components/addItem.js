@@ -28,9 +28,7 @@ class AddItem extends React.Component {
           <ItemDetails
             open={this.state.addItem}
             closeDetails={() => this.showDetails()}
-            addItem={(content, quantity, unit) =>
-              this.props.addItem(content, quantity, unit)
-            }
+            addItem={item => this.props.addItem(item)}
           />
         )}
 
