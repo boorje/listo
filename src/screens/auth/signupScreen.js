@@ -15,15 +15,9 @@ class SignupScreen extends React.Component {
     loading: false,
   };
 
-  //! REMOVE
-  sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
-
   handleSubmit = async values => {
     const {email, password} = values;
     this.setState({loading: true});
-    await this.sleep(1000);
     try {
       await validateValues(values);
       const {user} = await Auth.signUp({

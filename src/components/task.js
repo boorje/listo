@@ -15,7 +15,11 @@ class Task extends React.Component {
         onPress={() => this.props.selectTask()}>
         <View style={styles.container2}>
           <Text style={styles.text}>{this.props.name}</Text>
-          <Badge value={3} />
+          <Badge
+            badgeStyle={{backgroundColor: 'black'}}
+            textStyle={{fontSize: 20}}
+            value={5}
+          />
         </View>
       </TouchableHighlight>
     );
@@ -27,6 +31,8 @@ export default Task;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'white',
+    padding: 5,
   },
   container2: {
     flex: 1,
@@ -38,6 +44,6 @@ const styles = StyleSheet.create({
     paddingBottom: '3%',
   },
   text: {
-    fontSize: 20,
+    fontSize: 25,
   },
 });

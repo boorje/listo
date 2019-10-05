@@ -1,8 +1,14 @@
 import React from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
-
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  LayoutAnimation,
+} from 'react-native';
+import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 import ItemDetails from '../components/itemDetails';
+import textStyles from '../styles/textStyles';
 
 class AddItem extends React.Component {
   state = {
@@ -11,8 +17,10 @@ class AddItem extends React.Component {
 
   showDetails = () => {
     if (this.state.addItem === false) {
+      LayoutAnimation.spring();
       this.setState({addItem: true});
     } else {
+      LayoutAnimation.spring();
       this.setState({addItem: false});
     }
   };
@@ -22,20 +30,28 @@ class AddItem extends React.Component {
       <View style={styles.container}>
         {!this.state.addItem ? (
           <TouchableOpacity onPress={() => this.showDetails()}>
-            <Text>Lägg till vara...</Text>
+            <Text style={textStyles.default}>Lägg till vara</Text>
           </TouchableOpacity>
         ) : (
-          <ItemDetails />
+          <ItemDetails
+            closeDetails={() => this.showDetails()}
+            addItem={item => this.props.addItem(item)}
+          />
         )}
 
         <View style={{flexDirection: 'row'}}>
-          <Icon
+          <IoniconsIcon
             size={32}
-            name={'photo-camera'}
+            name={'ios-camera'}
             color={'black'}
             onPress={() => {}}
           />
-          <Icon size={32} name={'image'} color={'black'} onPress={() => {}} />
+          <IoniconsIcon
+            size={32}
+            name={'md-images'}
+            color={'black'}
+            onPress={() => {}}
+          />
         </View>
       </View>
     );
@@ -53,5 +69,9 @@ const styles = StyleSheet.create({
     paddingLeft: '3%',
     paddingRight: '3%',
     marginTop: '3%',
+  },
+  text: {
+    fontSize: 20,
+    fontFamily: 'Avenir Next',
   },
 });

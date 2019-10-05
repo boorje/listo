@@ -2,6 +2,7 @@ import {createAppContainer, createSwitchNavigator} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
 import Amplify from 'aws-amplify';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 
 // -- SCREENS --
 import HomeScreen from './src/screens/homeScreen';
@@ -19,6 +20,7 @@ import aws_exports from './aws-exports';
 Amplify.configure(aws_exports);
 
 Icon.loadFont();
+IoniconsIcon.loadFont();
 
 const MainStack = createStackNavigator({
   Home: HomeScreen,

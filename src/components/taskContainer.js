@@ -1,23 +1,30 @@
 import React from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  FlatList,
-  TouchableHighlight,
-  Button,
-} from 'react-native';
+import {StyleSheet, View, FlatList} from 'react-native';
 
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import Swipeout from 'react-native-swipeout';
 import Task from './task';
 
 class TaskContainer extends React.Component {
-  state = {
-    lists: ['Adam', 'Eric', 'Simon'],
+  swipeSettings = {
+    autoClose: true,
   };
-
-  renderList(user) {
-    return <Task name={user.item} selectTask={() => this.props.selectTask()} />;
+  renderList(item, index) {
+    return (
+      <Swipeout
+        style={styles.swipeout}
+        {...this.swipeSettings}
+        right={[
+          {
+            text: 'Delete',
+            type: 'delete',
+            onPress: () => {
+              this.props.removeTask(index);
+            },
+          },
+        ]}>
+        <Task name={item} selectTask={() => this.props.selectTask()} />
+      </Swipeout>
+    );
   }
 
   FlatListItemSeparator = () => {
@@ -28,11 +35,11 @@ class TaskContainer extends React.Component {
     return (
       <View>
         <FlatList
-          data={this.state.lists}
-          renderItem={user => {
-            return this.renderList(user);
+          data={this.props.lists}
+          renderItem={({item, index}) => {
+            return this.renderList(item, index);
           }}
-          keyExtractor={user => user}
+          keyExtractor={item => item}
           ItemSeparatorComponent={this.FlatListItemSeparator}
         />
       </View>
@@ -43,6 +50,9 @@ class TaskContainer extends React.Component {
 export default TaskContainer;
 
 const styles = StyleSheet.create({
+  swipeout: {
+    backgroundColor: 'transparent',
+  },
   container: {
     flex: 1,
     width: '100%',
