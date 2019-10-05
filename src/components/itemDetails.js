@@ -9,6 +9,7 @@ import {
   Dimensions,
 } from 'react-native';
 
+import AppText from '../components/appText';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 class ItemDetails extends React.Component {

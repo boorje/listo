@@ -1,11 +1,19 @@
 import React from 'react';
-import {StyleSheet, View, ScrollView, Button} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  ScrollView,
+  Button,
+  LayoutAnimation,
+} from 'react-native';
 
 import AddItem from '../components/addItem';
 import ItemContainer from '../components/itemContainer';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import update from 'immutability-helper';
+import IoniconsIcon from 'react-native-vector-icons/Ionicons';
+
 import * as shortid from 'shortid';
+
+// TODO: Create custom animation class
 
 class ListScreen extends React.Component {
   state = {
@@ -16,20 +24,20 @@ class ListScreen extends React.Component {
     return {
       headerTitle: 'Adam',
       headerRight: (
-        <Icon
-          style={{marginRight: 10}}
+        <IoniconsIcon
           size={32}
-          name={'settings'}
-          color={'black'}
+          name="md-settings"
           onPress={() => {
             navigation.navigate('Settings');
           }}
+          style={{marginRight: 15}}
         />
       ),
     };
   };
   addItem = async item => {
     const {content, quantity, unit} = item;
+    LayoutAnimation.spring();
     await this.setState({
       items: [
         ...this.state.items,
@@ -49,6 +57,7 @@ class ListScreen extends React.Component {
         }
         return item;
       });
+      LayoutAnimation.spring();
       this.setState({items: newItems});
     } catch (error) {
       console.log(error);
@@ -58,6 +67,7 @@ class ListScreen extends React.Component {
   removeItem = index => {
     const itemsCopy = this.state.items;
     itemsCopy.splice(index, 1);
+    LayoutAnimation.spring();
     this.setState({items: itemsCopy});
   };
 
@@ -68,6 +78,7 @@ class ListScreen extends React.Component {
     } else {
       itemsCopy[index].details = true;
     }
+    LayoutAnimation.spring();
     this.setState({
       items: itemsCopy,
     });
