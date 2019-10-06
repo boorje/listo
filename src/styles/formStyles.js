@@ -2,7 +2,7 @@ import {StyleSheet} from 'react-native';
 
 export default StyleSheet.create({
   formTextInput: {
-    marginBottom: 20,
+    marginTop: 20,
     padding: 10,
     fontSize: 14,
     borderWidth: 1,
@@ -15,5 +15,7 @@ export default StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'flex-end',
+    marginTop: 10,
+    marginBottom: 10,
   },
 });

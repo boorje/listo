@@ -64,7 +64,7 @@ class LoginScreen extends React.Component {
             style={styles.forgotPsw}>
             Forgot password?
           </Text>
-          <Text style={styles.divider}>Or</Text>
+          <View style={styles.divider} />
           <PrimaryButton
             title="SIGN UP"
             onPress={() => this.props.navigation.navigate('Signup')}
@@ -88,5 +88,5 @@ const styles = StyleSheet.create({
   logoText: {fontSize: 50, fontWeight: 'bold'},
   form: {flex: 2, justifyContent: 'flex-start'},
   forgotPsw: {textAlign: 'center'},
-  divider: {textAlign: 'center', padding: 10},
+  divider: {margin: 20, borderBottomWidth: 1, borderColor: '#ddd'},
 });
