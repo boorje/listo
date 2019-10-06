@@ -12,6 +12,7 @@ const LoginForm = props => (
   <View>
     <Formik
       initialValues={{email: '', password: ''}}
+      initialStatus={{hidePassword: true}}
       onSubmit={values => props.handleSubmit(values)}
       validationSchema={yup.object().shape({
         email: yup
@@ -24,7 +25,9 @@ const LoginForm = props => (
           .required(),
       })}>
       {({
+        setStatus,
         values,
+        status,
         handleChange,
         errors,
         setFieldTouched,
@@ -49,13 +52,25 @@ const LoginForm = props => (
             onChangeText={handleChange('password')}
             placeholder="Password"
             onBlur={() => setFieldTouched('password')}
-            secureTextEntry={true}
+            secureTextEntry={status.hidePassword}
             style={formStyles.formTextInput}
           />
           {touched.password && errors.password && (
             <Text style={formStyles.inputError}>{errors.password}</Text>
           )}
-          <Text onPress={() => props.resetPassword()}>Forgot password?</Text>
+          <View style={formStyles.forgotPassword}>
+            <Text
+              onPress={() => {
+                const prevState = status.hidePassword;
+                if (prevState) {
+                  setStatus({hidePassword: false});
+                } else {
+                  setStatus({hidePassword: true});
+                }
+              }}>
+              Show password
+            </Text>
+          </View>
           <SubmitButton
             title="LOGIN"
             disabled={!isValid}
@@ -74,5 +89,4 @@ export default LoginForm;
 LoginForm.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
-  resetPassword: PropTypes.func.isRequired,
 };

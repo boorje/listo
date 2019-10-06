@@ -58,13 +58,12 @@ class LoginScreen extends React.Component {
         </View>
         <View style={styles.form}>
           {signinError.length > 0 && <Message message={signinError} />}
-          <LoginForm
-            handleSubmit={this.handleLogin}
-            loading={loading}
-            resetPassword={() =>
-              this.props.navigation.navigate('ForgotPassword')
-            }
-          />
+          <LoginForm handleSubmit={this.handleLogin} loading={loading} />
+          <Text
+            onPress={() => this.props.navigation.navigate('ForgotPassword')}
+            style={styles.forgotPsw}>
+            Forgot password?
+          </Text>
           <Text style={styles.divider}>Or</Text>
           <PrimaryButton
             title="SIGN UP"
@@ -88,5 +87,6 @@ const styles = StyleSheet.create({
   logo: {flex: 1, justifyContent: 'center', alignItems: 'center'},
   logoText: {fontSize: 50, fontWeight: 'bold'},
   form: {flex: 2, justifyContent: 'flex-start'},
+  forgotPsw: {textAlign: 'center'},
   divider: {textAlign: 'center', padding: 10},
 });

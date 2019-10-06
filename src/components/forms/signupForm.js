@@ -12,6 +12,7 @@ const SignupForm = props => (
   <View>
     <Formik
       initialValues={{email: '', password: ''}}
+      initialStatus={{hidePassword: true}}
       onSubmit={values => props.handleSubmit(values)}
       validationSchema={yup.object().shape({
         email: yup
@@ -31,6 +32,8 @@ const SignupForm = props => (
         touched,
         isValid,
         handleSubmit,
+        status,
+        setStatus,
       }) => (
         <React.Fragment>
           <TextInput
@@ -49,12 +52,25 @@ const SignupForm = props => (
             onChangeText={handleChange('password')}
             placeholder="Password"
             onBlur={() => setFieldTouched('password')}
-            secureTextEntry={true}
+            secureTextEntry={status.hidePassword}
             style={formStyles.formTextInput}
           />
           {touched.password && errors.password && (
             <Text style={formStyles.inputError}>{errors.password}</Text>
           )}
+          <View style={formStyles.forgotPassword}>
+            <Text
+              onPress={() => {
+                const prevState = status.hidePassword;
+                if (prevState) {
+                  setStatus({hidePassword: false});
+                } else {
+                  setStatus({hidePassword: true});
+                }
+              }}>
+              Show password
+            </Text>
+          </View>
           <SubmitButton
             title="SIGN UP"
             disabled={!isValid}

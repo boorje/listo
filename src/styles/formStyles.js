@@ -11,4 +11,9 @@ export default StyleSheet.create({
     height: 60,
   },
   inputError: {fontSize: 11, color: 'red', marginLeft: 20},
+  forgotPassword: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+  },
 });
