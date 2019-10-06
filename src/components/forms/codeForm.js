@@ -1,12 +1,14 @@
 import React from 'react';
-import {StyleSheet, Text, TextInput, View} from 'react-native';
+import {Text, TextInput, View} from 'react-native';
 import PropTypes from 'prop-types';
 import {Formik} from 'formik';
 import * as yup from 'yup';
 
 import SubmitButton from '../buttons/submitButton';
 
-const VerificationForm = props => {
+import formStyles from '../../styles/formStyles';
+
+const CodeForm = props => {
   return (
     <View>
       <Formik
@@ -14,8 +16,9 @@ const VerificationForm = props => {
         onSubmit={values => props.handleSubmit(values)}
         validationSchema={yup.object().shape({
           code: yup
-            .string()
-            .min(6)
+            .number()
+            .positive()
+            .integer()
             .required(),
         })}>
         {({
@@ -34,13 +37,13 @@ const VerificationForm = props => {
               onBlur={() => setFieldTouched('code')}
               placeholder="Your verification code"
               keyboardType="number-pad"
-              style={styles.textInput}
+              style={formStyles.formTextInput}
             />
             {touched.code && errors.code && (
-              <Text style={styles.error}>{errors.code}</Text>
+              <Text style={formStyles.inputError}>{errors.code}</Text>
             )}
             <SubmitButton
-              title="VERIFY CODE"
+              title={props.submitTitle}
               disabled={!isValid}
               onPress={handleSubmit}
               type="submit"
@@ -53,22 +56,10 @@ const VerificationForm = props => {
   );
 };
 
-export default VerificationForm;
+export default CodeForm;
 
-const styles = StyleSheet.create({
-  textInput: {
-    marginBottom: 5,
-    padding: 10,
-    fontSize: 14,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 3,
-    height: 60,
-  },
-  error: {fontSize: 11, color: 'red', marginLeft: 20},
-});
-
-VerificationForm.propTypes = {
+CodeForm.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
+  submitTitle: PropTypes.string.isRequired,
 };

@@ -6,7 +6,14 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import * as colors from '../config/colors';
 
 const Message = props => (
-  <View style={styles.wrapper}>
+  <View
+    style={[
+      styles.wrapper,
+      {
+        backgroundColor:
+          props.type === 'SUCCESS' ? colors.submitColor : colors.errorColor,
+      },
+    ]}>
     <View style={styles.container}>
       <Icon size={34} name="warning" color="#fff" />
       <Text style={styles.message}>{props.message}</Text>
@@ -18,12 +25,12 @@ export default Message;
 
 Message.propTypes = {
   message: PropTypes.string.isRequired,
+  type: PropTypes.string,
 };
 
 const styles = StyleSheet.create({
   wrapper: {
     padding: 20,
-    backgroundColor: colors.errorColor,
     display: 'flex',
     alignItems: 'center',
   },
