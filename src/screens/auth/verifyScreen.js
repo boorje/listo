@@ -13,15 +13,33 @@ class VerifyScreen extends React.Component {
     loading: false,
   };
 
+  _validateCode = code => {
+    return new Promise((resolve, reject) => {
+      if (code === null) {
+        reject({
+          code: 'ValidationError',
+        });
+      } else {
+        resolve();
+      }
+    });
+  };
+
   confirmSignup = async ({code}) => {
     try {
       this.setState({loading: true});
+      await this._validateCode(code);
       await Auth.confirmSignUp(this.state.user.username, code);
       this.props.navigation.navigate('Signedup');
       this.setState({loading: false});
     } catch (error) {
       this.setState({loading: false});
       switch (error.code) {
+        case 'ValidationError':
+          this.setState({
+            sendEmailError: 'Please provide a valid verification code.',
+          });
+          break;
         case 'CodeMismatchException':
           this.setState({
             verificationError: 'The code is incorrect. Please try again.',
