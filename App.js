@@ -14,6 +14,9 @@ import LoginScreen from './src/screens/auth/loginScreen';
 import SignupScreen from './src/screens/auth/signupScreen';
 import VerifyScreen from './src/screens/auth/verifyScreen';
 import SignedupScreen from './src/screens/auth/signupFinishedScreen';
+import ForgotPasswordScreen from './src/screens/auth/forgotPasswordScreen';
+import ResetPasswordScreen from './src/screens/auth/resetPasswordScreen';
+import PasswordFinishedScreen from './src/screens/auth/passwordFinishedScreen';
 
 // -- AMPLIFY SETUP --
 import aws_exports from './aws-exports';
@@ -34,6 +37,9 @@ const AuthStack = createStackNavigator(
     Signup: SignupScreen,
     Verify: VerifyScreen,
     Signedup: SignedupScreen,
+    ForgotPassword: ForgotPasswordScreen,
+    ResetPassword: ResetPasswordScreen,
+    PasswordFinished: PasswordFinishedScreen,
   },
   //{headerMode: 'none'},
 );

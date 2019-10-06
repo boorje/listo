@@ -5,24 +5,24 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 // -- Components --
 import PrimaryButton from '../../components/buttons/primaryButton';
 
-class SignedupFinishedScreen extends React.Component {
+class PasswordFinishedScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
         <View style={styles.successBox}>
-          <Text style={styles.text}>Successfully signed up.</Text>
+          <Text style={styles.text}>Successfully reset your password</Text>
           <Icon size={60} name="check-circle" color="green" />
         </View>
         <PrimaryButton
-          title="GET STARTED"
-          onPress={() => this.props.navigation.navigate('App')}
+          title="LOGIN"
+          onPress={() => this.props.navigation.navigate('Login')}
         />
       </View>
     );
   }
 }
 
-export default SignedupFinishedScreen;
+export default PasswordFinishedScreen;
 
 const styles = StyleSheet.create({
   container: {margin: 10},

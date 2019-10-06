@@ -58,7 +58,13 @@ class LoginScreen extends React.Component {
         </View>
         <View style={styles.form}>
           {signinError.length > 0 && <Message message={signinError} />}
-          <LoginForm handleSubmit={this.handleLogin} loading={loading} />
+          <LoginForm
+            handleSubmit={this.handleLogin}
+            loading={loading}
+            resetPassword={() =>
+              this.props.navigation.navigate('ForgotPassword')
+            }
+          />
           <Text style={styles.divider}>Or</Text>
           <PrimaryButton
             title="SIGN UP"
@@ -74,13 +80,13 @@ export default LoginScreen;
 
 const styles = StyleSheet.create({
   container: {
-    margin: 30,
+    margin: 50,
     flex: 1,
     justifyContent: 'space-around',
     marginBottom: 0,
   },
   logo: {flex: 1, justifyContent: 'center', alignItems: 'center'},
   logoText: {fontSize: 50, fontWeight: 'bold'},
-  form: {flex: 2, justifyContent: 'center'},
+  form: {flex: 2, justifyContent: 'flex-start'},
   divider: {textAlign: 'center', padding: 10},
 });

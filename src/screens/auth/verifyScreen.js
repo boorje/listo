@@ -3,7 +3,7 @@ import {StyleSheet, Text, View} from 'react-native';
 import {Auth} from 'aws-amplify';
 
 // -- Components --
-import VerificationForm from '../../components/forms/verificationForm';
+import CodeForm from '../../components/forms/codeForm';
 import Message from '../../components/message';
 
 class VerifyScreen extends React.Component {
@@ -43,7 +43,11 @@ class VerifyScreen extends React.Component {
         {verificationError.length > 0 && (
           <Message message={verificationError} />
         )}
-        <VerificationForm handleSubmit={this.confirmSignup} loading={loading} />
+        <CodeForm
+          handleSubmit={this.confirmSignup}
+          loading={loading}
+          submitTitle="VERIFY CODE"
+        />
         {user.username && (
           <Text style={styles.textInfo}>
             A verification code has been sent to{' '}
