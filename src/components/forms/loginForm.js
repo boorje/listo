@@ -67,7 +67,8 @@ const LoginForm = props => (
                 } else {
                   setStatus({hidePassword: true});
                 }
-              }}>
+              }}
+              style={{color: status.hidePassword ? '#666' : '#333'}}>
               Show password
             </Text>
           </View>
