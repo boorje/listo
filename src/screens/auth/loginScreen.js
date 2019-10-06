@@ -61,7 +61,7 @@ class LoginScreen extends React.Component {
           <LoginForm handleSubmit={this.handleLogin} loading={loading} />
           <Text
             onPress={() => this.props.navigation.navigate('ForgotPassword')}
-            style={[styles.forgotPsw]}>
+            style={styles.forgotPsw}>
             Forgot password?
           </Text>
           <View style={styles.divider} />
