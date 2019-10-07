@@ -11,7 +11,11 @@ import Message from '../components/message';
 import animations from '../styles/animations';
 
 // -- API helpers --
-import {getGroceryList, createGroceryItem} from '../api/groceryListsAPI';
+import {
+  getGroceryList,
+  createGroceryItem,
+  deleteGroceryItem,
+} from '../api/groceryListsAPI';
 
 // TODO: Create custom animation class
 
@@ -82,6 +86,18 @@ export default class ListScreen extends React.Component {
     }
   };
 
+  removeGrocery = async id => {
+    try {
+      const res = await deleteGroceryItem(id);
+      const stateCopy = this.state.groceries.filter(
+        grocery => grocery.id !== res.id,
+      );
+      this.setState({groceries: stateCopy});
+    } catch (error) {
+      this.setState({apiError: error});
+    }
+  };
+
   showGroceryForm = (grocery, index) => {
     if (this.state.addItemOpen) {
       this.setState({adjustFooter: false, addItemOpen: false});
@@ -127,7 +143,7 @@ export default class ListScreen extends React.Component {
             <GroceriesContainer
               items={groceries}
               updateItem={() => console.log('update')}
-              removeItem={() => console.log('remove')}
+              removeGrocery={this.removeGrocery}
               showGroceryForm={this.showGroceryForm}
             />
           </KeyboardAwareScrollView>

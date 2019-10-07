@@ -18,7 +18,7 @@ class GroceriesContainer extends React.Component {
         style={styles.container1}
         fontSize={50}
         onPress={() => {
-          this.props.removeItem(index);
+          this.props.removeGrocery(item.id);
         }}
         underlayColor={'transparent'}>
         <View style={styles.container2}>
@@ -60,7 +60,7 @@ class GroceriesContainer extends React.Component {
         renderItem={({item, index}) => {
           return this.renderList(item, index);
         }}
-        keyExtractor={item => item}
+        keyExtractor={item => item.id}
         ItemSeparatorComponent={this.FlatListItemSeparator}
         keyboardShouldPersistTaps="always"
       />
