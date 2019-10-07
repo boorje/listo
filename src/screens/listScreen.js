@@ -11,11 +11,16 @@ import Message from '../components/message';
 import animations from '../styles/animations';
 
 // -- API helpers --
-import {getGroceryList, createGroceryItem} from '../api/groceryListsAPI';
+import {
+  getGroceryList,
+  createGroceryItem,
+  deleteGroceryItem,
+  updateGroceryItem,
+} from '../api/groceryListsAPI';
 
 // TODO: Create custom animation class
 
-class ListScreen extends React.Component {
+export default class ListScreen extends React.Component {
   static navigationOptions = ({navigation}) => {
     return {
       headerTitle: navigation.state.params.title,
@@ -82,6 +87,35 @@ class ListScreen extends React.Component {
     }
   };
 
+  removeGrocery = async id => {
+    try {
+      const deleteGrocery = await deleteGroceryItem(id);
+      const stateCopy = this.state.groceries.filter(
+        grocery => grocery.id !== deleteGrocery.id,
+      );
+      this.setState({groceries: stateCopy});
+    } catch (error) {
+      this.setState({apiError: error});
+    }
+  };
+
+  updateGrocery = async updatedGrocery => {
+    try {
+      const res = await updateGroceryItem(updatedGrocery);
+      const stateCopy = this.state.groceries.map(grocery => {
+        if (grocery.id === res.id) {
+          grocery.content = updatedGrocery.content;
+          grocery.quantity = updatedGrocery.quantity;
+          grocery.unit = updatedGrocery.unit;
+        }
+        return grocery;
+      });
+      this.setState({groceries: stateCopy});
+    } catch (error) {
+      this.setState({apiError: error});
+    }
+  };
+
   showGroceryForm = (grocery, index) => {
     if (this.state.addItemOpen) {
       this.setState({adjustFooter: false, addItemOpen: false});
@@ -126,8 +160,8 @@ class ListScreen extends React.Component {
             automaticallyAdjustContentInsets={false}>
             <GroceriesContainer
               items={groceries}
-              updateItem={() => console.log('update')}
-              removeItem={() => console.log('remove')}
+              updateGrocery={this.updateGrocery}
+              removeGrocery={this.removeGrocery}
               showGroceryForm={this.showGroceryForm}
             />
           </KeyboardAwareScrollView>
@@ -150,7 +184,6 @@ class ListScreen extends React.Component {
     );
   }
 }
-export default ListScreen;
 
 const styles = StyleSheet.create({
   container: {

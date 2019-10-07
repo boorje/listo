@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, Text, TextInput, View} from 'react-native';
+import {Text, TextInput, View} from 'react-native';
 import PropTypes from 'prop-types';
 import {Formik} from 'formik';
 import * as yup from 'yup';
@@ -8,7 +8,7 @@ import SubmitButton from '../buttons/submitButton';
 
 import formStyles from '../../styles/formStyles';
 
-const VerificationForm = props => {
+const ForgotPasswordForm = props => {
   return (
     <View>
       <Formik
@@ -55,9 +55,9 @@ const VerificationForm = props => {
   );
 };
 
-export default VerificationForm;
+export default ForgotPasswordForm;
 
-VerificationForm.propTypes = {
+ForgotPasswordForm.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
 };

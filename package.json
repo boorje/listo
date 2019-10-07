@@ -16,7 +16,6 @@
     "prop-types": "^15.7.2",
     "react": "16.9.0",
     "react-native": "0.61.1",
-    "react-native-elements": "^1.2.4",
     "react-native-gesture-handler": "^1.4.1",
     "react-native-keyboard-aware-scroll-view": "^0.9.1",
     "react-native-keyboard-aware-scrollview": "^2.0.0",
