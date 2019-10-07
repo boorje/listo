@@ -1,55 +1,24 @@
 import React from 'react';
-import {
-  StyleSheet,
-  View,
-  Keyboard,
-  LayoutAnimation,
-  KeyboardAvoidingView,
-} from 'react-native';
-
-import AddItem from '../components/addItem';
-import ItemContainer from '../components/itemContainer';
+import {StyleSheet, View, LayoutAnimation} from 'react-native';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
-import animations from '../styles/animations';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scrollview';
 
-import * as shortid from 'shortid';
+// -- Components --
+import AddGrocery from '../components/addGrocery';
+import ItemContainer from '../components/itemContainer';
+import Message from '../components/message';
+
+import animations from '../styles/animations';
+
+// -- API helpers --
+import {getGroceryList, createGroceryItem} from '../api/groceryListsAPI';
 
 // TODO: Create custom animation class
 
 class ListScreen extends React.Component {
-  state = {
-    items: [
-      {content: 'Cola', quantity: '2', unit: 'st'},
-      {content: 'Bärs', quantity: '3', unit: 'flak'},
-      {content: 'kiwi', quantity: '3', unit: 'st'},
-      {content: 'mjölk', quantity: '1', unit: 'l'},
-      {content: 'Cola', quantity: '2', unit: 'st'},
-      {content: 'Bärs', quantity: '3', unit: 'flak'},
-      {content: 'kiwi', quantity: '3', unit: 'st'},
-      {content: 'mjölk', quantity: '1', unit: 'l'},
-      {content: 'Cola', quantity: '2', unit: 'st'},
-      {content: 'Bärs', quantity: '3', unit: 'flak'},
-      {content: 'kiwi', quantity: '3', unit: 'st'},
-      {content: 'mjölk', quantity: '1', unit: 'l'},
-      {content: 'kiwi', quantity: '3', unit: 'st'},
-      {content: 'mjölk', quantity: '1', unit: 'l'},
-      {content: 'Cola', quantity: '2', unit: 'st'},
-      {content: 'Bärs', quantity: '3', unit: 'flak'},
-      {content: 'kiwi', quantity: '3', unit: 'st'},
-      {content: 'mjölk', quantity: '1', unit: 'l'},
-      {content: 'Cola', quantity: '2', unit: 'st'},
-      {content: 'Bärs', quantity: '3', unit: 'flak'},
-      {content: 'kiwi', quantity: '3', unit: 'st'},
-      {content: 'mjölk', quantity: '1', unit: 'l'},
-    ],
-    adjustFooter: false,
-    addItemOpen: false,
-  };
-
   static navigationOptions = ({navigation}) => {
     return {
-      headerTitle: 'Adam',
+      headerTitle: navigation.state.params.title,
       headerRight: (
         <IoniconsIcon
           size={32}
@@ -63,65 +32,73 @@ class ListScreen extends React.Component {
     };
   };
 
-  adjustFooter = () => {
-    LayoutAnimation.configureNext(animations.default);
-    this.setState({adjustFooter: !this.state.adjustFooter ? true : false});
+  state = {
+    groceries: [],
+    apiError: '',
+    adjustFooter: false,
+    addItemOpen: false,
   };
 
-  addItem = async item => {
-    const {content, quantity, unit} = item;
-    LayoutAnimation.configureNext(animations.default);
-    await this.setState({
-      items: [
-        ...this.state.items,
-        {content, quantity, unit, details: false, id: shortid.generate()},
-      ],
-    });
-  };
-
-  updateItem = (updatedItem, updatedItemIndex) => {
+  componentDidMount = async () => {
     try {
-      const copy = [...this.state.items];
-      const newItems = copy.map((item, index) => {
-        if (index === updatedItemIndex) {
-          item.content = updatedItem.content;
-          item.quantity = updatedItem.quantity;
-          item.unit = updatedItem.unit;
-        }
-        return item;
-      });
-      LayoutAnimation.configureNext(animations.default);
-      this.setState({items: newItems});
+      const groceryList = await this.props.navigation.getParam(
+        'groceryList',
+        null,
+      );
+      this.setState({groceryListID: groceryList.id});
+      this.props.navigation.setParams({title: groceryList.title});
+      const groceries = await getGroceryList(groceryList.id);
+      if (groceries) {
+        groceries.details = false;
+        this.setState({groceries});
+      }
     } catch (error) {
-      console.log(error);
+      this.setState({apiError: error});
     }
   };
 
-  removeItem = index => {
-    const itemsCopy = this.state.items;
-    itemsCopy.splice(index, 1);
-    LayoutAnimation.configureNext(animations.default);
-    this.setState({items: itemsCopy});
+  addGrocery = async grocery => {
+    try {
+      const newGroceryID = await createGroceryItem(
+        grocery,
+        this.state.groceryListID,
+      );
+      const {content, quantity, unit} = grocery;
+      LayoutAnimation.spring();
+      this.setState({
+        groceries: [
+          ...this.state.groceries,
+          {
+            content,
+            quantity,
+            unit,
+            details: false,
+            id: newGroceryID,
+          },
+        ],
+      });
+    } catch (error) {
+      this.setState({apiError: error});
+    }
   };
 
-  showItemDetails = (item, index) => {
-    //Close addItem if press on already existing item
+  showDetails = (grocery, index) => {
     if (this.state.addItemOpen) {
       this.setState({adjustFooter: false, addItemOpen: false});
     }
-    let itemsCopy = JSON.parse(JSON.stringify(this.state.items));
-    if (item.details) {
-      itemsCopy[index].details = false;
+    let groceriesCopy = [...this.state.groceries];
+    if (grocery.details) {
+      groceriesCopy[index].details = false;
     } else {
-      itemsCopy[index].details = true;
+      groceriesCopy[index].details = true;
     }
     LayoutAnimation.configureNext(animations.default);
     this.setState({
-      items: itemsCopy,
+      groceries: groceriesCopy,
     });
   };
 
-  showAddItem = () => {
+  showAddGrocery = () => {
     if (this.state.addItemOpen === false) {
       LayoutAnimation.configureNext(animations.default);
       this.setState({addItemOpen: true});
@@ -132,34 +109,41 @@ class ListScreen extends React.Component {
     this.adjustFooter();
   };
 
+  adjustFooter = () => {
+    LayoutAnimation.configureNext(animations.default);
+    this.setState({adjustFooter: !this.state.adjustFooter ? true : false});
+  };
+
   render() {
+    const {apiError, groceries} = this.state;
     return (
       <View style={styles.container}>
         <View style={styles.scrollView}>
+          {apiError.length > 0 && <Message message={apiError} />}
           <KeyboardAwareScrollView
             keyboardShouldPersistTaps="always"
             viewIsInsideTabBar={true}
             automaticallyAdjustContentInsets={false}>
             <ItemContainer
-              items={this.state.items}
-              updateItem={(item, index) => this.updateItem(item, index)}
-              removeItem={index => this.removeItem(index)}
-              showDetails={(item, index) => this.showItemDetails(item, index)}
+              items={groceries}
+              updateItem={() => console.log('update')}
+              removeItem={() => console.log('remove')}
+              showDetails={(item, index) => this.showDetails(item, index)}
             />
           </KeyboardAwareScrollView>
         </View>
         <View
           style={{
             justifyContent: !this.state.adjustFooter ? 'center' : 'flex-start',
-            flex: !this.state.adjustFooter ? 1 : 9,
+            flex: !this.state.adjustFooter ? 1 : 10,
             paddingTop: !this.state.adjustFooter ? 0 : 20,
             borderTopWidth: 0.5,
             paddingBottom: 0,
           }}>
-          <AddItem
-            addItem={item => this.addItem(item)}
+          <AddGrocery
+            addGrocery={this.addGrocery}
             addItemOpen={this.state.addItemOpen}
-            showAddItem={() => this.showAddItem()}
+            showAddItem={this.showAddGrocery}
           />
         </View>
       </View>

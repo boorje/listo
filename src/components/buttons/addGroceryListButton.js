@@ -1,21 +1,20 @@
 import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import textStyles from '../../styles/textStyles';
 
-import textStyles from '../styles/textStyles';
-
-const AddTask = props => {
+const addGroceryListButton = props => {
   return (
     <View style={styles.container}>
       <TouchableOpacity
         style={{underlayColor: 'transparent'}}
-        onPress={() => props.addTask()}>
+        onPress={() => props.addGroceryList()}>
         <Text style={textStyles.default}>Lägg till lista...</Text>
       </TouchableOpacity>
     </View>
   );
 };
 
-export default AddTask;
+export default addGroceryListButton;
 
 const styles = StyleSheet.create({
   container: {

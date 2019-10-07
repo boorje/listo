@@ -1,9 +1,8 @@
 import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
-import ItemDetails from '../components/itemDetails';
+import ItemDetails from './itemDetails';
 import textStyles from '../styles/textStyles';
-import animations from '../styles/animations';
 
 class AddItem extends React.Component {
   state = {
@@ -20,10 +19,9 @@ class AddItem extends React.Component {
         ) : (
           <ItemDetails
             closeDetails={() => this.props.showAddItem()}
-            addItem={item => this.props.addItem(item)}
+            addGrocery={this.props.addGrocery}
           />
         )}
-
         <View style={styles.icons}>
           <IoniconsIcon
             style={{marginRight: '3%'}}

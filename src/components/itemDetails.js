@@ -6,8 +6,8 @@ import {
   InputAccessoryView,
   Keyboard,
 } from 'react-native';
-
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
+
 import textStyles from '../styles/textStyles';
 
 class ItemDetails extends React.Component {
@@ -41,7 +41,7 @@ class ItemDetails extends React.Component {
           autoFocus={true}
           autoCapitalize={true}
           onSubmitEditing={() => {
-            this.props.addItem({content, quantity, unit});
+            this.props.addGrocery({content, quantity, unit});
             this.props.closeDetails();
           }}
           inputAccessoryViewID={inputID}

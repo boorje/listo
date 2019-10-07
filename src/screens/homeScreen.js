@@ -3,15 +3,16 @@ import {StyleSheet, View, ScrollView} from 'react-native';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 import {Auth} from 'aws-amplify';
 
-import TaskContainer from '../components/taskContainer';
-import AddTask from '../components/addTask';
-import AddTaskModal from '../components/addTaskModal';
+// -- Components --
+import GroceryList from '../components/groceryList';
+import AddGroceryListButton from '../components/buttons/addGroceryListButton';
+import AddGroceryListModal from '../components/AddGroceryListModal';
+import Message from '../components/message';
+
+// -- API helpers --
+import {createGroceryList, listGroceryLists} from '../api/groceryListsAPI';
 
 class HomeScreen extends React.Component {
-  state = {
-    modalOpen: false,
-    tasks: ['Adam', 'Eric', 'Simon'],
-  };
   static navigationOptions = ({navigation}) => {
     return {
       headerTitle: 'Mina listor',
@@ -33,41 +34,66 @@ class HomeScreen extends React.Component {
     };
   };
 
-  showModal = () => {
-    if (this.state.modalOpen === false) {
-      this.setState({modalOpen: true});
-    } else {
-      this.setState({modalOpen: false});
+  state = {
+    modalOpen: false,
+    groceryLists: [
+      // {id: '1234', title: "Eric's lista", owner: '124-3829-432'},
+      // {id: '5678', title: "Adam's lista", owner: '123423q-231'},
+    ],
+    apiError: '',
+  };
+
+  componentDidMount = async () => {
+    try {
+      const groceryLists = await listGroceryLists();
+      this.setState({groceryLists});
+    } catch (error) {
+      this.setState({apiError: 'Could not fetch lists. Please try again.'});
     }
   };
 
-  addTask = task => {
-    this.setState({tasks: [...this.state.tasks, task]});
+  toggleModal = () => {
+    this.setState(prevstate => ({
+      modalOpen: prevstate.modalOpen ? false : true,
+    }));
   };
 
-  removeTask = index => {
+  addGroceryList = async title => {
+    try {
+      const res = await createGroceryList({title});
+      this.setState({groceryLists: [...this.state.groceryLists, res]});
+    } catch (error) {
+      this.setState({apiError: `Could not add ${title}. Please try again.`});
+    }
+  };
+
+  removeGroceryList = index => {
     const tasksCopy = this.state.tasks;
     tasksCopy.splice(index, 1);
     this.setState({tasks: tasksCopy});
   };
 
   render() {
+    const {apiError, groceryLists, modalOpen} = this.state;
     return (
       <View style={styles.container}>
-        {this.state.modalOpen && (
-          <AddTaskModal
-            closeModal={() => this.showModal()}
+        {apiError.length > 0 && <Message message={apiError} />}
+        {modalOpen && (
+          <AddGroceryListModal
+            closeModal={() => this.toggleModal()}
             placeholder="Lägg till lista..."
-            addTask={task => this.addTask(task)}
+            addGroceryList={this.addGroceryList}
           />
         )}
         <ScrollView>
-          <TaskContainer
-            lists={this.state.tasks}
-            removeTask={index => this.removeTask(index)}
-            selectTask={() => this.props.navigation.navigate('List')}
+          <GroceryList
+            lists={groceryLists}
+            removeTask={index => this.removeGroceryList(index)}
+            goToGroceryList={groceryList =>
+              this.props.navigation.navigate('List', {groceryList})
+            }
           />
-          <AddTask addTask={() => this.showModal()} />
+          <AddGroceryListButton addGroceryList={() => this.toggleModal()} />
         </ScrollView>
       </View>
     );
