@@ -3,7 +3,7 @@ import {StyleSheet, Text, View} from 'react-native';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-import * as colors from '../config/colors';
+import * as colors from '../styles/colors';
 
 const Message = props => (
   <View

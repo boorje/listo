@@ -6,8 +6,7 @@ import {
   TouchableHighlight,
   View,
 } from 'react-native';
-import PropTypes, {object} from 'prop-types';
-import {Badge} from 'react-native-elements';
+import PropTypes from 'prop-types';
 import Swipeout from 'react-native-swipeout';
 
 const GroceryListItem = props => {
@@ -20,11 +19,6 @@ const GroceryListItem = props => {
       onPress={() => props.goToGroceryList(props.item)}>
       <View style={GroceryListItemStyles.container2}>
         <Text style={GroceryListItemStyles.text}>{props.item.title}</Text>
-        <Badge
-          badgeStyle={{backgroundColor: 'black'}}
-          textStyle={{fontSize: 20}}
-          value={5}
-        />
       </View>
     </TouchableHighlight>
   );
