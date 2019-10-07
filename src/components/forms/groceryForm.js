@@ -6,8 +6,8 @@ import {
   InputAccessoryView,
   Keyboard,
 } from 'react-native';
+import PropTypes from 'prop-types';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
-
 import textStyles from '../../styles/textStyles';
 
 export default class GroceryForm extends React.Component {
@@ -173,3 +173,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
+
+GroceryForm.propTypes = {
+  content: PropTypes.string,
+  quantity: PropTypes.number,
+  unit: PropTypes.string,
+  addGrocery: PropTypes.func.isRequired,
+  closeGroceryForm: PropTypes.func.isRequired,
+};

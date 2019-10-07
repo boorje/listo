@@ -6,7 +6,7 @@ import {
   FlatList,
   TouchableHighlight,
 } from 'react-native';
-
+import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import GroceryForm from './forms/groceryForm';
 import textStyles from '../styles/textStyles';
@@ -103,3 +103,17 @@ const styles = StyleSheet.create({
     fontFamily: 'Avenir Next',
   },
 });
+
+GroceriesContainer.propTypes = {
+  removeItem: PropTypes.func.isRequired,
+  showGroceryForm: PropTypes.func.isRequired,
+  updateItem: PropTypes.func.isRequired,
+  items: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      content: PropTypes.string.isRequired,
+      quantity: PropTypes.number,
+      unit: PropTypes.string,
+    }).isRequired,
+  ),
+};
