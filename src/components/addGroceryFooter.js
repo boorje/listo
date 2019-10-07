@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
   },
 });
 
-AddGroceryFooter.prototypes = {
+AddGroceryFooter.propTypes = {
   addItemOpen: PropTypes.bool.isRequired,
   showAddGrocery: PropTypes.func.isRequired,
   addGrocery: PropTypes.func.isRequired,

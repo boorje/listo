@@ -119,7 +119,7 @@ const GroceryListItemStyles = StyleSheet.create({
   },
 });
 
-GroceryListsContainer.proptypes = {
+GroceryListsContainer.propTypes = {
   goToGroceryList: PropTypes.func.isRequired,
   item: PropTypes.shape({
     title: PropTypes.string.isRequired,

@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
   },
 });
 
-GroceryForm.proptypes = {
+GroceryForm.propTypes = {
   content: PropTypes.string,
   quantity: PropTypes.number,
   unit: PropTypes.string,
