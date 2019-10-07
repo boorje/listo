@@ -5,14 +5,13 @@ import {
   Text,
   FlatList,
   TouchableHighlight,
-  KeyboardAvoidingView,
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import ItemDetails from '../components/itemDetails';
+import GroceryForm from './forms/groceryForm';
 import textStyles from '../styles/textStyles';
 
-class ItemContainer extends React.Component {
+class GroceriesContainer extends React.Component {
   renderList(item, index) {
     return (
       <TouchableHighlight
@@ -27,11 +26,9 @@ class ItemContainer extends React.Component {
             {!item.details ? (
               <Text style={textStyles.default}>{item.content}</Text>
             ) : (
-              <ItemDetails
-                closeDetails={() => this.props.showDetails(item, index)}
-                addItem={updatedItem =>
-                  this.props.updateItem(updatedItem, index)
-                }
+              <GroceryForm
+                closeGroceryForm={() => this.props.showGroceryForm(item, index)}
+                addGrocery={this.props.updateItem}
                 content={item.content}
                 quantity={item.quantity}
                 unit={item.unit}
@@ -43,7 +40,7 @@ class ItemContainer extends React.Component {
             name={!item.details ? 'expand-more' : 'expand-less'}
             color={'black'}
             onPress={() => {
-              this.props.showDetails(item, index);
+              this.props.showGroceryForm(item, index);
             }}
           />
         </View>
@@ -71,7 +68,7 @@ class ItemContainer extends React.Component {
   }
 }
 
-export default ItemContainer;
+export default GroceriesContainer;
 
 const styles = StyleSheet.create({
   container: {

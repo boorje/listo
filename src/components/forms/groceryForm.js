@@ -8,9 +8,9 @@ import {
 } from 'react-native';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 
-import textStyles from '../styles/textStyles';
+import textStyles from '../../styles/textStyles';
 
-class ItemDetails extends React.Component {
+export default class GroceryForm extends React.Component {
   state = {
     content: this.props.content || '',
     quantity: this.props.quantity || '',
@@ -42,7 +42,7 @@ class ItemDetails extends React.Component {
           autoCapitalize={true}
           onSubmitEditing={() => {
             this.props.addGrocery({content, quantity, unit});
-            this.props.closeDetails();
+            this.props.closeGroceryForm();
           }}
           inputAccessoryViewID={inputID}
           onChangeText={text => {
@@ -76,7 +76,7 @@ class ItemDetails extends React.Component {
             autoFocus={false}
             onSubmitEditing={() => {
               this.props.addGrocery({content, quantity, unit});
-              this.props.closeDetails();
+              this.props.closeGroceryForm();
             }}
             inputAccessoryViewID={inputID}
             onChangeText={text => {
@@ -106,7 +106,7 @@ class ItemDetails extends React.Component {
               autoCapitalize={false}
               onSubmitEditing={() => {
                 this.props.addGrocery({content, quantity, unit});
-                this.props.closeDetails();
+                this.props.closeGroceryForm();
               }}
               inputAccessoryViewID={inputID}
               onChangeText={text => {
@@ -154,7 +154,7 @@ class ItemDetails extends React.Component {
               name={'md-close'}
               onPress={() => {
                 Keyboard.dismiss();
-                this.props.closeDetails();
+                this.props.closeGroceryForm();
               }}
             />
           </View>
@@ -163,8 +163,6 @@ class ItemDetails extends React.Component {
     );
   }
 }
-
-export default ItemDetails;
 
 const styles = StyleSheet.create({
   InputAccessoryView: {

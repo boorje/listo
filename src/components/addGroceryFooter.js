@@ -1,10 +1,10 @@
 import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
-import ItemDetails from './itemDetails';
+import GroceryForm from './forms/groceryForm';
 import textStyles from '../styles/textStyles';
 
-class AddItem extends React.Component {
+export default class AddGroceryFooter extends React.Component {
   state = {
     addItemOpen: this.props.addItemOpen,
   };
@@ -13,12 +13,12 @@ class AddItem extends React.Component {
     return (
       <View style={styles.container}>
         {!this.props.addItemOpen ? (
-          <TouchableOpacity onPress={() => this.props.showAddItem()}>
+          <TouchableOpacity onPress={() => this.props.showAddGrocery()}>
             <Text style={textStyles.default}>Lägg till vara...</Text>
           </TouchableOpacity>
         ) : (
-          <ItemDetails
-            closeDetails={() => this.props.showAddItem()}
+          <GroceryForm
+            closeGroceryForm={this.props.showAddGrocery}
             addGrocery={this.props.addGrocery}
           />
         )}
@@ -42,8 +42,6 @@ class AddItem extends React.Component {
     );
   }
 }
-
-export default AddItem;
 
 const styles = StyleSheet.create({
   container: {

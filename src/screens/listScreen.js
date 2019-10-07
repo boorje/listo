@@ -4,8 +4,8 @@ import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scrollview';
 
 // -- Components --
-import AddGrocery from '../components/addGrocery';
-import ItemContainer from '../components/itemContainer';
+import AddGroceryFooter from '../components/addGroceryFooter';
+import GroceriesContainer from '../components/groceriesContainer';
 import Message from '../components/message';
 
 import animations from '../styles/animations';
@@ -82,7 +82,7 @@ class ListScreen extends React.Component {
     }
   };
 
-  showDetails = (grocery, index) => {
+  showGroceryForm = (grocery, index) => {
     if (this.state.addItemOpen) {
       this.setState({adjustFooter: false, addItemOpen: false});
     }
@@ -124,11 +124,11 @@ class ListScreen extends React.Component {
             keyboardShouldPersistTaps="always"
             viewIsInsideTabBar={true}
             automaticallyAdjustContentInsets={false}>
-            <ItemContainer
+            <GroceriesContainer
               items={groceries}
               updateItem={() => console.log('update')}
               removeItem={() => console.log('remove')}
-              showDetails={(item, index) => this.showDetails(item, index)}
+              showGroceryForm={this.showGroceryForm}
             />
           </KeyboardAwareScrollView>
         </View>
@@ -140,10 +140,10 @@ class ListScreen extends React.Component {
             borderTopWidth: 0.5,
             paddingBottom: 0,
           }}>
-          <AddGrocery
+          <AddGroceryFooter
             addGrocery={this.addGrocery}
             addItemOpen={this.state.addItemOpen}
-            showAddItem={this.showAddGrocery}
+            showAddGrocery={this.showAddGrocery}
           />
         </View>
       </View>

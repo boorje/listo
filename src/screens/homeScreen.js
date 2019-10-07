@@ -4,9 +4,9 @@ import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 import {Auth} from 'aws-amplify';
 
 // -- Components --
-import GroceryList from '../components/groceryList';
+import GroceryListsContainer from '../components/groceryListsContainer';
 import AddGroceryListButton from '../components/buttons/addGroceryListButton';
-import AddGroceryListModal from '../components/AddGroceryListModal';
+import AddGroceryListModal from '../components/modals/AddGroceryListModal';
 import Message from '../components/message';
 
 // -- API helpers --
@@ -86,7 +86,7 @@ class HomeScreen extends React.Component {
           />
         )}
         <ScrollView>
-          <GroceryList
+          <GroceryListsContainer
             lists={groceryLists}
             removeTask={index => this.removeGroceryList(index)}
             goToGroceryList={groceryList =>
