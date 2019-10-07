@@ -12,7 +12,6 @@ import ItemDetails from '../components/itemDetails';
 
 class ItemContainer extends React.Component {
   renderList(item, index) {
-    console.log('ITEM IS: ', item);
     return (
       <TouchableHighlight
         style={styles.container1}
