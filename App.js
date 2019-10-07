@@ -12,6 +12,8 @@ import SettingsScreen from './src/screens/settingsScreen';
 Icon.loadFont();
 IoniconsIcon.loadFont();
 
+console.disableYellowBox = true;
+
 const MainStack = createStackNavigator(
   {
     Home: {

@@ -1,8 +1,8 @@
 import React from 'react';
 import {StyleSheet, View, Text, TouchableHighlight} from 'react-native';
 
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import {Badge} from 'react-native-elements';
+import textStyles from '../styles/textStyles';
 
 class Task extends React.Component {
   render() {
@@ -14,10 +14,10 @@ class Task extends React.Component {
         fontSize={50}
         onPress={() => this.props.selectTask()}>
         <View style={styles.container2}>
-          <Text style={styles.text}>{this.props.name}</Text>
+          <Text style={textStyles.default}>{this.props.name}</Text>
           <Badge
-            badgeStyle={{backgroundColor: 'black'}}
-            textStyle={{fontSize: 20}}
+            badgeStyle={styles.badge}
+            textStyle={{fontSize: 17}}
             value={5}
           />
         </View>
@@ -45,5 +45,11 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 25,
+  },
+  badge: {
+    height: 30,
+    width: 30,
+    borderRadius: 50,
+    backgroundColor: 'black',
   },
 });
