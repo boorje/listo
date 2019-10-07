@@ -3,6 +3,7 @@ import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 import GroceryForm from './forms/groceryForm';
 import textStyles from '../styles/textStyles';
+import PropTypes from 'prop-types';
 
 export default class AddGroceryFooter extends React.Component {
   state = {
@@ -63,3 +64,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
+
+AddGroceryFooter.prototypes = {
+  addItemOpen: PropTypes.bool.isRequired,
+  showAddGrocery: PropTypes.func.isRequired,
+  addGrocery: PropTypes.func.isRequired,
+};
