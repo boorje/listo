@@ -1,17 +1,17 @@
 import React from 'react';
-import {StyleSheet, View, ScrollView} from 'react-native';
+import {Button, StyleSheet, View, ScrollView} from 'react-native';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
-import {Auth} from 'aws-amplify';
+import Amplify, {API, Auth, graphqlOperation} from 'aws-amplify';
 
+// -- Components --
 import TaskContainer from '../components/taskContainer';
 import AddTask from '../components/addTask';
 import AddTaskModal from '../components/addTaskModal';
 
+// -- Mutations --
+import * as mutations from '../graphql/mutations';
+
 class HomeScreen extends React.Component {
-  state = {
-    modalOpen: false,
-    tasks: ['Adam', 'Eric', 'Simon'],
-  };
   static navigationOptions = ({navigation}) => {
     return {
       headerTitle: 'Mina listor',
@@ -31,6 +31,24 @@ class HomeScreen extends React.Component {
         />
       ),
     };
+  };
+
+  state = {
+    modalOpen: false,
+    tasks: ['Adam', 'Eric', 'Simon'],
+  };
+
+  addItem = async () => {
+    try {
+      const newListInput = {title: 'testlista'};
+      //! owner not auto populating
+      const newList = await API.graphql(
+        graphqlOperation(mutations.createGroceryList, {input: newListInput}),
+      );
+      console.log(newList);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   showModal = () => {
@@ -68,6 +86,7 @@ class HomeScreen extends React.Component {
             selectTask={() => this.props.navigation.navigate('List')}
           />
           <AddTask addTask={() => this.showModal()} />
+          <Button title="ADD ITEM" onPress={() => this.addItem()} />
         </ScrollView>
       </View>
     );
