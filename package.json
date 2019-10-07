@@ -10,7 +10,10 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "immutability-helper": "^3.0.1",
+    "amazon-cognito-identity-js": "^3.0.15",
+    "aws-amplify": "^1.1.40",
+    "formik": "^1.5.8",
+    "prop-types": "^15.7.2",
     "react": "16.9.0",
     "react-native": "0.61.1",
     "react-native-elements": "^1.2.4",
@@ -21,6 +24,7 @@
     "react-native-vector-icons": "^6.6.0",
     "react-navigation": "^4.0.10",
     "react-navigation-stack": "^1.9.3",
+    "yup": "^0.27.0",
     "shortid": "^2.2.15"
   },
   "devDependencies": {
