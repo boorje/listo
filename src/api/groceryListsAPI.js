@@ -59,7 +59,7 @@ export const createGroceryItem = async (item, listID) => {
 };
 
 /**
- * Delete a grocery list and returns the id of the deleted item
+ * Deletes a grocery list and returns the id of the deleted item
  * @param {String} id
  */
 export const deleteGroceryList = async id => {
@@ -70,7 +70,7 @@ export const deleteGroceryList = async id => {
 };
 
 /**
- * Delete a grocery item and returns the id of the deleted item
+ * Deletes a grocery item and returns the id of the deleted item
  * @param {String} id
  */
 export const deleteGroceryItem = async id => {
@@ -81,7 +81,7 @@ export const deleteGroceryItem = async id => {
 };
 
 /**
- * Update a grocery item and returns the id of the updated item
+ * Updates a grocery item and returns the id of the updated item
  * @param {String} id
  */
 export const updateGroceryItem = async input => {
