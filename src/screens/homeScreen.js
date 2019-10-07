@@ -1,15 +1,16 @@
 import React from 'react';
-import {Button, StyleSheet, View, ScrollView} from 'react-native';
+import {StyleSheet, View, ScrollView} from 'react-native';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
-import Amplify, {API, Auth, graphqlOperation} from 'aws-amplify';
+import {Auth} from 'aws-amplify';
 
 // -- Components --
-import TaskContainer from '../components/taskContainer';
-import AddTask from '../components/addTask';
-import AddTaskModal from '../components/addTaskModal';
+import GroceryList from '../components/groceryList';
+import AddGroceryListButton from '../components/buttons/addGroceryListButton';
+import AddGroceryListModal from '../components/AddGroceryListModal';
+import Message from '../components/message';
 
-// -- Mutations --
-import * as mutations from '../graphql/mutations';
+// -- API helpers --
+import {createGroceryList, listGroceryLists} from '../api/groceryLists';
 
 class HomeScreen extends React.Component {
   static navigationOptions = ({navigation}) => {
@@ -35,58 +36,64 @@ class HomeScreen extends React.Component {
 
   state = {
     modalOpen: false,
-    tasks: ['Adam', 'Eric', 'Simon'],
+    groceryLists: [
+      // {id: '1234', title: "Eric's lista", owner: '124-3829-432'},
+      // {id: '5678', title: "Adam's lista", owner: '123423q-231'},
+    ],
+    apiError: '',
   };
 
-  addItem = async () => {
+  componentDidMount = async () => {
     try {
-      const newListInput = {title: 'testlista'};
-      //! owner not auto populating
-      const newList = await API.graphql(
-        graphqlOperation(mutations.createGroceryList, {input: newListInput}),
-      );
-      console.log(newList);
+      const groceryLists = await listGroceryLists();
+      this.setState({groceryLists});
     } catch (error) {
-      console.log(error);
+      this.setState({apiError: 'Could not fetch lists. Please try again.'});
     }
   };
 
-  showModal = () => {
-    if (this.state.modalOpen === false) {
-      this.setState({modalOpen: true});
-    } else {
-      this.setState({modalOpen: false});
+  toggleModal = () => {
+    this.setState(prevstate => ({
+      modalOpen: prevstate.modalOpen ? false : true,
+    }));
+  };
+
+  addGroceryList = async title => {
+    try {
+      const res = await createGroceryList({title});
+      this.setState({groceryLists: [...this.state.groceryLists, res]});
+    } catch (error) {
+      this.setState({apiError: `Could not add ${title}. Please try again.`});
     }
   };
 
-  addTask = task => {
-    this.setState({tasks: [...this.state.tasks, task]});
-  };
-
-  removeTask = index => {
+  removeGroceryList = index => {
     const tasksCopy = this.state.tasks;
     tasksCopy.splice(index, 1);
     this.setState({tasks: tasksCopy});
   };
 
   render() {
+    const {apiError, groceryLists, modalOpen} = this.state;
     return (
       <View style={styles.container}>
-        {this.state.modalOpen && (
-          <AddTaskModal
-            closeModal={() => this.showModal()}
+        {apiError.length > 0 && <Message message={apiError} />}
+        {modalOpen && (
+          <AddGroceryListModal
+            closeModal={() => this.toggleModal()}
             placeholder="Lägg till lista..."
-            addTask={task => this.addTask(task)}
+            addGroceryList={this.addGroceryList}
           />
         )}
         <ScrollView>
-          <TaskContainer
-            lists={this.state.tasks}
-            removeTask={index => this.removeTask(index)}
-            selectTask={() => this.props.navigation.navigate('List')}
+          <GroceryList
+            lists={groceryLists}
+            removeTask={index => this.removeGroceryList(index)}
+            goToGroceryList={groceryList =>
+              this.props.navigation.navigate('List', {groceryList})
+            }
           />
-          <AddTask addTask={() => this.showModal()} />
-          <Button title="ADD ITEM" onPress={() => this.addItem()} />
+          <AddGroceryListButton addGroceryList={() => this.toggleModal()} />
         </ScrollView>
       </View>
     );

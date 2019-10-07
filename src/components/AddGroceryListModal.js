@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, Modal, TouchableOpacity, TextInput} from 'react-native';
 
-class AddTaskModal extends React.Component {
+class AddGroceryListModal extends React.Component {
   state = {
     input: '',
   };
@@ -21,7 +21,7 @@ class AddTaskModal extends React.Component {
             enablesReturnKeyAutomatically={true}
             autoFocus={true}
             onSubmitEditing={() => {
-              this.props.addTask(this.state.input);
+              this.props.addGroceryList(this.state.input);
               this.props.closeModal();
             }}
             onChangeText={text => this.setState({input: text})}
@@ -37,7 +37,7 @@ class AddTaskModal extends React.Component {
   }
 }
 
-export default AddTaskModal;
+export default AddGroceryListModal;
 
 const styles = StyleSheet.create({
   container: {

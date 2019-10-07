@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  StyleSheet,
-  View,
-  ScrollView,
-  Button,
-  LayoutAnimation,
-} from 'react-native';
+import {StyleSheet, View, ScrollView, LayoutAnimation} from 'react-native';
 
 import AddItem from '../components/addItem';
 import ItemContainer from '../components/itemContainer';
@@ -16,13 +10,9 @@ import * as shortid from 'shortid';
 // TODO: Create custom animation class
 
 class ListScreen extends React.Component {
-  state = {
-    items: [],
-  };
-
   static navigationOptions = ({navigation}) => {
     return {
-      headerTitle: 'Adam',
+      headerTitle: navigation.state.params.title,
       headerRight: (
         <IoniconsIcon
           size={32}
@@ -35,10 +25,27 @@ class ListScreen extends React.Component {
       ),
     };
   };
+
+  state = {
+    items: [],
+  };
+
+  componentDidMount = async () => {
+    try {
+      const groceryList = await this.props.navigation.getParam(
+        'groceryList',
+        null,
+      );
+      this.props.navigation.setParams({title: groceryList.title});
+      //TODO: Fetch the list based on the id
+      console.log(groceryList);
+    } catch (error) {}
+  };
+
   addItem = async item => {
     const {content, quantity, unit} = item;
     LayoutAnimation.spring();
-    await this.setState({
+    this.setState({
       items: [
         ...this.state.items,
         {content, quantity, unit, details: false, id: shortid.generate()},
