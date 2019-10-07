@@ -1,10 +1,14 @@
 import React from 'react';
-import {StyleSheet, View, ScrollView, LayoutAnimation} from 'react-native';
+import {StyleSheet, View, LayoutAnimation} from 'react-native';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scrollview';
 
+// -- Components --
 import AddGrocery from '../components/addGrocery';
 import ItemContainer from '../components/itemContainer';
 import Message from '../components/message';
+
+import animations from '../styles/animations';
 
 // -- API helpers --
 import {getGroceryList, createGroceryItem} from '../api/groceryListsAPI';
@@ -31,6 +35,8 @@ class ListScreen extends React.Component {
   state = {
     groceries: [],
     apiError: '',
+    adjustFooter: false,
+    addItemOpen: false,
   };
 
   componentDidMount = async () => {
@@ -77,32 +83,69 @@ class ListScreen extends React.Component {
   };
 
   showDetails = (grocery, index) => {
+    if (this.state.addItemOpen) {
+      this.setState({adjustFooter: false, addItemOpen: false});
+    }
     let groceriesCopy = [...this.state.groceries];
     if (grocery.details) {
       groceriesCopy[index].details = false;
     } else {
       groceriesCopy[index].details = true;
     }
-    LayoutAnimation.spring();
+    LayoutAnimation.configureNext(animations.default);
     this.setState({
       groceries: groceriesCopy,
     });
+  };
+
+  showAddGrocery = () => {
+    if (this.state.addItemOpen === false) {
+      LayoutAnimation.configureNext(animations.default);
+      this.setState({addItemOpen: true});
+    } else {
+      LayoutAnimation.configureNext(animations.default);
+      this.setState({addItemOpen: false});
+    }
+    this.adjustFooter();
+  };
+
+  adjustFooter = () => {
+    LayoutAnimation.configureNext(animations.default);
+    this.setState({adjustFooter: !this.state.adjustFooter ? true : false});
   };
 
   render() {
     const {apiError, groceries} = this.state;
     return (
       <View style={styles.container}>
-        {apiError.length > 0 && <Message message={apiError} />}
-        <ScrollView keyboardShouldPersistTaps="always">
-          <ItemContainer
-            items={groceries}
-            updateItem={() => console.log('update')}
-            removeItem={() => console.log('remove')}
-            showDetails={(item, index) => this.showDetails(item, index)}
+        <View style={styles.scrollView}>
+          {apiError.length > 0 && <Message message={apiError} />}
+          <KeyboardAwareScrollView
+            keyboardShouldPersistTaps="always"
+            viewIsInsideTabBar={true}
+            automaticallyAdjustContentInsets={false}>
+            <ItemContainer
+              items={groceries}
+              updateItem={() => console.log('update')}
+              removeItem={() => console.log('remove')}
+              showDetails={(item, index) => this.showDetails(item, index)}
+            />
+          </KeyboardAwareScrollView>
+        </View>
+        <View
+          style={{
+            justifyContent: !this.state.adjustFooter ? 'center' : 'flex-start',
+            flex: !this.state.adjustFooter ? 1 : 10,
+            paddingTop: !this.state.adjustFooter ? 0 : 20,
+            borderTopWidth: 0.5,
+            paddingBottom: 0,
+          }}>
+          <AddGrocery
+            addGrocery={this.addGrocery}
+            addItemOpen={this.state.addItemOpen}
+            showAddItem={this.showAddGrocery}
           />
-          <AddGrocery addGrocery={this.addGrocery} />
-        </ScrollView>
+        </View>
       </View>
     );
   }
@@ -113,8 +156,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  headline: {
-    height: '5%',
-    backgroundColor: 'blue',
+  scrollView: {
+    flex: 8,
+  },
+  footer: {
+    justifyContent: 'center',
+    flex: 1,
+    borderTopWidth: 0.5,
+    paddingBottom: 0,
   },
 });

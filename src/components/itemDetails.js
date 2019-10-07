@@ -6,8 +6,9 @@ import {
   InputAccessoryView,
   Keyboard,
 } from 'react-native';
+import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import textStyles from '../styles/textStyles';
 
 class ItemDetails extends React.Component {
   state = {
@@ -24,19 +25,21 @@ class ItemDetails extends React.Component {
     return (
       <View>
         <TextInput
+          style={textStyles.textInputActive}
           ref={input => {
             this.firstTextInput = input;
           }}
           onFocus={() => {
             this.setState({isFocused: '1'});
           }}
-          placeholder={'Vara'}
-          placeholderTextColor={'black'}
+          placeholder={'Lägg till vara...'}
+          placeholderTextColor={'gray'}
           borderColor={'black'}
           returnKeyType="done"
           autoCorrect={false}
           enablesReturnKeyAutomatically={true}
           autoFocus={true}
+          autoCapitalize={true}
           onSubmitEditing={() => {
             this.props.addGrocery({content, quantity, unit});
             this.props.closeDetails();
@@ -53,18 +56,18 @@ class ItemDetails extends React.Component {
         <View
           style={{
             flexDirection: 'row',
-            marginTop: 5,
+            justifyContent: 'space-between',
           }}>
           <TextInput
+            style={textStyles.textInputActive}
             ref={input => {
               this.secondTextInput = input;
             }}
             onFocus={() => {
               this.setState({isFocused: '2'});
             }}
-            //style={styles.input}
             placeholder={'Antal...'}
-            placeholderTextColor={'black'}
+            placeholderTextColor={'gray'}
             borderColor={'black'}
             keyboardType={'numeric'}
             returnKeyType="done"
@@ -83,47 +86,48 @@ class ItemDetails extends React.Component {
             }}
             value={this.state.quantity}
           />
-          <TextInput
-            ref={input => {
-              this.thirdTextInput = input;
-            }}
-            onFocus={() => {
-              this.setState({isFocused: '3'});
-            }}
-            //style={styles.input}
-            placeholder={'Enhet...'}
-            placeholderTextColor={'black'}
-            borderColor={'black'}
-            returnKeyType="done"
-            autoCorrect={false}
-            enablesReturnKeyAutomatically={true}
-            autoFocus={false}
-            onSubmitEditing={() => {
-              this.props.addItem({content, quantity, unit});
-              this.props.closeDetails();
-            }}
-            inputAccessoryViewID={inputID}
-            onChangeText={text => {
-              text.length === 0
-                ? this.setState({unit: text})
-                : this.setState({unit: text});
-            }}
-            value={this.state.unit}
-          />
+
+          <View style={{marginLeft: '10%'}}>
+            <TextInput
+              style={textStyles.textInputActive}
+              ref={input => {
+                this.thirdTextInput = input;
+              }}
+              onFocus={() => {
+                this.setState({isFocused: '3'});
+              }}
+              placeholder={'Enhet...'}
+              placeholderTextColor={'gray'}
+              borderColor={'black'}
+              returnKeyType="done"
+              autoCorrect={false}
+              enablesReturnKeyAutomatically={true}
+              autoFocus={false}
+              autoCapitalize={false}
+              onSubmitEditing={() => {
+                this.props.addItem({content, quantity, unit});
+                this.props.closeDetails();
+              }}
+              inputAccessoryViewID={inputID}
+              onChangeText={text => {
+                text.length === 0
+                  ? this.setState({unit: text})
+                  : this.setState({unit: text});
+              }}
+              value={this.state.unit}
+            />
+          </View>
         </View>
 
         <InputAccessoryView
           nativeID={inputID}
-          style={styles.InputAccessoryView}>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-            }}>
-            <View style={styles.icons}>
-              <Icon
-                size={40}
-                name={'navigate-before'}
+          style={styles.InputAccessoryView}
+          backgroundColor={'transparent'}>
+          <View style={styles.icons}>
+            <View style={styles.navigators}>
+              <IoniconsIcon
+                size={30}
+                name={'ios-arrow-back'}
                 onPress={() => {
                   isFocused === '1'
                     ? this.thirdTextInput.focus()
@@ -132,9 +136,10 @@ class ItemDetails extends React.Component {
                     : this.secondTextInput.focus();
                 }}
               />
-              <Icon
-                size={40}
-                name={'navigate-next'}
+              <IoniconsIcon
+                style={{paddingLeft: '7%'}}
+                size={30}
+                name={'ios-arrow-forward'}
                 onPress={() => {
                   isFocused === '1'
                     ? this.secondTextInput.focus()
@@ -144,9 +149,9 @@ class ItemDetails extends React.Component {
                 }}
               />
             </View>
-            <Icon
+            <IoniconsIcon
               size={30}
-              name={'close'}
+              name={'md-close'}
               onPress={() => {
                 Keyboard.dismiss();
                 this.props.closeDetails();
@@ -164,10 +169,18 @@ export default ItemDetails;
 const styles = StyleSheet.create({
   InputAccessoryView: {
     height: 40,
-    paddingRight: 20,
   },
   icons: {
-    flex: 1,
+    height: 40,
     flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#F1F1F1',
+    paddingRight: '3%',
+    paddingLeft: '3%',
+  },
+  navigators: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 });
