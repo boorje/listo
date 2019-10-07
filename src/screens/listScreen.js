@@ -15,7 +15,7 @@ import {getGroceryList, createGroceryItem} from '../api/groceryListsAPI';
 
 // TODO: Create custom animation class
 
-class ListScreen extends React.Component {
+export default class ListScreen extends React.Component {
   static navigationOptions = ({navigation}) => {
     return {
       headerTitle: navigation.state.params.title,
@@ -150,7 +150,6 @@ class ListScreen extends React.Component {
     );
   }
 }
-export default ListScreen;
 
 const styles = StyleSheet.create({
   container: {

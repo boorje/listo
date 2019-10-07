@@ -12,3 +12,9 @@ export const createGroceryItem = `mutation createGroceryItem($input: CreateGroce
       id
     }
   }`;
+
+export const deleteGroceryList = `mutation deleteGroceryList($input: DeleteGroceryListInput!) {
+  deleteGroceryList(input: $input) {
+    id
+  }
+}`;

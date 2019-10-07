@@ -43,7 +43,7 @@ class GroceryList extends React.Component {
             text: 'Delete',
             type: 'delete',
             onPress: () => {
-              this.props.removeTask(index);
+              this.props.removeGroceryList(item.id);
             },
           },
         ]}>

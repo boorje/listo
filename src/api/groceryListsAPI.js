@@ -57,3 +57,10 @@ export const createGroceryItem = async (item, listID) => {
   );
   return data.createGroceryItem;
 };
+
+export const deleteGroceryList = async id => {
+  const {data} = await API.graphql(
+    graphqlOperation(mutations.deleteGroceryList, {input: {id}}),
+  );
+  return data.deleteGroceryList;
+};
