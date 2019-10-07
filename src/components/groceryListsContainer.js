@@ -6,6 +6,7 @@ import {
   TouchableHighlight,
   View,
 } from 'react-native';
+import PropTypes, {object} from 'prop-types';
 import {Badge} from 'react-native-elements';
 import Swipeout from 'react-native-swipeout';
 
@@ -29,7 +30,7 @@ const GroceryListItem = props => {
   );
 };
 
-class GroceryList extends React.Component {
+export default class GroceryListsContainer extends React.Component {
   swipeSettings = {
     autoClose: true,
   };
@@ -75,8 +76,6 @@ class GroceryList extends React.Component {
   }
 }
 
-export default GroceryList;
-
 const GroceryListStyles = StyleSheet.create({
   swipeout: {
     backgroundColor: 'transparent',
@@ -119,3 +118,13 @@ const GroceryListItemStyles = StyleSheet.create({
     fontSize: 25,
   },
 });
+
+GroceryListsContainer.proptypes = {
+  goToGroceryList: PropTypes.func.isRequired,
+  item: PropTypes.shape({
+    title: PropTypes.string.isRequired,
+    id: PropTypes.string.isRequired,
+  }).isRequired,
+  removeTask: PropTypes.func.isRequired,
+  lists: PropTypes.arrayOf(PropTypes.object).isRequired,
+};
