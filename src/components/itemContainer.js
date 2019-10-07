@@ -5,26 +5,27 @@ import {
   Text,
   FlatList,
   TouchableHighlight,
+  KeyboardAvoidingView,
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ItemDetails from '../components/itemDetails';
+import textStyles from '../styles/textStyles';
 
 class ItemContainer extends React.Component {
   renderList(item, index) {
     return (
       <TouchableHighlight
         style={styles.container1}
-        backgroundColor={'white'}
-        underlayColor={'transparent'}
         fontSize={50}
         onPress={() => {
           this.props.removeItem(index);
-        }}>
+        }}
+        underlayColor={'transparent'}>
         <View style={styles.container2}>
           <View style={styles.info}>
             {!item.details ? (
-              <Text style={styles.text}>{item.content}</Text>
+              <Text style={textStyles.default}>{item.content}</Text>
             ) : (
               <ItemDetails
                 closeDetails={() => this.props.showDetails(item, index)}
@@ -56,17 +57,16 @@ class ItemContainer extends React.Component {
 
   render() {
     return (
-      <View>
-        <FlatList
-          data={this.props.items}
-          renderItem={({item, index}) => {
-            return this.renderList(item, index);
-          }}
-          keyExtractor={item => item}
-          ItemSeparatorComponent={this.FlatListItemSeparator}
-          keyboardShouldPersistTaps="always"
-        />
-      </View>
+      <FlatList
+        scrollEnabled={false}
+        data={this.props.items}
+        renderItem={({item, index}) => {
+          return this.renderList(item, index);
+        }}
+        keyExtractor={item => item}
+        ItemSeparatorComponent={this.FlatListItemSeparator}
+        keyboardShouldPersistTaps="always"
+      />
     );
   }
 }
@@ -77,7 +77,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: '100%',
-    backgroundColor: 'blue',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -85,7 +84,7 @@ const styles = StyleSheet.create({
     paddingRight: '10%',
   },
   separator: {
-    height: 2,
+    height: 1,
     width: '97%',
     marginLeft: '3%',
     marginRight: '0%',

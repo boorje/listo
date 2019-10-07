@@ -5,6 +5,11 @@ const textStyles = StyleSheet.create({
     fontSize: 20,
     fontFamily: 'Avenir Next',
   },
+  textInputActive: {
+    fontSize: 20,
+    fontFamily: 'Avenir Next',
+    color: 'gray',
+  },
 });
 
 export default textStyles;

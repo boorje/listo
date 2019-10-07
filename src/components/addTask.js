@@ -1,13 +1,15 @@
 import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 
+import textStyles from '../styles/textStyles';
+
 const AddTask = props => {
   return (
     <View style={styles.container}>
       <TouchableOpacity
         style={{underlayColor: 'transparent'}}
         onPress={() => props.addTask()}>
-        <Text>Lägg till vara...</Text>
+        <Text style={textStyles.default}>Lägg till lista...</Text>
       </TouchableOpacity>
     </View>
   );
@@ -17,12 +19,7 @@ export default AddTask;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingLeft: '3%',
-    paddingRight: '3%',
+    paddingLeft: '4%',
     marginTop: '3%',
   },
 });
