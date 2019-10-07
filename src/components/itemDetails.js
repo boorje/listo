@@ -75,7 +75,7 @@ class ItemDetails extends React.Component {
             enablesReturnKeyAutomatically={true}
             autoFocus={false}
             onSubmitEditing={() => {
-              this.props.addItem({content, quantity, unit});
+              this.props.addGrocery({content, quantity, unit});
               this.props.closeDetails();
             }}
             inputAccessoryViewID={inputID}
@@ -105,7 +105,7 @@ class ItemDetails extends React.Component {
               autoFocus={false}
               autoCapitalize={false}
               onSubmitEditing={() => {
-                this.props.addItem({content, quantity, unit});
+                this.props.addGrocery({content, quantity, unit});
                 this.props.closeDetails();
               }}
               inputAccessoryViewID={inputID}
