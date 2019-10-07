@@ -28,10 +28,8 @@ class GroceriesContainer extends React.Component {
             ) : (
               <GroceryForm
                 closeGroceryForm={() => this.props.showGroceryForm(item, index)}
-                addGrocery={this.props.updateItem}
-                content={item.content}
-                quantity={item.quantity}
-                unit={item.unit}
+                addGrocery={this.props.updateGrocery}
+                item={item}
               />
             )}
           </View>
