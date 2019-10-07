@@ -9,3 +9,18 @@ export const listGroceryLists = `query listGroceryLists($filter: ModelGroceryLis
     }
 }
 `;
+
+export const getGroceryList = `query getGroceryList($id: ID!) {
+    getGroceryList(id: $id) {
+       id
+       groceries {
+        items {
+            id
+            content
+            quantity
+            unit
+        }
+       }
+    }
+}
+`;

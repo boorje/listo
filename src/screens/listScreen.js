@@ -1,11 +1,13 @@
 import React from 'react';
 import {StyleSheet, View, ScrollView, LayoutAnimation} from 'react-native';
-
-import AddItem from '../components/addItem';
-import ItemContainer from '../components/itemContainer';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 
-import * as shortid from 'shortid';
+import AddGrocery from '../components/addGrocery';
+import ItemContainer from '../components/itemContainer';
+import Message from '../components/message';
+
+// -- API helpers --
+import {getGroceryList, createGroceryItem} from '../api/groceryListsAPI';
 
 // TODO: Create custom animation class
 
@@ -27,7 +29,8 @@ class ListScreen extends React.Component {
   };
 
   state = {
-    items: [],
+    groceries: [],
+    apiError: '',
   };
 
   componentDidMount = async () => {
@@ -36,72 +39,69 @@ class ListScreen extends React.Component {
         'groceryList',
         null,
       );
+      this.setState({groceryListID: groceryList.id});
       this.props.navigation.setParams({title: groceryList.title});
-      //TODO: Fetch the list based on the id
-      console.log(groceryList);
-    } catch (error) {}
-  };
-
-  addItem = async item => {
-    const {content, quantity, unit} = item;
-    LayoutAnimation.spring();
-    this.setState({
-      items: [
-        ...this.state.items,
-        {content, quantity, unit, details: false, id: shortid.generate()},
-      ],
-    });
-  };
-
-  updateItem = (updatedItem, updatedItemIndex) => {
-    try {
-      const copy = [...this.state.items];
-      const newItems = copy.map((item, index) => {
-        if (index === updatedItemIndex) {
-          item.content = updatedItem.content;
-          item.quantity = updatedItem.quantity;
-          item.unit = updatedItem.unit;
-        }
-        return item;
-      });
-      LayoutAnimation.spring();
-      this.setState({items: newItems});
+      const groceries = await getGroceryList(groceryList.id);
+      if (groceries) {
+        groceries.details = false;
+        this.setState({groceries});
+      }
     } catch (error) {
-      console.log(error);
+      this.setState({apiError: error});
     }
   };
 
-  removeItem = index => {
-    const itemsCopy = this.state.items;
-    itemsCopy.splice(index, 1);
-    LayoutAnimation.spring();
-    this.setState({items: itemsCopy});
+  addGrocery = async grocery => {
+    try {
+      const newGroceryID = await createGroceryItem(
+        grocery,
+        this.state.groceryListID,
+      );
+      const {content, quantity, unit} = grocery;
+      LayoutAnimation.spring();
+      this.setState({
+        groceries: [
+          ...this.state.groceries,
+          {
+            content,
+            quantity,
+            unit,
+            details: false,
+            id: newGroceryID,
+          },
+        ],
+      });
+    } catch (error) {
+      this.setState({apiError: error});
+    }
   };
 
-  showDetails = (item, index) => {
-    let itemsCopy = JSON.parse(JSON.stringify(this.state.items));
-    if (item.details) {
-      itemsCopy[index].details = false;
+  showDetails = (grocery, index) => {
+    let groceriesCopy = [...this.state.groceries];
+    if (grocery.details) {
+      groceriesCopy[index].details = false;
     } else {
-      itemsCopy[index].details = true;
+      groceriesCopy[index].details = true;
     }
     LayoutAnimation.spring();
     this.setState({
-      items: itemsCopy,
+      groceries: groceriesCopy,
     });
   };
 
   render() {
+    const {apiError, groceries} = this.state;
     return (
       <View style={styles.container}>
+        {apiError.length > 0 && <Message message={apiError} />}
         <ScrollView keyboardShouldPersistTaps="always">
           <ItemContainer
-            items={this.state.items}
-            updateItem={(item, index) => this.updateItem(item, index)}
-            removeItem={index => this.removeItem(index)}
+            items={groceries}
+            updateItem={() => console.log('update')}
+            removeItem={() => console.log('remove')}
             showDetails={(item, index) => this.showDetails(item, index)}
           />
-          <AddItem addItem={item => this.addItem(item)} />
+          <AddGrocery addGrocery={this.addGrocery} />
         </ScrollView>
       </View>
     );

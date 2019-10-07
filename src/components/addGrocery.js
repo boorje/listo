@@ -7,7 +7,7 @@ import {
   LayoutAnimation,
 } from 'react-native';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
-import ItemDetails from '../components/itemDetails';
+import ItemDetails from './itemDetails';
 import textStyles from '../styles/textStyles';
 
 class AddItem extends React.Component {
@@ -35,7 +35,7 @@ class AddItem extends React.Component {
         ) : (
           <ItemDetails
             closeDetails={() => this.showDetails()}
-            addItem={item => this.props.addItem(item)}
+            addGrocery={this.props.addGrocery}
           />
         )}
 

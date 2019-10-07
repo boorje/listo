@@ -1,4 +1,4 @@
-export const createGroceryList = `mutation CreateList($input: CreateGroceryListInput!) {
+export const createGroceryList = `mutation createGroceryList($input: CreateGroceryListInput!) {
     createGroceryList(input: $input) {
       id
       title
@@ -6,3 +6,9 @@ export const createGroceryList = `mutation CreateList($input: CreateGroceryListI
     }
   }
   `;
+
+export const createGroceryItem = `mutation createGroceryItem($input: CreateGroceryItemInput!) {
+    createGroceryItem(input: $input) {
+      id
+    }
+  }`;

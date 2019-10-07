@@ -1,13 +1,9 @@
 import React from 'react';
 import {StyleSheet, View, ScrollView, Text} from 'react-native';
 
-import AddItem from '../components/addItem';
-import ItemContainer from '../components/itemContainer';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-
 class SettingsScreen extends React.Component {
   static navigationOptions = {
-    headerTitle: 'Inställningar',
+    headerTitle: 'Settings',
   };
 
   render() {

@@ -10,7 +10,7 @@ import AddGroceryListModal from '../components/AddGroceryListModal';
 import Message from '../components/message';
 
 // -- API helpers --
-import {createGroceryList, listGroceryLists} from '../api/groceryLists';
+import {createGroceryList, listGroceryLists} from '../api/groceryListsAPI';
 
 class HomeScreen extends React.Component {
   static navigationOptions = ({navigation}) => {
