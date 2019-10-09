@@ -9,6 +9,7 @@ import {
 import PropTypes from 'prop-types';
 import Swipeout from 'react-native-swipeout';
 import textStyles from '../styles/textStyles';
+import {KeyboardAwareFlatList} from 'react-native-keyboard-aware-scroll-view';
 
 const GroceryListItem = props => {
   return (
@@ -65,16 +66,14 @@ export default class GroceryListsContainer extends React.Component {
 
   render() {
     return (
-      <View>
-        <FlatList
-          data={this.props.lists}
-          renderItem={({item, index}) => {
-            return this.renderList(item, index);
-          }}
-          keyExtractor={item => item.id}
-          ItemSeparatorComponent={this.FlatListItemSeparator}
-        />
-      </View>
+      <KeyboardAwareFlatList
+        data={this.props.lists}
+        renderItem={({item, index}) => {
+          return this.renderList(item, index);
+        }}
+        keyExtractor={item => item.id}
+        ItemSeparatorComponent={this.FlatListItemSeparator}
+      />
     );
   }
 }
