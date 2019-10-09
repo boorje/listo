@@ -10,7 +10,11 @@ import AddGroceryListModal from '../components/modals/AddGroceryListModal';
 import Message from '../components/message';
 
 // -- API helpers --
-import {createGroceryList, listGroceryLists} from '../api/groceryListsAPI';
+import {
+  createGroceryList,
+  listGroceryLists,
+  deleteGroceryList,
+} from '../api/groceryListsAPI';
 
 class HomeScreen extends React.Component {
   static navigationOptions = ({navigation}) => {
@@ -36,10 +40,7 @@ class HomeScreen extends React.Component {
 
   state = {
     modalOpen: false,
-    groceryLists: [
-      // {id: '1234', title: "Eric's lista", owner: '124-3829-432'},
-      // {id: '5678', title: "Adam's lista", owner: '123423q-231'},
-    ],
+    groceryLists: [],
     apiError: '',
   };
 
@@ -67,10 +68,16 @@ class HomeScreen extends React.Component {
     }
   };
 
-  removeGroceryList = index => {
-    const tasksCopy = this.state.tasks;
-    tasksCopy.splice(index, 1);
-    this.setState({tasks: tasksCopy});
+  removeGroceryList = async (id, index) => {
+    try {
+      const deletedGroceryList = await deleteGroceryList(id);
+      const groceryListsCopy = this.state.groceryLists.filter(
+        groceryList => groceryList.id !== deletedGroceryList.id,
+      );
+      this.setState({groceryLists: groceryListsCopy});
+    } catch (error) {
+      this.setState({apiError: error});
+    }
   };
 
   render() {
@@ -88,12 +95,12 @@ class HomeScreen extends React.Component {
         <ScrollView>
           <GroceryListsContainer
             lists={groceryLists}
-            removeTask={index => this.removeGroceryList(index)}
+            removeGroceryList={this.removeGroceryList}
             goToGroceryList={groceryList =>
               this.props.navigation.navigate('List', {groceryList})
             }
           />
-          <AddGroceryListButton addGroceryList={() => this.toggleModal()} />
+          <AddGroceryListButton addGroceryList={this.toggleModal} />
         </ScrollView>
       </View>
     );

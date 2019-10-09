@@ -12,16 +12,29 @@ import textStyles from '../../styles/textStyles';
 
 export default class GroceryForm extends React.Component {
   state = {
-    content: this.props.content || '',
-    quantity: this.props.quantity || '',
-    unit: this.props.unit || '',
+    content: '',
+    quantity: '',
+    unit: '',
+    id: '',
     isFocused: '',
+  };
+
+  componentDidMount = () => {
+    if (this.props.item) {
+      const {content, quantity, unit, id} = this.props.item;
+      this.setState({content: content, quantity: quantity, unit: unit, id: id});
+    }
+  };
+
+  handleSubmitEditing = () => {
+    const {content, quantity, unit, id} = this.state;
+    this.props.addGrocery({content, quantity, unit, id});
+    this.props.closeGroceryForm();
   };
 
   render() {
     const inputID = 'inputID';
-    const {isFocused, content, quantity, unit} = this.state;
-
+    const {content, quantity, unit, isFocused} = this.state;
     return (
       <View>
         <TextInput
@@ -39,18 +52,13 @@ export default class GroceryForm extends React.Component {
           autoCorrect={false}
           enablesReturnKeyAutomatically={true}
           autoFocus={true}
-          autoCapitalize={'none'}
-          onSubmitEditing={() => {
-            this.props.addGrocery({content, quantity, unit});
-            this.props.closeGroceryForm();
-          }}
+          autoCapitalize="none"
+          onSubmitEditing={() => this.handleSubmitEditing()}
           inputAccessoryViewID={inputID}
           onChangeText={text => {
-            text.length === 0
-              ? this.setState({content: text})
-              : this.setState({content: text});
+            this.setState({content: text});
           }}
-          value={this.state.content}
+          value={content}
         />
 
         <View
@@ -66,25 +74,20 @@ export default class GroceryForm extends React.Component {
             onFocus={() => {
               this.setState({isFocused: '2'});
             }}
-            placeholder={'Antal...'}
-            placeholderTextColor={'gray'}
-            borderColor={'black'}
-            keyboardType={'numeric'}
+            placeholder="Antal..."
+            placeholderTextColor="gray"
+            borderColor="black"
+            keyboardType="numeric"
             returnKeyType="done"
             autoCorrect={false}
             enablesReturnKeyAutomatically={true}
             autoFocus={false}
-            onSubmitEditing={() => {
-              this.props.addGrocery({content, quantity, unit});
-              this.props.closeGroceryForm();
-            }}
+            onSubmitEditing={() => this.handleSubmitEditing()}
             inputAccessoryViewID={inputID}
             onChangeText={text => {
-              text.length === 0
-                ? this.setState({quantity: text})
-                : this.setState({quantity: text});
+              this.setState({quantity: text});
             }}
-            value={this.state.quantity}
+            value={quantity}
           />
 
           <View style={{marginLeft: '10%'}}>
@@ -103,18 +106,13 @@ export default class GroceryForm extends React.Component {
               autoCorrect={false}
               enablesReturnKeyAutomatically={true}
               autoFocus={false}
-              autoCapitalize={'none'}
-              onSubmitEditing={() => {
-                this.props.addGrocery({content, quantity, unit});
-                this.props.closeGroceryForm();
-              }}
+              autoCapitalize="none"
+              onSubmitEditing={() => this.handleSubmitEditing()}
               inputAccessoryViewID={inputID}
               onChangeText={text => {
-                text.length === 0
-                  ? this.setState({unit: text})
-                  : this.setState({unit: text});
+                this.setState({unit: text});
               }}
-              value={this.state.unit}
+              value={unit}
             />
           </View>
         </View>
