@@ -39,7 +39,7 @@ export default class GroceryForm extends React.Component {
           autoCorrect={false}
           enablesReturnKeyAutomatically={true}
           autoFocus={true}
-          autoCapitalize={true}
+          autoCapitalize={'none'}
           onSubmitEditing={() => {
             this.props.addGrocery({content, quantity, unit});
             this.props.closeGroceryForm();
@@ -103,7 +103,7 @@ export default class GroceryForm extends React.Component {
               autoCorrect={false}
               enablesReturnKeyAutomatically={true}
               autoFocus={false}
-              autoCapitalize={false}
+              autoCapitalize={'none'}
               onSubmitEditing={() => {
                 this.props.addGrocery({content, quantity, unit});
                 this.props.closeGroceryForm();
