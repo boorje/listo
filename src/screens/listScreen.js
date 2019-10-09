@@ -118,17 +118,15 @@ class ListScreen extends React.Component {
     const {apiError, groceries} = this.state;
     return (
       <View style={styles.container}>
-        <View style={styles.scrollView}>
-          {apiError.length > 0 && <Message message={apiError} />}
-          <SafeAreaView style={{flex: 1}}>
-            <GroceriesContainer
-              items={groceries}
-              updateItem={() => console.log('update')}
-              removeItem={() => console.log('remove')}
-              showGroceryForm={this.showGroceryForm}
-            />
-          </SafeAreaView>
-        </View>
+        {apiError.length > 0 && <Message message={apiError} />}
+        <SafeAreaView style={{flex: 8}}>
+          <GroceriesContainer
+            items={groceries}
+            updateItem={() => console.log('update')}
+            removeItem={() => console.log('remove')}
+            showGroceryForm={this.showGroceryForm}
+          />
+        </SafeAreaView>
         <View
           style={{
             justifyContent: !this.state.adjustFooter ? 'center' : 'flex-start',
