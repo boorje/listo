@@ -7,16 +7,20 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scrollview';
 import AddGroceryFooter from '../components/addGroceryFooter';
 import GroceriesContainer from '../components/groceriesContainer';
 import Message from '../components/message';
+import PrimaryButton from '../components/buttons/primaryButton';
 
 import animations from '../styles/animations';
 
 // -- API helpers --
 import {
   getGroceryList,
+  updateGroceryList,
   createGroceryItem,
   deleteGroceryItem,
   updateGroceryItem,
 } from '../api/groceryListsAPI';
+
+import {getUserID} from '../api/authAPI';
 
 // TODO: Create custom animation class
 
@@ -39,6 +43,7 @@ export default class ListScreen extends React.Component {
 
   state = {
     groceries: [],
+    groceryListID: '',
     apiError: '',
     adjustFooter: false,
     addItemOpen: false,
@@ -116,6 +121,20 @@ export default class ListScreen extends React.Component {
     }
   };
 
+  //TODO: Dynamic update
+  shareGroceryList = async () => {
+    try {
+      const userID = await getUserID('adam@olivegren.se');
+      const res = await updateGroceryList({
+        id: this.state.groceryListID,
+        editors: [userID],
+      });
+      console.log(res);
+    } catch (error) {
+      console.log('ERROR --', error);
+    }
+  };
+
   showGroceryForm = (grocery, index) => {
     if (this.state.addItemOpen) {
       this.setState({adjustFooter: false, addItemOpen: false});
@@ -163,6 +182,10 @@ export default class ListScreen extends React.Component {
               updateGrocery={this.updateGrocery}
               removeGrocery={this.removeGrocery}
               showGroceryForm={this.showGroceryForm}
+            />
+            <PrimaryButton
+              title="Dela med Adam"
+              onPress={this.shareGroceryList}
             />
           </KeyboardAwareScrollView>
         </View>

@@ -81,6 +81,17 @@ export const deleteGroceryItem = async id => {
 };
 
 /**
+ * Updates a grocery list and returns ??
+ * @param {String} id
+ */
+export const updateGroceryList = async input => {
+  const {data} = await API.graphql(
+    graphqlOperation(mutations.updateGroceryList, {input}),
+  );
+  return data.updateGroceryList;
+};
+
+/**
  * Updates a grocery item and returns the id of the updated item
  * @param {String} id
  */
