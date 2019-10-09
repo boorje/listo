@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, ScrollView} from 'react-native';
+import {StyleSheet, View, ScrollView, SafeAreaView} from 'react-native';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 import {Auth} from 'aws-amplify';
 
@@ -8,6 +8,7 @@ import GroceryListsContainer from '../components/groceryListsContainer';
 import AddGroceryListButton from '../components/buttons/addGroceryListButton';
 import AddGroceryListModal from '../components/modals/AddGroceryListModal';
 import Message from '../components/message';
+import AddGroceryListFooter from '../components/addGroceryListFooter';
 
 // -- API helpers --
 import {
@@ -92,7 +93,7 @@ class HomeScreen extends React.Component {
             addGroceryList={this.addGroceryList}
           />
         )}
-        <ScrollView>
+        <SafeAreaView style={{flex: 8}}>
           <GroceryListsContainer
             lists={groceryLists}
             removeGroceryList={this.removeGroceryList}
@@ -100,8 +101,10 @@ class HomeScreen extends React.Component {
               this.props.navigation.navigate('List', {groceryList})
             }
           />
-          <AddGroceryListButton addGroceryList={this.toggleModal} />
-        </ScrollView>
+        </SafeAreaView>
+        <View style={styles.footer}>
+          <AddGroceryListFooter addGroceryList={this.toggleModal} />
+        </View>
       </View>
     );
   }
@@ -115,5 +118,10 @@ const styles = StyleSheet.create({
   headline: {
     height: '5%',
     backgroundColor: 'blue',
+  },
+  footer: {
+    flex: 1,
+    borderTopWidth: 0.5,
+    paddingBottom: 0,
   },
 });
