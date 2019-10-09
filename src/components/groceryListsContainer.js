@@ -22,13 +22,9 @@ const GroceryListItem = props => {
       <View style={GroceryListItemStyles.container2}>
         <Text style={GroceryListItemStyles.text}>{props.item.title}</Text>
         <View style={GroceryListItemStyles.badge}>
+          {/* // TODO: add dynamic item count */}
           <Text style={textStyles.badge}>5</Text>
         </View>
-        {/* <Badge
-          badgeStyle={{backgroundColor: 'black'}}
-          textStyle={{fontSize: 20}}
-          value={5}
-        /> */}
       </View>
     </TouchableHighlight>
   );
@@ -122,7 +118,7 @@ const GroceryListItemStyles = StyleSheet.create({
   badge: {
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'black',
+    backgroundColor: 'green',
     borderRadius: 50,
     width: 30,
     height: 30,

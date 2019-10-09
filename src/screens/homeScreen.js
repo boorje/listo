@@ -1,7 +1,6 @@
 import React from 'react';
 import {StyleSheet, View, ScrollView, SafeAreaView} from 'react-native';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
-import {Auth} from 'aws-amplify';
 
 // -- Components --
 import GroceryListsContainer from '../components/groceryListsContainer';
@@ -20,19 +19,12 @@ import {
 class HomeScreen extends React.Component {
   static navigationOptions = ({navigation}) => {
     return {
-      headerTitle: 'Mina listor',
+      headerTitle: 'My Lists',
       headerRight: (
         <IoniconsIcon
           size={32}
           name="md-settings"
-          onPress={async () => {
-            try {
-              await Auth.signOut();
-              navigation.navigate('Auth');
-            } catch (error) {
-              console.log(error);
-            }
-          }}
+          onPress={() => navigation.navigate('Settings')}
           style={{marginRight: 15}}
         />
       ),
@@ -62,7 +54,9 @@ class HomeScreen extends React.Component {
 
   addGroceryList = async title => {
     try {
-      const res = await createGroceryList({title});
+      const res = await createGroceryList({
+        title,
+      });
       this.setState({groceryLists: [...this.state.groceryLists, res]});
     } catch (error) {
       this.setState({apiError: `Could not add ${title}. Please try again.`});
