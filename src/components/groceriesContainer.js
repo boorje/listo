@@ -246,15 +246,6 @@ const styles = StyleSheet.create({
 });
 
 GroceriesContainer.propTypes = {
-  // showGroceryForm: PropTypes.func.isRequired,
-  // updateGrocery: PropTypes.func.isRequired,
-  // removeGrocery: PropTypes.func.isRequired,
-  // items: PropTypes.arrayOf(
-  //   PropTypes.shape({
-  //     id: PropTypes.string.isRequired,
-  //     content: PropTypes.string.isRequired,
-  //     quantity: PropTypes.number,
-  //     unit: PropTypes.string,
-  //   }).isRequired,
-  // ),
+  updateApiError: PropTypes.func.isRequired,
+  navigation: PropTypes.object.isRequired,
 };

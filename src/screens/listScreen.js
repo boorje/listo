@@ -1,7 +1,6 @@
 import React from 'react';
 import {StyleSheet, View, LayoutAnimation, SafeAreaView} from 'react-native';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scrollview';
 
 // -- Components --
 import GroceriesContainer from '../components/groceriesContainer';
@@ -9,7 +8,6 @@ import Message from '../components/message';
 
 // -- API helpers --
 import {updateGroceryList} from '../api/groceryListsAPI';
-
 import {getUserID} from '../api/authAPI';
 
 // TODO: Create custom animation class
