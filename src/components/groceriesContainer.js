@@ -106,9 +106,9 @@ const styles = StyleSheet.create({
 });
 
 GroceriesContainer.propTypes = {
-  removeItem: PropTypes.func.isRequired,
   showGroceryForm: PropTypes.func.isRequired,
-  updateItem: PropTypes.func.isRequired,
+  updateGrocery: PropTypes.func.isRequired,
+  removeGrocery: PropTypes.func.isRequired,
   items: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string.isRequired,

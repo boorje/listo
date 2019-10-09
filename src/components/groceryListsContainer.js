@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  FlatList,
-  StyleSheet,
-  Text,
-  TouchableHighlight,
-  View,
-} from 'react-native';
+import {StyleSheet, Text, TouchableHighlight, View} from 'react-native';
 import PropTypes from 'prop-types';
 import Swipeout from 'react-native-swipeout';
 import textStyles from '../styles/textStyles';
@@ -127,10 +121,12 @@ const GroceryListItemStyles = StyleSheet.create({
 
 GroceryListsContainer.propTypes = {
   goToGroceryList: PropTypes.func.isRequired,
-  item: PropTypes.shape({
-    title: PropTypes.string.isRequired,
-    id: PropTypes.string.isRequired,
-  }).isRequired,
-  removeTask: PropTypes.func.isRequired,
-  lists: PropTypes.arrayOf(PropTypes.object).isRequired,
+
+  removeGroceryList: PropTypes.func.isRequired,
+  lists: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string.isRequired,
+      id: PropTypes.string.isRequired,
+    }),
+  ).isRequired,
 };

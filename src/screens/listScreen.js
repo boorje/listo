@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, LayoutAnimation, SafeAreaView} from 'react-native';
+import {StyleSheet, View, LayoutAnimation} from 'react-native';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scrollview';
 
@@ -7,7 +7,6 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scrollview';
 import AddGroceryFooter from '../components/addGroceryFooter';
 import GroceriesContainer from '../components/groceriesContainer';
 import Message from '../components/message';
-import PrimaryButton from '../components/buttons/primaryButton';
 
 import animations from '../styles/animations';
 
@@ -183,10 +182,10 @@ export default class ListScreen extends React.Component {
               removeGrocery={this.removeGrocery}
               showGroceryForm={this.showGroceryForm}
             />
-            <PrimaryButton
+            {/* <PrimaryButton
               title="Dela med Adam"
               onPress={this.shareGroceryList}
-            />
+            /> */}
           </KeyboardAwareScrollView>
         </View>
         <View
