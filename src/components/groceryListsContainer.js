@@ -8,6 +8,8 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Swipeout from 'react-native-swipeout';
+import textStyles from '../styles/textStyles';
+import {KeyboardAwareFlatList} from 'react-native-keyboard-aware-scroll-view';
 
 const GroceryListItem = props => {
   return (
@@ -19,6 +21,10 @@ const GroceryListItem = props => {
       onPress={() => props.goToGroceryList(props.item)}>
       <View style={GroceryListItemStyles.container2}>
         <Text style={GroceryListItemStyles.text}>{props.item.title}</Text>
+        <View style={GroceryListItemStyles.badge}>
+          {/* // TODO: add dynamic item count */}
+          <Text style={textStyles.badge}>5</Text>
+        </View>
       </View>
     </TouchableHighlight>
   );
@@ -56,16 +62,14 @@ export default class GroceryListsContainer extends React.Component {
 
   render() {
     return (
-      <View>
-        <FlatList
-          data={this.props.lists}
-          renderItem={({item, index}) => {
-            return this.renderList(item, index);
-          }}
-          keyExtractor={item => item.id}
-          ItemSeparatorComponent={this.FlatListItemSeparator}
-        />
-      </View>
+      <KeyboardAwareFlatList
+        data={this.props.lists}
+        renderItem={({item, index}) => {
+          return this.renderList(item, index);
+        }}
+        keyExtractor={item => item.id}
+        ItemSeparatorComponent={this.FlatListItemSeparator}
+      />
     );
   }
 }
@@ -110,6 +114,14 @@ const GroceryListItemStyles = StyleSheet.create({
   },
   text: {
     fontSize: 25,
+  },
+  badge: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'green',
+    borderRadius: 50,
+    width: 30,
+    height: 30,
   },
 });
 

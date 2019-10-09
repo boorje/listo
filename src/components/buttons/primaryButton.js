@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 import PropTypes from 'prop-types';
-import * as colors from '../../config/colors';
+import * as colors from '../../styles/colors';
 
 const PrimaryButton = props => {
   const {disabled, title, onPress} = props;

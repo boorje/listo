@@ -10,6 +10,11 @@ const textStyles = StyleSheet.create({
     fontFamily: 'Avenir Next',
     color: 'gray',
   },
+  badge: {
+    fontSize: 20,
+    fontFamily: 'Avenir Next',
+    color: 'white',
+  },
 });
 
 export default textStyles;

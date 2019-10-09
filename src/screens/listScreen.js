@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, LayoutAnimation} from 'react-native';
+import {StyleSheet, View, LayoutAnimation, SafeAreaView} from 'react-native';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scrollview';
 
