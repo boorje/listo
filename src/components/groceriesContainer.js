@@ -7,12 +7,24 @@ import {
   PanResponder,
   PanResponderInstance,
   Animated,
+  LayoutAnimation,
+  SafeAreaView,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import GroceryForm from './forms/groceryForm';
 import textStyles from '../styles/textStyles';
+import animations from '../styles/animations';
 import {KeyboardAwareFlatList} from 'react-native-keyboard-aware-scroll-view';
+import AddGroceryFooter from '../components/addGroceryFooter';
+
+// -- API helpers --
+import {
+  getGroceryList,
+  createGroceryItem,
+  deleteGroceryItem,
+  updateGroceryItem,
+} from '../api/groceryListsAPI';
 
 const immutableMove = (arr, from, to) => {
   return arr.reduce((prev, current, idx, self) => {
@@ -37,9 +49,13 @@ const immutableMove = (arr, from, to) => {
 
 class GroceriesContainer extends React.Component {
   state = {
+    groceries: [],
+    groceryListID: '',
+    apiError: '',
+    adjustFooter: false,
+    addItemOpen: false,
     dragging: false,
     draggingIdx: -1,
-    data: this.props.items,
   };
 
   point = new Animated.ValueXY();
@@ -64,19 +80,23 @@ class GroceriesContainer extends React.Component {
         // The gesture has started. Show visual feedback so the user knows
         // what is happening!
         // gestureState.d{x,y} will be set to zero now
+
         this.currentIdx = this.yToIndex(gestureState.y0);
+        console.log(this.currentIdx);
         this.currentY = gestureState.y0;
         Animated.event([{y: this.point.y}])({
-          y: gestureState.y0 - this.rowHeight / 2,
+          y: gestureState.y0 - 2.4 * this.rowHeight,
         });
         this.active = true;
         this.setState({dragging: true, draggingIdx: this.currentIdx}, () => {
-          //this.animateList();
+          this.animateList();
         });
       },
       onPanResponderMove: (evt, gestureState) => {
         this.currentY = gestureState.moveY;
-        Animated.event([{y: this.point.y}])({y: gestureState.moveY});
+        Animated.event([{y: this.point.y}])({
+          y: gestureState.moveY - 2.4 * this.rowHeight,
+        });
         // The most recent move distance is gestureState.move{X,Y}
         // The accumulated gesture distance since becoming responder is
         // gestureState.d{x,y}
@@ -104,13 +124,17 @@ class GroceriesContainer extends React.Component {
     if (!this.active) {
       return;
     }
-
     requestAnimationFrame(() => {
       // check y value see if we need to reorder
       const newIdx = this.yToIndex(this.currentY);
+
       if (this.currentIdx !== newIdx) {
         this.setState({
-          data: immutableMove(this.state.data, this.currentIdx, newIdx),
+          groceries: immutableMove(
+            this.state.groceries,
+            this.currentIdx,
+            newIdx,
+          ),
           draggingIdx: newIdx,
         });
         this.currentIdx = newIdx;
@@ -124,16 +148,13 @@ class GroceriesContainer extends React.Component {
     const value = Math.floor(
       (this.scrollOffset + y - this.flatlistTopOffset) / this.rowHeight,
     );
-
     if (value < 0) {
       return 0;
     }
-
-    if (value > this.props.items.length - 1) {
-      return this.props.items.length - 1;
+    if (value > this.state.groceries.length - 1) {
+      return this.state.groceries.length - 1;
     }
-
-    return value;
+    return value - 2;
   };
 
   reset = () => {
@@ -141,40 +162,142 @@ class GroceriesContainer extends React.Component {
     this.setState({dragging: false, draggingIdx: -1});
   };
 
+  componentDidMount = async () => {
+    try {
+      const groceryList = await this.props.navigation.getParam(
+        'groceryList',
+        null,
+      );
+      this.setState({groceryListID: groceryList.id});
+      this.props.navigation.setParams({title: groceryList.title});
+      const groceries = await getGroceryList(groceryList.id);
+      if (groceries) {
+        groceries.details = false;
+        this.setState({groceries});
+      }
+    } catch (error) {
+      this.props.updateApiError(error);
+    }
+  };
+
+  addGrocery = async grocery => {
+    try {
+      const newGroceryID = await createGroceryItem(
+        grocery,
+        this.state.groceryListID,
+      );
+      const {content, quantity, unit} = grocery;
+      LayoutAnimation.spring();
+      this.setState({
+        groceries: [
+          ...this.state.groceries,
+          {
+            content,
+            quantity,
+            unit,
+            details: false,
+            id: newGroceryID,
+          },
+        ],
+      });
+    } catch (error) {
+      this.props.updateApiError(error);
+    }
+  };
+
+  removeGrocery = async id => {
+    try {
+      const deleteGrocery = await deleteGroceryItem(id);
+      const stateCopy = this.state.groceries.filter(
+        grocery => grocery.id !== deleteGrocery.id,
+      );
+      this.setState({groceries: stateCopy});
+    } catch (error) {
+      this.props.updateApiError(error);
+    }
+  };
+
+  updateGrocery = async updatedGrocery => {
+    try {
+      const res = await updateGroceryItem(updatedGrocery);
+      const stateCopy = this.state.groceries.map(grocery => {
+        if (grocery.id === res.id) {
+          grocery.content = updatedGrocery.content;
+          grocery.quantity = updatedGrocery.quantity;
+          grocery.unit = updatedGrocery.unit;
+        }
+        return grocery;
+      });
+      LayoutAnimation.spring();
+      this.setState({groceries: stateCopy});
+    } catch (error) {
+      this.props.updateApiError(error);
+    }
+  };
+
+  showGroceryForm = (grocery, index) => {
+    if (this.state.addItemOpen) {
+      this.setState({adjustFooter: false, addItemOpen: false});
+    }
+    let groceriesCopy = [...this.state.groceries];
+    if (grocery.details) {
+      groceriesCopy[index].details = false;
+    } else {
+      groceriesCopy[index].details = true;
+    }
+    LayoutAnimation.configureNext(animations.default);
+    this.setState({
+      groceries: groceriesCopy,
+    });
+  };
+
+  showAddGrocery = () => {
+    if (this.state.addItemOpen === false) {
+      LayoutAnimation.configureNext(animations.default);
+      this.setState({addItemOpen: true});
+    } else {
+      LayoutAnimation.configureNext(animations.default);
+      this.setState({addItemOpen: false});
+    }
+    this.adjustFooter();
+  };
+
+  adjustFooter = () => {
+    LayoutAnimation.configureNext(animations.default);
+    this.setState({adjustFooter: !this.state.adjustFooter ? true : false});
+  };
+
   renderList(item, index, noPanResponder) {
-    const {dragging, draggingIdx} = this.state;
     return (
       <TouchableHighlight
         onLayout={e => {
           this.rowHeight = e.nativeEvent.layout.height;
         }}
-        style={styles.container1}
+        style={{flex: 1, opacity: this.state.draggingIdx === index ? 0 : 1}}
         fontSize={50}
         onPress={() => {
-          this.props.removeGrocery(item.id);
+          this.removeGrocery(item.id);
         }}
         underlayColor={'transparent'}>
         <View style={styles.container2}>
           <View {...(noPanResponder ? {} : this._panResponder.panHandlers)}>
             <Text style={{fontSize: 28}}>@</Text>
           </View>
-          <View style={styles.info}>
-            {!item.details ? (
-              <Text style={textStyles.default}>{item.content}</Text>
-            ) : (
-              <GroceryForm
-                closeGroceryForm={() => this.props.showGroceryForm(item, index)}
-                addGrocery={this.props.updateGrocery}
-                item={item}
-              />
-            )}
-          </View>
+          {!item.details ? (
+            <Text style={textStyles.default}>{item.content}</Text>
+          ) : (
+            <GroceryForm
+              closeGroceryForm={() => this.showGroceryForm(item, index)}
+              addGrocery={this.updateGrocery}
+              item={item}
+            />
+          )}
           <Icon
             size={32}
             name={!item.details ? 'expand-more' : 'expand-less'}
             color={'black'}
             onPress={() => {
-              this.props.showGroceryForm(item, index);
+              this.showGroceryForm(item, index);
             }}
           />
         </View>
@@ -187,41 +310,55 @@ class GroceriesContainer extends React.Component {
   };
 
   render() {
-    const {dragging, draggingIdx} = this.state;
+    const {groceries, dragging, draggingIdx} = this.state;
+    console.log(this.point.getLayout().top);
     return (
-      <View style={{flex: 1}}>
-        {dragging && (
-          <Animated.View
-            style={{
-              position: 'absolute',
-              backgroundColor: 'blue',
-              zIndex: 2,
-              width: '100%',
-              top: this.point.getLayout().top,
-            }}>
-            {this.renderList(
-              {item: this.props.items[draggingIdx], index: -1},
-              true,
-            )}
-          </Animated.View>
-        )}
-        <KeyboardAwareFlatList
-          scrollEnabled={true}
-          data={this.props.items}
-          renderItem={({item, index}, noPanResponder = false) => {
-            return this.renderList(item, index, noPanResponder);
-          }}
-          keyExtractor={item => item.id}
-          ItemSeparatorComponent={this.FlatListItemSeparator}
-          keyboardShouldPersistTaps="always"
-          onScroll={e => {
-            this.scrollOffset = e.nativeEvent.contentOffset.y;
-          }}
-          onLayout={e => {
-            this.flatlistTopOffset = e.nativeEvent.layout.y;
-          }}
-        />
-      </View>
+      <SafeAreaView style={{flex: 1}}>
+        <View style={{flex: 8}}>
+          {dragging && (
+            <Animated.View
+              style={{
+                position: 'absolute',
+                backgroundColor: 'blue',
+                zIndex: 2,
+                width: '100%',
+                top: this.point.getLayout().top,
+              }}>
+              {this.renderList({item: groceries[draggingIdx], index: -1}, true)}
+            </Animated.View>
+          )}
+          <KeyboardAwareFlatList
+            scrollEnabled={true}
+            data={groceries}
+            renderItem={({item, index}, noPanResponder = false) => {
+              return this.renderList(item, index, noPanResponder);
+            }}
+            keyExtractor={item => item.id}
+            ItemSeparatorComponent={this.FlatListItemSeparator}
+            keyboardShouldPersistTaps="always"
+            onScroll={e => {
+              this.scrollOffset = e.nativeEvent.contentOffset.y;
+            }}
+            onLayout={e => {
+              this.flatlistTopOffset = e.nativeEvent.layout.y;
+            }}
+          />
+        </View>
+        <View
+          style={{
+            justifyContent: !this.state.adjustFooter ? 'center' : 'flex-start',
+            flex: !this.state.adjustFooter ? 1 : 9,
+            paddingTop: !this.state.adjustFooter ? 0 : 20,
+            borderTopWidth: 0.5,
+            paddingBottom: 0,
+          }}>
+          <AddGroceryFooter
+            addGrocery={this.addGrocery}
+            addItemOpen={this.state.addItemOpen}
+            showAddGrocery={this.showAddGrocery}
+          />
+        </View>
+      </SafeAreaView>
     );
   }
 }
@@ -248,7 +385,6 @@ const styles = StyleSheet.create({
   container1: {
     flex: 1,
   },
-  info: {},
   container2: {
     flex: 1,
     flexDirection: 'row',
@@ -265,15 +401,6 @@ const styles = StyleSheet.create({
 });
 
 GroceriesContainer.propTypes = {
-  showGroceryForm: PropTypes.func.isRequired,
-  updateGrocery: PropTypes.func.isRequired,
-  removeGrocery: PropTypes.func.isRequired,
-  items: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      content: PropTypes.string.isRequired,
-      quantity: PropTypes.number,
-      unit: PropTypes.string,
-    }).isRequired,
-  ),
+  updateApiError: PropTypes.func.isRequired,
+  navigation: PropTypes.object.isRequired,
 };
