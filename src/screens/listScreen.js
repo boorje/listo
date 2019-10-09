@@ -182,10 +182,6 @@ export default class ListScreen extends React.Component {
               removeGrocery={this.removeGrocery}
               showGroceryForm={this.showGroceryForm}
             />
-            {/* <PrimaryButton
-              title="Dela med Adam"
-              onPress={this.shareGroceryList}
-            /> */}
           </KeyboardAwareScrollView>
         </View>
         <View
