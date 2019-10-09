@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, LayoutAnimation} from 'react-native';
+import {StyleSheet, View, LayoutAnimation, SafeAreaView} from 'react-native';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scrollview';
 
@@ -152,20 +152,15 @@ export default class ListScreen extends React.Component {
     const {apiError, groceries} = this.state;
     return (
       <View style={styles.container}>
-        <View style={styles.scrollView}>
-          {apiError.length > 0 && <Message message={apiError} />}
-          <KeyboardAwareScrollView
-            keyboardShouldPersistTaps="always"
-            viewIsInsideTabBar={true}
-            automaticallyAdjustContentInsets={false}>
-            <GroceriesContainer
-              items={groceries}
-              updateGrocery={this.updateGrocery}
-              removeGrocery={this.removeGrocery}
-              showGroceryForm={this.showGroceryForm}
-            />
-          </KeyboardAwareScrollView>
-        </View>
+        {apiError.length > 0 && <Message message={apiError} />}
+        <SafeAreaView style={{flex: 8}}>
+          <GroceriesContainer
+            items={groceries}
+            updateItem={() => console.log('update')}
+            removeItem={() => console.log('remove')}
+            showGroceryForm={this.showGroceryForm}
+          />
+        </SafeAreaView>
         <View
           style={{
             justifyContent: !this.state.adjustFooter ? 'center' : 'flex-start',

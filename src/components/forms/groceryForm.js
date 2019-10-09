@@ -12,11 +12,18 @@ import textStyles from '../../styles/textStyles';
 
 export default class GroceryForm extends React.Component {
   state = {
-    content: this.props.item.content || '',
-    quantity: this.props.item.quantity || '',
-    unit: this.props.item.unit || '',
-    id: this.props.item.id || '',
+    content: '',
+    quantity: '',
+    unit: '',
+    id: '',
     isFocused: '',
+  };
+
+  componentDidMount = () => {
+    if (this.props.item) {
+      const {content, quantity, unit, id} = this.props.item;
+      this.setState({content: content, quantity: quantity, unit: unit, id: id});
+    }
   };
 
   handleSubmitEditing = () => {
@@ -45,7 +52,7 @@ export default class GroceryForm extends React.Component {
           autoCorrect={false}
           enablesReturnKeyAutomatically={true}
           autoFocus={true}
-          autoCapitalize="words"
+          autoCapitalize="none"
           onSubmitEditing={() => this.handleSubmitEditing()}
           inputAccessoryViewID={inputID}
           onChangeText={text => {

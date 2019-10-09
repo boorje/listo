@@ -10,6 +10,7 @@ import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import GroceryForm from './forms/groceryForm';
 import textStyles from '../styles/textStyles';
+import {KeyboardAwareFlatList} from 'react-native-keyboard-aware-scroll-view';
 
 class GroceriesContainer extends React.Component {
   renderList(item, index) {
@@ -52,8 +53,8 @@ class GroceriesContainer extends React.Component {
 
   render() {
     return (
-      <FlatList
-        scrollEnabled={false}
+      <KeyboardAwareFlatList
+        scrollEnabled={true}
         data={this.props.items}
         renderItem={({item, index}) => {
           return this.renderList(item, index);

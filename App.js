@@ -25,7 +25,7 @@ Amplify.configure(aws_exports);
 Icon.loadFont();
 IoniconsIcon.loadFont();
 
-console.disableYellowBox = true;
+//console.disableYellowBox = true;
 
 const MainStack = createStackNavigator({
   Home: HomeScreen,
