@@ -64,7 +64,6 @@ export default class GroceryForm extends React.Component {
         <View
           style={{
             flexDirection: 'row',
-            justifyContent: 'space-between',
           }}>
           <TextInput
             style={textStyles.textInputActive}

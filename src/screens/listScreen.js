@@ -18,7 +18,7 @@ export default class ListScreen extends React.Component {
       headerTitle: navigation.state.params.title,
       headerRight: (
         <IoniconsIcon
-          size={32}
+          size={28}
           name="md-settings"
           onPress={() => {
             navigation.navigate('Settings');
