@@ -58,6 +58,7 @@ class GroceriesContainer extends React.Component {
     draggingIdx: -1,
   };
 
+  // DRAGGABLE FLATLIST
   point = new Animated.ValueXY();
   currentY = 0;
   scrollOffset = 0;
@@ -82,7 +83,6 @@ class GroceriesContainer extends React.Component {
         // gestureState.d{x,y} will be set to zero now
 
         this.currentIdx = this.yToIndex(gestureState.y0);
-        console.log(this.currentIdx);
         this.currentY = gestureState.y0;
         Animated.event([{y: this.point.y}])({
           y: gestureState.y0 - 2.4 * this.rowHeight,
@@ -148,10 +148,10 @@ class GroceriesContainer extends React.Component {
     const value = Math.floor(
       (this.scrollOffset + y - this.flatlistTopOffset) / this.rowHeight,
     );
-    if (value < 0) {
+    if (value < 2) {
       return 0;
     }
-    if (value > this.state.groceries.length - 1) {
+    if (value > this.state.groceries.length) {
       return this.state.groceries.length - 1;
     }
     return value - 2;
@@ -172,6 +172,7 @@ class GroceriesContainer extends React.Component {
       this.props.navigation.setParams({title: groceryList.title});
       const groceries = await getGroceryList(groceryList.id);
       if (groceries) {
+        //! NOT WORKING
         groceries.details = false;
         this.setState({groceries});
       }
@@ -280,18 +281,19 @@ class GroceriesContainer extends React.Component {
         }}
         underlayColor={'transparent'}>
         <View style={styles.container2}>
-          <View {...(noPanResponder ? {} : this._panResponder.panHandlers)}>
-            <Text style={{fontSize: 28}}>@</Text>
+          <View
+            style={{flex: 1}}
+            {...(noPanResponder ? {} : this._panResponder.panHandlers)}>
+            {item.details ? (
+              <GroceryForm
+                closeGroceryForm={() => this.showGroceryForm(item, index)}
+                addGrocery={this.updateGrocery}
+                item={item}
+              />
+            ) : (
+              <Text style={textStyles.default}>{item.content}</Text>
+            )}
           </View>
-          {!item.details ? (
-            <Text style={textStyles.default}>{item.content}</Text>
-          ) : (
-            <GroceryForm
-              closeGroceryForm={() => this.showGroceryForm(item, index)}
-              addGrocery={this.updateGrocery}
-              item={item}
-            />
-          )}
           <Icon
             size={32}
             name={!item.details ? 'expand-more' : 'expand-less'}
@@ -311,7 +313,6 @@ class GroceriesContainer extends React.Component {
 
   render() {
     const {groceries, dragging, draggingIdx} = this.state;
-    console.log(this.point.getLayout().top);
     return (
       <SafeAreaView style={{flex: 1}}>
         <View style={{flex: 8}}>
@@ -319,12 +320,12 @@ class GroceriesContainer extends React.Component {
             <Animated.View
               style={{
                 position: 'absolute',
-                backgroundColor: 'blue',
-                zIndex: 2,
+                backgroundColor: 'white',
+                //zIndex: 2,
                 width: '100%',
                 top: this.point.getLayout().top,
               }}>
-              {this.renderList({item: groceries[draggingIdx], index: -1}, true)}
+              {this.renderList(groceries[draggingIdx], -1, true)}
             </Animated.View>
           )}
           <KeyboardAwareFlatList
