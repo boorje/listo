@@ -1,5 +1,11 @@
 import React from 'react';
-import {StyleSheet, View, LayoutAnimation, SafeAreaView} from 'react-native';
+import {
+  Button,
+  StyleSheet,
+  View,
+  LayoutAnimation,
+  SafeAreaView,
+} from 'react-native';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 
 // -- Components --
@@ -23,15 +29,18 @@ import {getUserID} from '../api/authAPI';
 // TODO: Create custom animation class
 
 export default class ListScreen extends React.Component {
+  // ! TODO: Create custom header
   static navigationOptions = ({navigation}) => {
     return {
       headerTitle: navigation.state.params.title,
       headerRight: (
         <IoniconsIcon
-          size={32}
+          size={28}
           name="md-settings"
           onPress={() => {
-            navigation.navigate('Settings');
+            navigation.navigate('ListSettings', {
+              groceryList: navigation.state.params.groceryList,
+            });
           }}
           style={{marginRight: 15}}
         />
@@ -53,13 +62,13 @@ export default class ListScreen extends React.Component {
         'groceryList',
         null,
       );
-      this.setState({groceryListID: groceryList.id});
-      this.props.navigation.setParams({title: groceryList.title});
+      this.props.navigation.setParams({
+        title: groceryList.title,
+        groceryList: groceryList,
+      });
+      this.setState({groceryListID: groceryList.id, groceryList});
       const groceries = await getGroceryList(groceryList.id);
-      if (groceries) {
-        groceries.details = false;
-        this.setState({groceries});
-      }
+      this.setState({groceries});
     } catch (error) {
       this.setState({apiError: error});
     }
@@ -122,7 +131,8 @@ export default class ListScreen extends React.Component {
   //TODO: Dynamic update
   shareGroceryList = async () => {
     try {
-      const userID = await getUserID('adam@olivegren.se');
+      const userID = await getUserID('ericborjesson123@gmail.com');
+      console.log(userID);
       const res = await updateGroceryList({
         id: this.state.groceryListID,
         editors: [userID],
@@ -178,6 +188,7 @@ export default class ListScreen extends React.Component {
               removeGrocery={this.removeGrocery}
               showGroceryForm={this.showGroceryForm}
             />
+            <Button title="Share" onPress={() => this.shareGroceryList()} />
           </SafeAreaView>
         </View>
         <View

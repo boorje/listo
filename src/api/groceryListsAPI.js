@@ -26,6 +26,17 @@ export const getGroceryList = async id => {
   return data.getGroceryList.groceries.items;
 };
 
+/**
+ *
+ * @param {String}
+ */
+export const getGroceryListEditors = async id => {
+  const {data} = await API.graphql(
+    graphqlOperation(queries.getGroceryListEditors, {id}),
+  );
+  return data.getGroceryList.editors.items;
+};
+
 // -- MUTATIONS --
 
 /**
@@ -100,4 +111,15 @@ export const updateGroceryItem = async input => {
     graphqlOperation(mutations.updateGroceryItem, {input}),
   );
   return data.updateGroceryItem;
+};
+
+/**
+ * Adds a editor to the grocery list and returns it.
+ * @param {Object} input
+ */
+export const createGroceryListEditor = async input => {
+  const {data} = await API.graphql(
+    graphqlOperation(mutations.createGroceryListEditor, {input}),
+  );
+  return data.createGroceryListEditor;
 };

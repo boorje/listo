@@ -4,6 +4,11 @@ export const listGroceryLists = `query listGroceryLists($filter: ModelGroceryLis
             id 
             owner
             title
+            editors {
+                items {
+                    id
+                }
+            }
         }
         nextToken
     }
@@ -20,6 +25,20 @@ export const getGroceryList = `query getGroceryList($id: ID!) {
             quantity
             unit
         }
+       }
+    }
+}
+`;
+
+export const getGroceryListEditors = `query getGroceryList($id: ID!) {
+    getGroceryList(id: $id) {
+       editors {
+           items {
+               editor {
+                   id
+                   email
+               }
+           }
        }
     }
 }

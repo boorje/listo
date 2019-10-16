@@ -1,12 +1,20 @@
 type User @model {
   id: ID!
   email: AWSEmail!
+  groceryLists: [GroceryListEditor] @connection(name: "UserEditors")
+}
+
+type GroceryListEditor @model(queries: null) {
+  id: ID!
+  groceryList: GroceryList! @connection(name: "GroceryListEditors")
+  editor: User! @connection(name: "UserEditors")
 }
 
 type GroceryList @model @auth(rules: [{allow: owner}]) {
   id: ID!
   title: String!
   groceries: [GroceryItem] @connection(name: "GroceryItems")
+  editors: [GroceryListEditor] @connection(name: "GroceryListEditors")
 }
 
 type GroceryItem @model {

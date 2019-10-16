@@ -1,7 +1,6 @@
 import React from 'react';
 import {StyleSheet, View, SafeAreaView} from 'react-native';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
-import {Auth} from 'aws-amplify';
 
 // -- Components --
 import GroceryListsContainer from '../components/groceryListsContainer';
@@ -23,7 +22,7 @@ class HomeScreen extends React.Component {
       headerRight: (
         <IoniconsIcon
           size={32}
-          name="md-settings"
+          name="md-person"
           onPress={() => navigation.navigate('Settings')}
           style={{marginRight: 15}}
         />
@@ -42,6 +41,7 @@ class HomeScreen extends React.Component {
       const groceryLists = await listGroceryLists();
       this.setState({groceryLists});
     } catch (error) {
+      console.log(error);
       this.setState({apiError: 'Could not fetch lists. Please try again.'});
     }
   };
