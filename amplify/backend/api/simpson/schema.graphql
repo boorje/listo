@@ -1,16 +1,12 @@
-type GroceryList
-  @model
-  @auth(
-    rules: [
-      {allow: owner}
-      {allow: owner, ownerField: "editors", operations: [update]}
-    ]
-  ) {
+type User @model {
+  id: ID!
+  email: AWSEmail!
+}
+
+type GroceryList @model @auth(rules: [{allow: owner}]) {
   id: ID!
   title: String!
   groceries: [GroceryItem] @connection(name: "GroceryItems")
-  owner: String
-  editors: [String]
 }
 
 type GroceryItem @model {

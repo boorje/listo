@@ -1,10 +1,10 @@
 import React from 'react';
-import {StyleSheet, View, ScrollView, SafeAreaView} from 'react-native';
+import {StyleSheet, View, SafeAreaView} from 'react-native';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
+import {Auth} from 'aws-amplify';
 
 // -- Components --
 import GroceryListsContainer from '../components/groceryListsContainer';
-import AddGroceryListButton from '../components/buttons/addGroceryListButton';
 import AddGroceryListModal from '../components/modals/AddGroceryListModal';
 import Message from '../components/message';
 import AddGroceryListFooter from '../components/addGroceryListFooter';

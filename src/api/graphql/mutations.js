@@ -37,3 +37,11 @@ export const updateGroceryItem = `mutation updateGroceryItem($input: UpdateGroce
     id
   }
 }`;
+
+// -- USER --
+
+export const createUser = `mutation createUser($input: CreateUserInput!) {
+  createUser(input: $input) {
+    id
+  }
+}`;

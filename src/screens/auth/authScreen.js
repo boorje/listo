@@ -1,5 +1,4 @@
 import React from 'react';
-import {Auth} from 'aws-amplify';
 import {ActivityIndicator, StyleSheet, View} from 'react-native';
 
 class AuthLoadingScreen extends React.Component {
@@ -10,12 +9,12 @@ class AuthLoadingScreen extends React.Component {
 
   _isSignedIn = async () => {
     try {
-      await Auth.currentAuthenticatedUser();
       this.props.navigation.navigate('App');
     } catch (e) {
       this.props.navigation.navigate('Auth');
     }
   };
+
   render() {
     return (
       <View style={styles.container}>

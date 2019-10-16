@@ -6,6 +6,9 @@ import {Auth} from 'aws-amplify';
 import CodeForm from '../../components/forms/codeForm';
 import Message from '../../components/message';
 
+// -- Helpers --
+import {addNewUserToDB} from '../../helpers/addUserToDB';
+
 class VerifyScreen extends React.Component {
   state = {
     verificationError: '',
@@ -30,6 +33,7 @@ class VerifyScreen extends React.Component {
       this.setState({loading: true});
       await this._validateCode(code);
       await Auth.confirmSignUp(this.state.user.username, code);
+      await this._signUserInAndAddToDB();
       this.props.navigation.navigate('Signedup');
       this.setState({loading: false});
     } catch (error) {
@@ -51,6 +55,16 @@ class VerifyScreen extends React.Component {
           });
           break;
       }
+    }
+  };
+
+  _signUserInAndAddToDB = async () => {
+    try {
+      const {email, password} = this.props.navigation.getParam('values', null);
+      const user = await Auth.signIn({username: email, password});
+      addNewUserToDB(user.attributes);
+    } catch (error) {
+      this.props.navigation.navigate('Login');
     }
   };
 

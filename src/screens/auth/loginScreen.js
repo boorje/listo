@@ -9,6 +9,7 @@ import Message from '../../components/message';
 
 // -- Helpers --
 import validateValues from '../../helpers/validateFormValues';
+import {addUserToDB} from '../../helpers/addUserToDB';
 
 class LoginScreen extends React.Component {
   state = {
@@ -25,6 +26,7 @@ class LoginScreen extends React.Component {
         username: email,
         password,
       });
+      await addUserToDB(user.attributes);
       this.setState({loading: false});
       this.props.navigation.navigate('App', {
         user,

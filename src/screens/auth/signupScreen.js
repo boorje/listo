@@ -27,6 +27,7 @@ class SignupScreen extends React.Component {
       this.setState({loading: false});
       this.props.navigation.navigate('Verify', {
         user,
+        values,
       });
     } catch (error) {
       this.setState({loading: false});

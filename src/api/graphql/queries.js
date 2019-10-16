@@ -24,3 +24,11 @@ export const getGroceryList = `query getGroceryList($id: ID!) {
     }
 }
 `;
+
+// -- USER --
+
+export const getUser = `query getUser($id: ID!) {
+    getUser(id: $id) {
+        id
+    }
+}`;
