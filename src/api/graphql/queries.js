@@ -49,6 +49,7 @@ export const getEditors = `query getGroceryList($id: ID!) {
 export const getUser = `query getUser($id: ID!) {
     getUser(id: $id) {
         id
+        email
     }
 }`;
 

@@ -4,7 +4,7 @@ import * as yup from 'yup';
 import Message from '../components/message';
 
 import {createEditor, getEditors} from '../api/groceryListsAPI';
-import {getUserIDByEmail} from '../api/authAPI';
+import {getUser, getUserIDByEmail} from '../api/authAPI';
 
 // TODO: Add FORMIK Form ?
 export default class ListSettingsScreen extends React.Component {
@@ -21,11 +21,20 @@ export default class ListSettingsScreen extends React.Component {
         'groceryList',
         null,
       );
-      const editors = await this.getEditors(groceryList.id);
-      this.setState({groceryList, editors});
+      this.setState({groceryList});
+      const owner = await this.getOwnerEmail(groceryList.owner);
+      let editors = await this.getEditors(groceryList.id);
+      editors.unshift(owner);
+      this.setState({editors});
     } catch (error) {
       this.setState({apiError: error});
     }
+  };
+
+  getOwnerEmail = async id => {
+    let owner = await getUser(id);
+    owner.isOwner = true;
+    return owner;
   };
 
   // get the current editors of the list
@@ -101,9 +110,13 @@ export default class ListSettingsScreen extends React.Component {
     return (
       <View>
         {apiError.length > 0 && <Message message={apiError} />}
-        <Text>Delas med:</Text>
+        <Text>List members</Text>
         {editors.length > 0 &&
-          editors.map(editor => <Text key={editor.id}>{editor.email}</Text>)}
+          editors.map(editor => (
+            <Text key={editor.id}>
+              {editor.email} {editor.isOwner ? '(owner)' : null}
+            </Text>
+          ))}
         {groceryList.isOwner && (
           <React.Fragment>
             <TextInput

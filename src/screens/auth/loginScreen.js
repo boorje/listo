@@ -28,7 +28,7 @@ class LoginScreen extends React.Component {
       });
       await addUserToDB(user.attributes);
       this.setState({loading: false});
-      this.props.navigation.navigate('App', {
+      this.props.navigation.navigate('Home', {
         user,
       });
     } catch (error) {

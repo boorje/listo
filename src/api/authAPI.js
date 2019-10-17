@@ -5,7 +5,7 @@ import * as mutations from './graphql/mutations';
 
 export const getUser = async id => {
   const {data} = await API.graphql(graphqlOperation(queries.getUser, {id}));
-  return data.getUser.id;
+  return data.getUser;
 };
 
 /**

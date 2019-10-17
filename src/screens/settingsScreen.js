@@ -9,6 +9,19 @@ class SettingsScreen extends React.Component {
     headerTitle: 'Settings',
   };
 
+  state = {
+    userEmail: '',
+  };
+
+  componentDidMount = async () => {
+    try {
+      const userEmail = await this.props.navigation.getParam('userEmail', '');
+      this.setState({userEmail});
+    } catch (error) {
+      alert(error);
+    }
+  };
+
   _logout = async () => {
     try {
       await Auth.signOut();
@@ -19,9 +32,11 @@ class SettingsScreen extends React.Component {
   };
 
   render() {
+    const {userEmail} = this.state;
     return (
       <View style={styles.container}>
         <ScrollView>
+          {userEmail.length > 0 && <Text>Signed in as: {userEmail}</Text>}
           <PrimaryButton title="LOGOUT" onPress={() => this._logout()} />
         </ScrollView>
       </View>

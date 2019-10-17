@@ -32,7 +32,6 @@ export const getGroceryList = async id => {
  */
 export const getEditors = async id => {
   const {data} = await API.graphql(graphqlOperation(queries.getEditors, {id}));
-  console.log(data);
   return data.getGroceryList.editors.items.map(({user}) => user);
 };
 

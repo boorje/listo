@@ -49,6 +49,7 @@ export default class ListScreen extends React.Component {
   };
 
   state = {
+    groceryList: {},
     groceries: [],
     apiError: '',
     adjustFooter: false,
@@ -66,6 +67,7 @@ export default class ListScreen extends React.Component {
         groceryList: groceryList,
       });
       this.setState({groceryList});
+      console.log(groceryList);
       const groceries = await getGroceryList(groceryList.id);
       this.setState({groceries});
     } catch (error) {

@@ -22,7 +22,11 @@ class HomeScreen extends React.Component {
         <IoniconsIcon
           size={32}
           name="md-person"
-          onPress={() => navigation.navigate('Settings')}
+          onPress={() =>
+            navigation.navigate('Settings', {
+              userEmail: navigation.state.params.userEmail,
+            })
+          }
           style={{marginRight: 15}}
         />
       ),
@@ -32,14 +36,19 @@ class HomeScreen extends React.Component {
   state = {
     modalOpen: false,
     groceryLists: [],
+    user: {},
     apiError: '',
   };
 
   componentDidMount = async () => {
     try {
-      const user = await Auth.currentAuthenticatedUser();
+      const user = await this.props.navigation.getParam('user', null);
       const groceryLists = await getUserLists(user.username);
-      this.setState({groceryLists});
+      this.setState({
+        groceryLists,
+        user: {id: user.username, email: user.attributes.email},
+      });
+      this.props.navigation.setParams({userEmail: user.attributes.email});
     } catch (error) {
       console.log(error);
       this.setState({apiError: 'Could not fetch lists. Please try again.'});
@@ -91,7 +100,7 @@ class HomeScreen extends React.Component {
   };
 
   render() {
-    const {apiError, groceryLists, modalOpen} = this.state;
+    const {apiError, groceryLists, modalOpen, user} = this.state;
     return (
       <View style={styles.container}>
         {apiError.length > 0 && <Message message={apiError} />}
