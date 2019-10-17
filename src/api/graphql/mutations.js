@@ -47,10 +47,18 @@ export const createUser = `mutation createUser($input: CreateUserInput!) {
 }`;
 
 // -- GROCERY LIST EDITORS --
-export const createGroceryListEditor = `mutation createGroceryListEditor($input: CreateGroceryListEditorInput!) {
-  createGroceryListEditor(input: $input) {
-    editor {
+
+export const createEditor = `mutation createEditor($input: CreateEditorInput!) {
+  createEditor(input: $input) {
+    user {
+      id
       email
     }
+  }
+}`;
+
+export const deleteEditor = `mutation deleteEditor($input: DeleteEditorInput!) {
+  deleteEditor(input: $input) {
+    id
   }
 }`;

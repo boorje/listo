@@ -39,6 +39,7 @@ class HomeScreen extends React.Component {
     try {
       const user = await Auth.currentAuthenticatedUser();
       const groceryLists = await getUserLists(user.username);
+      console.log(groceryLists);
       this.setState({groceryLists});
     } catch (error) {
       console.log(error);

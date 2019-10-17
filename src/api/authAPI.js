@@ -21,10 +21,28 @@ export const getUserLists = async id => {
     list.isOwner = true;
     return list;
   });
-  const sharedLists = data.getUser.groceryLists.items.map(
-    item => item.groceryList,
-  );
+  const sharedLists = data.getUser.groceryLists.items.map(({list}) => list);
   return ownedLists.concat(sharedLists);
+};
+
+/**
+ * Queries for a users id by email. Returns the id of the user
+ * @param {String} id
+ */
+export const getUserIDByEmail = async email => {
+  const filter = {
+    email: {
+      eq: email,
+    },
+  };
+  const {data} = await API.graphql(
+    graphqlOperation(queries.getUserIDByEmail, {filter}),
+  );
+  if (data.listUsers.items.length < 1) {
+    throw 'User does not exists. Please try again.';
+  } else {
+    return data.listUsers.items[0].id;
+  }
 };
 
 /**
@@ -36,4 +54,13 @@ export const createUser = async input => {
     graphqlOperation(mutations.createUser, {input}),
   );
   return data.createUser;
+};
+
+// TODO: Move to grocerListAPI.js
+export const deleteEditor = async id => {
+  const {data} = await API.graphql(
+    graphqlOperation(mutations.deleteEditor, {id}),
+  );
+  console.log(data);
+  return data;
 };

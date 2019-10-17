@@ -15,30 +15,6 @@
         "name" : "Query",
         "description" : null,
         "fields" : [ {
-          "name" : "getUserByEmail",
-          "description" : null,
-          "args" : [ {
-            "name" : "email",
-            "description" : null,
-            "type" : {
-              "kind" : "NON_NULL",
-              "name" : null,
-              "ofType" : {
-                "kind" : "SCALAR",
-                "name" : "AWSEmail",
-                "ofType" : null
-              }
-            },
-            "defaultValue" : null
-          } ],
-          "type" : {
-            "kind" : "OBJECT",
-            "name" : "User",
-            "ofType" : null
-          },
-          "isDeprecated" : false,
-          "deprecationReason" : null
-        }, {
           "name" : "getUser",
           "description" : null,
           "args" : [ {
@@ -96,6 +72,68 @@
           "type" : {
             "kind" : "OBJECT",
             "name" : "ModelUserConnection",
+            "ofType" : null
+          },
+          "isDeprecated" : false,
+          "deprecationReason" : null
+        }, {
+          "name" : "getEditor",
+          "description" : null,
+          "args" : [ {
+            "name" : "id",
+            "description" : null,
+            "type" : {
+              "kind" : "NON_NULL",
+              "name" : null,
+              "ofType" : {
+                "kind" : "SCALAR",
+                "name" : "ID",
+                "ofType" : null
+              }
+            },
+            "defaultValue" : null
+          } ],
+          "type" : {
+            "kind" : "OBJECT",
+            "name" : "Editor",
+            "ofType" : null
+          },
+          "isDeprecated" : false,
+          "deprecationReason" : null
+        }, {
+          "name" : "listEditors",
+          "description" : null,
+          "args" : [ {
+            "name" : "filter",
+            "description" : null,
+            "type" : {
+              "kind" : "INPUT_OBJECT",
+              "name" : "ModelEditorFilterInput",
+              "ofType" : null
+            },
+            "defaultValue" : null
+          }, {
+            "name" : "limit",
+            "description" : null,
+            "type" : {
+              "kind" : "SCALAR",
+              "name" : "Int",
+              "ofType" : null
+            },
+            "defaultValue" : null
+          }, {
+            "name" : "nextToken",
+            "description" : null,
+            "type" : {
+              "kind" : "SCALAR",
+              "name" : "String",
+              "ofType" : null
+            },
+            "defaultValue" : null
+          } ],
+          "type" : {
+            "kind" : "OBJECT",
+            "name" : "ModelEditorConnection",
             "ofType" : null
           },
           "isDeprecated" : false,
@@ -271,7 +309,7 @@
             "description" : null,
             "type" : {
               "kind" : "INPUT_OBJECT",
-              "name" : "ModelGroceryListEditorFilterInput",
+              "name" : "ModelEditorFilterInput",
               "ofType" : null
             },
             "defaultValue" : null
@@ -305,7 +343,7 @@
           } ],
           "type" : {
             "kind" : "OBJECT",
-            "name" : "ModelGroceryListEditorConnection",
+            "name" : "ModelEditorConnection",
             "ofType" : null
           },
           "isDeprecated" : false,
@@ -335,7 +373,7 @@
         "possibleTypes" : null
       }, {
         "kind" : "OBJECT",
-        "name" : "ModelGroceryListEditorConnection",
+        "name" : "ModelEditorConnection",
         "description" : null,
         "fields" : [ {
           "name" : "items",
@@ -346,7 +384,7 @@
             "name" : null,
             "ofType" : {
               "kind" : "OBJECT",
-              "name" : "GroceryListEditor",
+              "name" : "Editor",
               "ofType" : null
             }
           },
@@ -370,7 +408,7 @@
         "possibleTypes" : null
       }, {
         "kind" : "OBJECT",
-        "name" : "GroceryListEditor",
+        "name" : "Editor",
         "description" : null,
         "fields" : [ {
           "name" : "id",
@@ -388,7 +426,7 @@
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "groceryList",
+          "name" : "list",
           "description" : null,
           "args" : [ ],
           "type" : {
@@ -403,7 +441,7 @@
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "editor",
+          "name" : "user",
           "description" : null,
           "args" : [ ],
           "type" : {
@@ -522,7 +560,7 @@
             "description" : null,
             "type" : {
               "kind" : "INPUT_OBJECT",
-              "name" : "ModelGroceryListEditorFilterInput",
+              "name" : "ModelEditorFilterInput",
               "ofType" : null
             },
             "defaultValue" : null
@@ -556,7 +594,7 @@
           } ],
           "type" : {
             "kind" : "OBJECT",
-            "name" : "ModelGroceryListEditorConnection",
+            "name" : "ModelEditorConnection",
             "ofType" : null
           },
           "isDeprecated" : false,
@@ -1002,7 +1040,7 @@
         "possibleTypes" : null
       }, {
         "kind" : "INPUT_OBJECT",
-        "name" : "ModelGroceryListEditorFilterInput",
+        "name" : "ModelEditorFilterInput",
         "description" : null,
         "fields" : null,
         "inputFields" : [ {
@@ -1022,7 +1060,7 @@
             "name" : null,
             "ofType" : {
               "kind" : "INPUT_OBJECT",
-              "name" : "ModelGroceryListEditorFilterInput",
+              "name" : "ModelEditorFilterInput",
               "ofType" : null
             }
           },
@@ -1035,7 +1073,7 @@
             "name" : null,
             "ofType" : {
               "kind" : "INPUT_OBJECT",
-              "name" : "ModelGroceryListEditorFilterInput",
+              "name" : "ModelEditorFilterInput",
               "ofType" : null
             }
           },
@@ -1045,7 +1083,7 @@
           "description" : null,
           "type" : {
             "kind" : "INPUT_OBJECT",
-            "name" : "ModelGroceryListEditorFilterInput",
+            "name" : "ModelEditorFilterInput",
             "ofType" : null
           },
           "defaultValue" : null
@@ -1333,7 +1371,7 @@
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "createGroceryListEditor",
+          "name" : "createEditor",
           "description" : null,
           "args" : [ {
             "name" : "input",
@@ -1343,7 +1381,7 @@
               "name" : null,
               "ofType" : {
                 "kind" : "INPUT_OBJECT",
-                "name" : "CreateGroceryListEditorInput",
+                "name" : "CreateEditorInput",
                 "ofType" : null
               }
             },
@@ -1351,13 +1389,13 @@
           } ],
           "type" : {
             "kind" : "OBJECT",
-            "name" : "GroceryListEditor",
+            "name" : "Editor",
             "ofType" : null
           },
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "updateGroceryListEditor",
+          "name" : "updateEditor",
           "description" : null,
           "args" : [ {
             "name" : "input",
@@ -1367,7 +1405,7 @@
               "name" : null,
               "ofType" : {
                 "kind" : "INPUT_OBJECT",
-                "name" : "UpdateGroceryListEditorInput",
+                "name" : "UpdateEditorInput",
                 "ofType" : null
               }
             },
@@ -1375,13 +1413,13 @@
           } ],
           "type" : {
             "kind" : "OBJECT",
-            "name" : "GroceryListEditor",
+            "name" : "Editor",
             "ofType" : null
           },
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "deleteGroceryListEditor",
+          "name" : "deleteEditor",
           "description" : null,
           "args" : [ {
             "name" : "input",
@@ -1391,7 +1429,7 @@
               "name" : null,
               "ofType" : {
                 "kind" : "INPUT_OBJECT",
-                "name" : "DeleteGroceryListEditorInput",
+                "name" : "DeleteEditorInput",
                 "ofType" : null
               }
             },
@@ -1399,7 +1437,7 @@
           } ],
           "type" : {
             "kind" : "OBJECT",
-            "name" : "GroceryListEditor",
+            "name" : "Editor",
             "ofType" : null
           },
           "isDeprecated" : false,
@@ -1635,7 +1673,7 @@
         "possibleTypes" : null
       }, {
         "kind" : "INPUT_OBJECT",
-        "name" : "CreateGroceryListEditorInput",
+        "name" : "CreateEditorInput",
         "description" : null,
         "fields" : null,
         "inputFields" : [ {
@@ -1648,7 +1686,7 @@
           },
           "defaultValue" : null
         }, {
-          "name" : "groceryListEditorGroceryListId",
+          "name" : "editorListId",
           "description" : null,
           "type" : {
             "kind" : "NON_NULL",
@@ -1661,7 +1699,7 @@
           },
           "defaultValue" : null
         }, {
-          "name" : "groceryListEditorEditorId",
+          "name" : "editorUserId",
           "description" : null,
           "type" : {
             "kind" : "NON_NULL",
@@ -1679,7 +1717,7 @@
         "possibleTypes" : null
       }, {
         "kind" : "INPUT_OBJECT",
-        "name" : "UpdateGroceryListEditorInput",
+        "name" : "UpdateEditorInput",
         "description" : null,
         "fields" : null,
         "inputFields" : [ {
@@ -1696,7 +1734,7 @@
           },
           "defaultValue" : null
         }, {
-          "name" : "groceryListEditorGroceryListId",
+          "name" : "editorListId",
           "description" : null,
           "type" : {
             "kind" : "SCALAR",
@@ -1705,7 +1743,7 @@
           },
           "defaultValue" : null
         }, {
-          "name" : "groceryListEditorEditorId",
+          "name" : "editorUserId",
           "description" : null,
           "type" : {
             "kind" : "SCALAR",
@@ -1719,7 +1757,7 @@
         "possibleTypes" : null
       }, {
         "kind" : "INPUT_OBJECT",
-        "name" : "DeleteGroceryListEditorInput",
+        "name" : "DeleteEditorInput",
         "description" : null,
         "fields" : null,
         "inputFields" : [ {
@@ -2009,34 +2047,34 @@
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "onCreateGroceryListEditor",
+          "name" : "onCreateEditor",
           "description" : null,
           "args" : [ ],
           "type" : {
             "kind" : "OBJECT",
-            "name" : "GroceryListEditor",
+            "name" : "Editor",
             "ofType" : null
           },
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "onUpdateGroceryListEditor",
+          "name" : "onUpdateEditor",
           "description" : null,
           "args" : [ ],
           "type" : {
             "kind" : "OBJECT",
-            "name" : "GroceryListEditor",
+            "name" : "Editor",
             "ofType" : null
           },
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "onDeleteGroceryListEditor",
+          "name" : "onDeleteEditor",
           "description" : null,
           "args" : [ ],
           "type" : {
             "kind" : "OBJECT",
-            "name" : "GroceryListEditor",
+            "name" : "Editor",
             "ofType" : null
           },
           "isDeprecated" : false,
@@ -2079,7 +2117,20 @@
         }, {
           "name" : "onDeleteGroceryList",
           "description" : null,
-          "args" : [ ],
+          "args" : [ {
+            "name" : "owner",
+            "description" : null,
+            "type" : {
+              "kind" : "NON_NULL",
+              "name" : null,
+              "ofType" : {
+                "kind" : "SCALAR",
+                "name" : "String",
+                "ofType" : null
+              }
+            },
+            "defaultValue" : null
+          } ],
           "type" : {
             "kind" : "OBJECT",
             "name" : "GroceryList",
@@ -2158,6 +2209,100 @@
         "description" : "Built-in Boolean",
         "fields" : null,
         "inputFields" : null,
+        "interfaces" : null,
+        "enumValues" : null,
+        "possibleTypes" : null
+      }, {
+        "kind" : "INPUT_OBJECT",
+        "name" : "ModelIntFilterInput",
+        "description" : null,
+        "fields" : null,
+        "inputFields" : [ {
+          "name" : "ne",
+          "description" : null,
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "Int",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
+          "name" : "eq",
+          "description" : null,
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "Int",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
+          "name" : "le",
+          "description" : null,
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "Int",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
+          "name" : "lt",
+          "description" : null,
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "Int",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
+          "name" : "ge",
+          "description" : null,
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "Int",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
+          "name" : "gt",
+          "description" : null,
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "Int",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
+          "name" : "contains",
+          "description" : null,
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "Int",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
+          "name" : "notContains",
+          "description" : null,
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "Int",
+            "ofType" : null
+          },
+          "defaultValue" : null
+        }, {
+          "name" : "between",
+          "description" : null,
+          "type" : {
+            "kind" : "LIST",
+            "name" : null,
+            "ofType" : {
+              "kind" : "SCALAR",
+              "name" : "Int",
+              "ofType" : null
+            }
+          },
+          "defaultValue" : null
+        } ],
         "interfaces" : null,
         "enumValues" : null,
         "possibleTypes" : null
@@ -2261,100 +2406,6 @@
         "description" : "Built-in Float",
         "fields" : null,
         "inputFields" : null,
-        "interfaces" : null,
-        "enumValues" : null,
-        "possibleTypes" : null
-      }, {
-        "kind" : "INPUT_OBJECT",
-        "name" : "ModelIntFilterInput",
-        "description" : null,
-        "fields" : null,
-        "inputFields" : [ {
-          "name" : "ne",
-          "description" : null,
-          "type" : {
-            "kind" : "SCALAR",
-            "name" : "Int",
-            "ofType" : null
-          },
-          "defaultValue" : null
-        }, {
-          "name" : "eq",
-          "description" : null,
-          "type" : {
-            "kind" : "SCALAR",
-            "name" : "Int",
-            "ofType" : null
-          },
-          "defaultValue" : null
-        }, {
-          "name" : "le",
-          "description" : null,
-          "type" : {
-            "kind" : "SCALAR",
-            "name" : "Int",
-            "ofType" : null
-          },
-          "defaultValue" : null
-        }, {
-          "name" : "lt",
-          "description" : null,
-          "type" : {
-            "kind" : "SCALAR",
-            "name" : "Int",
-            "ofType" : null
-          },
-          "defaultValue" : null
-        }, {
-          "name" : "ge",
-          "description" : null,
-          "type" : {
-            "kind" : "SCALAR",
-            "name" : "Int",
-            "ofType" : null
-          },
-          "defaultValue" : null
-        }, {
-          "name" : "gt",
-          "description" : null,
-          "type" : {
-            "kind" : "SCALAR",
-            "name" : "Int",
-            "ofType" : null
-          },
-          "defaultValue" : null
-        }, {
-          "name" : "contains",
-          "description" : null,
-          "type" : {
-            "kind" : "SCALAR",
-            "name" : "Int",
-            "ofType" : null
-          },
-          "defaultValue" : null
-        }, {
-          "name" : "notContains",
-          "description" : null,
-          "type" : {
-            "kind" : "SCALAR",
-            "name" : "Int",
-            "ofType" : null
-          },
-          "defaultValue" : null
-        }, {
-          "name" : "between",
-          "description" : null,
-          "type" : {
-            "kind" : "LIST",
-            "name" : null,
-            "ofType" : {
-              "kind" : "SCALAR",
-              "name" : "Int",
-              "ofType" : null
-            }
-          },
-          "defaultValue" : null
-        } ],
         "interfaces" : null,
         "enumValues" : null,
         "possibleTypes" : null
@@ -3142,23 +3193,6 @@
         "onFragment" : false,
         "onField" : true
       }, {
-        "name" : "deprecated",
-        "description" : null,
-        "locations" : [ "FIELD_DEFINITION", "ENUM_VALUE" ],
-        "args" : [ {
-          "name" : "reason",
-          "description" : null,
-          "type" : {
-            "kind" : "SCALAR",
-            "name" : "String",
-            "ofType" : null
-          },
-          "defaultValue" : "\"No longer supported\""
-        } ],
-        "onOperation" : false,
-        "onFragment" : false,
-        "onField" : false
-      }, {
         "name" : "aws_iam",
         "description" : "Tells the service this field/object has access authorized by sigv4 signing.",
         "locations" : [ "OBJECT", "FIELD_DEFINITION" ],
@@ -3241,6 +3275,23 @@
             }
           },
           "defaultValue" : null
+        } ],
+        "onOperation" : false,
+        "onFragment" : false,
+        "onField" : false
+      }, {
+        "name" : "deprecated",
+        "description" : null,
+        "locations" : [ "FIELD_DEFINITION", "ENUM_VALUE" ],
+        "args" : [ {
+          "name" : "reason",
+          "description" : null,
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "String",
+            "ofType" : null
+          },
+          "defaultValue" : "\"No longer supported\""
         } ],
         "onOperation" : false,
         "onFragment" : false,

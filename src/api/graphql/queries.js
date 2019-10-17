@@ -30,11 +30,11 @@ export const getGroceryList = `query getGroceryList($id: ID!) {
 }
 `;
 
-export const getGroceryListEditors = `query getGroceryList($id: ID!) {
+export const getEditors = `query getGroceryList($id: ID!) {
     getGroceryList(id: $id) {
        editors {
            items {
-               editor {
+                user {
                    id
                    email
                }
@@ -57,7 +57,7 @@ export const getUserLists = `query getUser($id: ID!) {
     	groceryLists {
     	    nextToken
             items {
-                groceryList {
+                list {
                     id
                     title
                 }
@@ -72,3 +72,11 @@ export const getUserLists = `query getUser($id: ID!) {
     }
 }
 `;
+
+export const getUserIDByEmail = `query getUserIDByEmail($filter: ModelUserFilterInput) {
+    listUsers(filter: $filter) {
+      items {
+        id
+      }
+    }
+  }`;

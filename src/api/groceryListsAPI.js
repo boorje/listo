@@ -30,11 +30,10 @@ export const getGroceryList = async id => {
  *
  * @param {String}
  */
-export const getGroceryListEditors = async id => {
-  const {data} = await API.graphql(
-    graphqlOperation(queries.getGroceryListEditors, {id}),
-  );
-  return data.getGroceryList.editors.items;
+export const getEditors = async id => {
+  const {data} = await API.graphql(graphqlOperation(queries.getEditors, {id}));
+  console.log(data);
+  return data.getGroceryList.editors.items.map(({user}) => user);
 };
 
 // -- MUTATIONS --
@@ -117,9 +116,9 @@ export const updateGroceryItem = async input => {
  * Adds a editor to the grocery list and returns it.
  * @param {Object} input
  */
-export const createGroceryListEditor = async input => {
+export const createEditor = async input => {
   const {data} = await API.graphql(
-    graphqlOperation(mutations.createGroceryListEditor, {input}),
+    graphqlOperation(mutations.createEditor, {input}),
   );
-  return data.createGroceryListEditor;
+  return data.createEditor.user;
 };
