@@ -1,0 +1,14 @@
+#set($ids = [])
+#foreach($id in ${ctx.args.ids})
+    #set($map = {})
+    $util.qr($map.put("id", $util.dynamodb.toString($id)))
+    $util.qr($ids.add($map))
+#end
+
+{
+    "version" : "2018-05-29",
+    "operation" : "BatchDeleteItem",
+    "tables" : {
+        "Editor-fg53q6dev5dnbfceh7atb66xyi-simpson": $util.toJson($ids)
+    }
+}

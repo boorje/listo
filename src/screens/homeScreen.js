@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, SafeAreaView} from 'react-native';
+import {ActionSheetIOS, StyleSheet, View, SafeAreaView} from 'react-native';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 import {Auth} from 'aws-amplify';
 
@@ -10,7 +10,13 @@ import Message from '../components/message';
 import AddGroceryListFooter from '../components/addGroceryListFooter';
 
 // -- API helpers --
-import {createGroceryList, deleteGroceryList} from '../api/groceryListsAPI';
+import {
+  createGroceryList,
+  deleteGroceryList,
+  deleteGroceryListAndEditors,
+  deleteEditor,
+  getEditorId,
+} from '../api/groceryListsAPI';
 
 import {getUserLists} from '../api/authAPI';
 
@@ -66,6 +72,7 @@ class HomeScreen extends React.Component {
       const res = await createGroceryList({
         title,
       });
+      res.isOwner = true;
       this.setState({groceryLists: [...this.state.groceryLists, res]});
     } catch (error) {
       this.setState({apiError: `Could not add ${title}. Please try again.`});
@@ -73,34 +80,74 @@ class HomeScreen extends React.Component {
   };
 
   // TODO: Remove the user and list from the editor model when deleting the list.
-  removeGroceryList = async (id, index) => {
-    // try {
-    //   // check if user is owner of the list
-    //   let isOwner = false;
-    //   this.state.groceryLists.map(list => {
-    //     if (list.id === id) {
-    //       if (list.isOwner) {
-    //         isOwner = true;
-    //       }
-    //     }
-    //   });
-    //   if (isOwner) {
-    //     const deletedGroceryList = await deleteGroceryList(id);
-    //     const groceryListsCopy = this.state.groceryLists.filter(
-    //       groceryList => groceryList.id !== deletedGroceryList.id,
-    //     );
-    //     this.setState({groceryLists: groceryListsCopy});
-    //   } else {
-    //     // TODO: Delete the user from the list as shared
-    //     console.log('Delete user from the list');
-    //   }
-    // } catch (error) {
-    //   this.setState({apiError: error});
-    // }
+  removeGroceryList = async listID => {
+    try {
+      // check if user is owner of the list
+      let isOwner = false;
+      this.state.groceryLists.map(list => {
+        if (list.id === listID) {
+          if (list.isOwner) {
+            isOwner = true;
+          }
+        }
+      });
+      if (isOwner) {
+        // TODO: Needs to delete all editors from the list when the owner deletes the list
+        // 1. Query for the id of editors where listID = listID
+        // 2. Mutations on deleteGroceryListAndEditors with batch delete on editors
+        // --
+        // --
+        // TODO: Query for the ids of the editors that have the listID
+        const ids = ['85f19694-7b34-48fd-b0f8-46c2513dbe02'];
+        ActionSheetIOS.showActionSheetWithOptions(
+          {
+            title: 'Do you want to remove the list?',
+            options: ['Cancel', 'Remove'],
+            destructiveButtonIndex: 1,
+            cancelButtonIndex: 0,
+          },
+          async buttonIndex => {
+            if (buttonIndex === 1) {
+              const deletedGroceryList = await deleteGroceryListAndEditors(
+                listID,
+                ids,
+              );
+              const groceryListsCopy = this.state.groceryLists.filter(
+                groceryList => groceryList.id !== deletedGroceryList.id,
+              );
+              this.setState({groceryLists: groceryListsCopy});
+            }
+          },
+        );
+      } else {
+        ActionSheetIOS.showActionSheetWithOptions(
+          {
+            title: 'Do you want to leave the list?',
+            options: ['Cancel', 'Leave'],
+            destructiveButtonIndex: 1,
+            cancelButtonIndex: 0,
+          },
+          async buttonIndex => {
+            if (buttonIndex === 1) {
+              const userID = this.state.user.id;
+              const editorID = await getEditorId(listID, userID);
+              const {list} = await deleteEditor(editorID);
+              const updatedList = this.state.groceryLists.filter(
+                groceryList => groceryList.id !== list.id,
+              );
+              this.setState({groceryLists: updatedList});
+            }
+          },
+        );
+      }
+    } catch (error) {
+      console.log(error);
+      this.setState({apiError: error});
+    }
   };
 
   render() {
-    const {apiError, groceryLists, modalOpen, user} = this.state;
+    const {apiError, groceryLists, modalOpen} = this.state;
     return (
       <View style={styles.container}>
         {apiError.length > 0 && <Message message={apiError} />}

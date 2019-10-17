@@ -90,6 +90,23 @@ export const deleteGroceryList = async id => {
 };
 
 /**
+ * ! deleteListEditors always returns the entered id
+ * Deletes a grocery list and the editors of that list
+ * @param {String} listID // the id of the list
+ * @param {ids} ids // An array of the editors to delete
+ */
+export const deleteGroceryListAndEditors = async (listID, ids) => {
+  const listInput = {id: listID};
+  const {data} = await API.graphql(
+    graphqlOperation(mutations.deleteGroceryListAndEditors, {
+      listInput,
+      ids,
+    }),
+  );
+  return data.deleteGroceryList;
+};
+
+/**
  * Deletes a grocery item and returns the id of the deleted item
  * @param {String} id
  */
@@ -141,6 +158,5 @@ export const deleteEditor = async id => {
   const {data} = await API.graphql(
     graphqlOperation(mutations.deleteEditor, {input: {id}}),
   );
-  console.log(data);
-  return data.deleteEditor.user;
+  return data.deleteEditor;
 };

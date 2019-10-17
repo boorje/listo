@@ -28,11 +28,16 @@ type GroceryItem @model {
   groceryList: GroceryList! @connection(name: "GroceryItems")
 }
 
+type Mutation {
+  batchDeleteEditors(ids: [ID!]!): [Editor]
+}
+
 # --- ADD TO BUILD
+
 # input ModelEditorFilterInput {
 #   id: ModelIDFilterInput
-#   list: ModelIDFilterInput
-#   user: ModelIDFilterInput
+#   editorListId: ModelIDFilterInput
+#   editorUserId: ModelIDFilterInput
 #   and: [ModelEditorFilterInput]
 #   or: [ModelEditorFilterInput]
 #   not: ModelEditorFilterInput

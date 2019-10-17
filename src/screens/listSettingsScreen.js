@@ -18,7 +18,12 @@ import {
 } from '../api/groceryListsAPI';
 import {getUser, getUserIDByEmail} from '../api/authAPI';
 
-// TODO: Add FORMIK Form ?
+/**
+ * TODO:
+ * Add Formik
+ * Add Stylesheet
+ * Add prop-types
+ */
 export default class ListSettingsScreen extends React.Component {
   state = {
     groceryList: {},
@@ -27,8 +32,7 @@ export default class ListSettingsScreen extends React.Component {
     apiError: '',
   };
 
-  // TODO: add so that it says "you" instead of email if the logged in
-  // TODO: user is the owner of the list.
+  // TODO: add so that it says "you" instead of email if the logged in user is the owner of the list.
   componentDidMount = async () => {
     try {
       const groceryList = await this.props.navigation.getParam(
@@ -41,7 +45,6 @@ export default class ListSettingsScreen extends React.Component {
       editors.unshift(owner);
       this.setState({editors});
     } catch (error) {
-      console.log(error);
       this.setState({apiError: error});
     }
   };
@@ -132,10 +135,11 @@ export default class ListSettingsScreen extends React.Component {
     try {
       const {editors, groceryList} = this.state;
       const editorId = await getEditorId(groceryList.id, id);
-      const res = await deleteEditor(editorId);
-      const newEditors = editors.filter(editor => editor.id !== res.id);
+      const {user} = await deleteEditor(editorId);
+      const newEditors = editors.filter(editor => editor.id !== user.id);
       this.setState({editors: newEditors});
     } catch (error) {
+      console.log(error);
       this.setState({apiError: 'Could not remove the user.'});
     }
   };

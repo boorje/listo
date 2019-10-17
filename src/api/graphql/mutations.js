@@ -19,6 +19,16 @@ export const deleteGroceryList = `mutation deleteGroceryList($input: DeleteGroce
   }
 }`;
 
+// Add batch delete on editors
+export const deleteGroceryListAndEditors = `mutation deleteGroceryListAndEditors($listInput: DeleteGroceryListInput!, $ids: [ID!]!) {
+	deleteGroceryList(input: $listInput) {
+    id
+  }
+  batchDeleteEditors(ids: $ids) {
+    id
+  }
+}`;
+
 export const deleteGroceryItem = `mutation deleteGroceryItem($input: DeleteGroceryItemInput!) {
   deleteGroceryItem(input: $input) {
     id
@@ -59,6 +69,9 @@ export const createEditor = `mutation createEditor($input: CreateEditorInput!) {
 
 export const deleteEditor = `mutation deleteEditor($input: DeleteEditorInput!) {
   deleteEditor(input: $input) {
+    list {
+      id
+    }
     user {
       id
       email
