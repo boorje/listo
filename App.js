@@ -43,7 +43,7 @@ const AuthStack = createStackNavigator(
     ResetPassword: ResetPasswordScreen,
     PasswordFinished: PasswordFinishedScreen,
   },
-  //{headerMode: 'none'},
+  {headerMode: 'none'},
 );
 
 export default createAppContainer(

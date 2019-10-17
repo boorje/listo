@@ -12,6 +12,7 @@ export const listGroceryLists = async () => {
   const {data} = await API.graphql(
     graphqlOperation(queries.listGroceryLists, {}),
   );
+
   return data.listGroceryLists.items;
 };
 
@@ -23,6 +24,7 @@ export const getGroceryList = async id => {
   const {data} = await API.graphql(
     graphqlOperation(queries.getGroceryList, {id}),
   );
+
   return data.getGroceryList.groceries.items;
 };
 

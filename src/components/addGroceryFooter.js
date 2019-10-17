@@ -46,16 +46,11 @@ export default class AddGroceryFooter extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    //flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingLeft: '3%',
     paddingRight: '3%',
-  },
-  text: {
-    fontSize: 20,
-    fontFamily: 'Avenir Next',
   },
   icons: {
     flex: 1,

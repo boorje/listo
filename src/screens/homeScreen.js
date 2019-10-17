@@ -1,16 +1,18 @@
 import React from 'react';
-import {StyleSheet, View, ScrollView, SafeAreaView} from 'react-native';
+import {StyleSheet, View, Image, SafeAreaView, Text} from 'react-native';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
+import textStyles from '../styles/textStyles';
 
 // -- Components --
 import GroceryListsContainer from '../components/groceryListsContainer';
-import AddGroceryListButton from '../components/buttons/addGroceryListButton';
 import AddGroceryListModal from '../components/modals/AddGroceryListModal';
 import Message from '../components/message';
 import AddGroceryListFooter from '../components/addGroceryListFooter';
+import Background from '../components/background';
 
 // -- API helpers --
 import {
+  getGroceryList,
   createGroceryList,
   listGroceryLists,
   deleteGroceryList,
@@ -19,15 +21,7 @@ import {
 class HomeScreen extends React.Component {
   static navigationOptions = ({navigation}) => {
     return {
-      headerTitle: 'My Lists',
-      headerRight: (
-        <IoniconsIcon
-          size={32}
-          name="md-settings"
-          onPress={() => navigation.navigate('Settings')}
-          style={{marginRight: 15}}
-        />
-      ),
+      header: null,
     };
   };
 
@@ -35,11 +29,16 @@ class HomeScreen extends React.Component {
     modalOpen: false,
     groceryLists: [],
     apiError: '',
+    numberOfItems: 8,
   };
 
   componentDidMount = async () => {
     try {
       const groceryLists = await listGroceryLists();
+      const groceries = groceryLists.map(
+        list => getGroceryList(list.id).length,
+      );
+      console.log(groceries);
       this.setState({groceryLists});
     } catch (error) {
       this.setState({apiError: 'Could not fetch lists. Please try again.'});
@@ -76,7 +75,7 @@ class HomeScreen extends React.Component {
   };
 
   render() {
-    const {apiError, groceryLists, modalOpen} = this.state;
+    const {apiError, groceryLists, modalOpen, numberOfItems} = this.state;
     return (
       <View style={styles.container}>
         {apiError.length > 0 && <Message message={apiError} />}
@@ -87,18 +86,21 @@ class HomeScreen extends React.Component {
             addGroceryList={this.addGroceryList}
           />
         )}
-        <SafeAreaView style={{flex: 8}}>
+        <Background
+          navigate={() => this.props.navigation.navigate('Settings')}
+        />
+        <SafeAreaView style={{flex: 5, marginTop: '3%'}}>
           <GroceryListsContainer
             lists={groceryLists}
             removeGroceryList={this.removeGroceryList}
             goToGroceryList={groceryList =>
               this.props.navigation.navigate('List', {groceryList})
             }
+            numberOfItems={numberOfItems}
           />
         </SafeAreaView>
-        <View style={styles.footer}>
-          <AddGroceryListFooter addGroceryList={this.toggleModal} />
-        </View>
+
+        <AddGroceryListFooter addGroceryList={this.toggleModal} />
       </View>
     );
   }
@@ -108,14 +110,6 @@ export default HomeScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  headline: {
-    height: '5%',
-    backgroundColor: 'blue',
-  },
-  footer: {
-    flex: 1,
-    borderTopWidth: 0.5,
-    paddingBottom: 0,
+    backgroundColor: '#E3E3E3',
   },
 });

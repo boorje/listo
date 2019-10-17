@@ -120,6 +120,10 @@ class GroceriesContainer extends React.Component {
     });
   }
 
+  itemCounter = () => {
+    return this.state.groceries.length;
+  };
+
   animateList = () => {
     if (!this.active) {
       return;
@@ -291,7 +295,11 @@ class GroceriesContainer extends React.Component {
                 item={item}
               />
             ) : (
-              <Text style={textStyles.default}>{item.content}</Text>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <Text style={textStyles.default}>{item.content}</Text>
+                <Text style={textStyles.groceryDetails}>{item.quantity}</Text>
+                <Text style={textStyles.groceryDetails}>{item.unit}</Text>
+              </View>
             )}
           </View>
           <Icon
