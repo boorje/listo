@@ -75,6 +75,16 @@ export default class ListSettingsScreen extends React.Component {
         // check for valid user input
         const enteredEmail = this.state.emailInput;
         await this.validateEmail(enteredEmail);
+
+        // check if the email already exists in the list
+        if (this.state.editors.length > 0) {
+          this.state.editors.map(editor => {
+            if (editor.email === enteredEmail) {
+              throw 'User already has access to the list.';
+            }
+          });
+        }
+
         const userID = await getUserIDByEmail(enteredEmail);
         // check if input email is the owner of the list
         if (this.state.groceryList.owner === userID) {
