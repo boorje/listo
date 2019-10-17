@@ -50,7 +50,6 @@ export default class ListScreen extends React.Component {
 
   state = {
     groceries: [],
-    groceryListID: '',
     apiError: '',
     adjustFooter: false,
     addItemOpen: false,
@@ -66,7 +65,7 @@ export default class ListScreen extends React.Component {
         title: groceryList.title,
         groceryList: groceryList,
       });
-      this.setState({groceryListID: groceryList.id, groceryList});
+      this.setState({groceryList});
       const groceries = await getGroceryList(groceryList.id);
       this.setState({groceries});
     } catch (error) {
@@ -78,7 +77,7 @@ export default class ListScreen extends React.Component {
     try {
       const newGroceryID = await createGroceryItem(
         grocery,
-        this.state.groceryListID,
+        this.state.groceryList.id,
       );
       const {content, quantity, unit} = grocery;
       LayoutAnimation.spring();
@@ -128,21 +127,6 @@ export default class ListScreen extends React.Component {
     }
   };
 
-  //TODO: Dynamic update
-  shareGroceryList = async () => {
-    try {
-      const userID = await getUserID('ericborjesson123@gmail.com');
-      console.log(userID);
-      const res = await updateGroceryList({
-        id: this.state.groceryListID,
-        editors: [userID],
-      });
-      console.log(res);
-    } catch (error) {
-      console.log('ERROR --', error);
-    }
-  };
-
   showGroceryForm = (grocery, index) => {
     if (this.state.addItemOpen) {
       this.setState({adjustFooter: false, addItemOpen: false});
@@ -188,7 +172,6 @@ export default class ListScreen extends React.Component {
               removeGrocery={this.removeGrocery}
               showGroceryForm={this.showGroceryForm}
             />
-            <Button title="Share" onPress={() => this.shareGroceryList()} />
           </SafeAreaView>
         </View>
         <View

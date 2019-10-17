@@ -5,6 +5,8 @@ import {
   getGroceryListEditors,
 } from '../api/groceryListsAPI';
 
+import {getUserIDByEmail} from '../api/authAPI';
+
 export default class ListSettingsScreen extends React.Component {
   state = {
     groceryList: {},
@@ -21,6 +23,7 @@ export default class ListSettingsScreen extends React.Component {
       const editors = await this.getEditors(groceryList.id);
       this.setState({groceryList, editors});
     } catch (error) {
+      console.log(error);
       alert(error);
     }
   };
@@ -37,31 +40,27 @@ export default class ListSettingsScreen extends React.Component {
   // add editor to the list
   addEditor = async () => {
     try {
-      // TODO: Change so the value comes from the form
-      const enteredEmail = this.state.emailInput;
-      console.log(enteredEmail);
-      // Get the id of the user
-
-      // const userId = '1c8f66ad-04ac-4fad-9588-8db5a044e2e8';
-      // let isEditor = false;
-      // // checks if the user already exists
-      // this.state.editors.map(({editor}) => {
-      //   if (editor.id === userId) {
-      //     isEditor = true;
-      //   }
-      // });
-      // if (isEditor) {
-      //   throw 'user is already an editor';
-      // } else {
-      //   const {id} = this.state.groceryList;
-      //   const editor = await createGroceryListEditor({
-      //     groceryListEditorGroceryListId: id,
-      //     groceryListEditorEditorId: userId,
-      //   });
-      //   this.setState(prevState => ({
-      //     editors: [...prevState.editors, editor],
-      //   }));
-      // }
+      if (!this.state.groceryList.isOwner) {
+        throw 'Only the admin has right to share the list';
+      } else {
+        // check if logged in user is owner of list
+        const enteredEmail = this.state.emailInput;
+        const userID = await getUserIDByEmail(enteredEmail);
+        // checks if the user already exists
+        this.state.editors.map(({editor}) => {
+          if (editor.id === userID) {
+            throw 'User already has access to the list.';
+          }
+        });
+        const editor = await createGroceryListEditor({
+          groceryListEditorGroceryListId: this.state.groceryList.id,
+          groceryListEditorEditorId: userID,
+        });
+        this.setState(prevState => ({
+          editors: [...prevState.editors, editor],
+          emailInput: '',
+        }));
+      }
     } catch (error) {
       alert(error);
     }
@@ -71,18 +70,25 @@ export default class ListSettingsScreen extends React.Component {
   removeEditor = async () => {};
 
   render() {
-    const {editors, emailInput} = this.state;
+    const {editors, emailInput, groceryList} = this.state;
     return (
       <View>
         <Text>Delas med:</Text>
-        <TextInput
-          style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-          onChangeText={emailInput => this.setState({emailInput})}
-          value={emailInput}
-        />
-        <Button title="share" onPress={() => this.addEditor()} />
+        {groceryList.isOwner && (
+          <React.Fragment>
+            <TextInput
+              style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+              onChangeText={emailInput => this.setState({emailInput})}
+              value={emailInput}
+              autoCapitalize="none"
+            />
+            <Button title="share" onPress={() => this.addEditor()} />
+          </React.Fragment>
+        )}
         {editors.length > 0 &&
-          editors.map(({editor}) => <Text>{editor.email}</Text>)}
+          editors.map(({editor}) => (
+            <Text key={editor.id}>{editor.email}</Text>
+          ))}
       </View>
     );
   }

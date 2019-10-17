@@ -29,13 +29,14 @@ export default class GroceryListsContainer extends React.Component {
     autoClose: true,
   };
   renderList(item, index) {
+    console.log('item: ', item);
     return (
       <Swipeout
         style={GroceryListStyles.swipeout}
         {...this.swipeSettings}
         right={[
           {
-            text: 'Delete',
+            text: item.isOwner ? 'Delete' : 'Leave',
             type: 'delete',
             onPress: () => {
               this.props.removeGroceryList(item.id);

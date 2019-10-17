@@ -9,15 +9,22 @@ export const getUser = async id => {
 };
 
 /**
- * Finds and return the user id by email
- * @param {String} email
+ * Queries for the lists owned by the user and the lists shared with the user.
+ * Returns one combined array with the lists.
+ * @param {String} id
  */
-export const getUserID = async email => {
-  //   const {data} = await API.graphql(
-  //     graphqlOperation(mutations.deleteGroceryItem, {input: {email}}),
-  //   );
-  //   return data.deleteGroceryItem;
-  return '1c8f66ad-04ac-4fad-9588-8db5a044e2e8';
+export const getUserLists = async id => {
+  const {data} = await API.graphql(
+    graphqlOperation(queries.getUserLists, {id}),
+  );
+  const ownedLists = data.listGroceryLists.items.map(list => {
+    list.isOwner = true;
+    return list;
+  });
+  const sharedLists = data.getUser.groceryLists.items.map(
+    item => item.groceryList,
+  );
+  return ownedLists.concat(sharedLists);
 };
 
 /**

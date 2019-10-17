@@ -1,6 +1,7 @@
 import React from 'react';
 import {StyleSheet, View, SafeAreaView} from 'react-native';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
+import {Auth} from 'aws-amplify';
 
 // -- Components --
 import GroceryListsContainer from '../components/groceryListsContainer';
@@ -9,11 +10,9 @@ import Message from '../components/message';
 import AddGroceryListFooter from '../components/addGroceryListFooter';
 
 // -- API helpers --
-import {
-  createGroceryList,
-  listGroceryLists,
-  deleteGroceryList,
-} from '../api/groceryListsAPI';
+import {createGroceryList, deleteGroceryList} from '../api/groceryListsAPI';
+
+import {getUserLists} from '../api/authAPI';
 
 class HomeScreen extends React.Component {
   static navigationOptions = ({navigation}) => {
@@ -38,7 +37,8 @@ class HomeScreen extends React.Component {
 
   componentDidMount = async () => {
     try {
-      const groceryLists = await listGroceryLists();
+      const user = await Auth.currentAuthenticatedUser();
+      const groceryLists = await getUserLists(user.username);
       this.setState({groceryLists});
     } catch (error) {
       console.log(error);
@@ -65,11 +65,25 @@ class HomeScreen extends React.Component {
 
   removeGroceryList = async (id, index) => {
     try {
-      const deletedGroceryList = await deleteGroceryList(id);
-      const groceryListsCopy = this.state.groceryLists.filter(
-        groceryList => groceryList.id !== deletedGroceryList.id,
-      );
-      this.setState({groceryLists: groceryListsCopy});
+      // check if user is owner of the list
+      let isOwner = false;
+      this.state.groceryLists.map(list => {
+        if (list.id === id) {
+          if (list.isOwner) {
+            isOwner = true;
+          }
+        }
+      });
+      if (isOwner) {
+        const deletedGroceryList = await deleteGroceryList(id);
+        const groceryListsCopy = this.state.groceryLists.filter(
+          groceryList => groceryList.id !== deletedGroceryList.id,
+        );
+        this.setState({groceryLists: groceryListsCopy});
+      } else {
+        // TODO: Delete the user from the list as shared
+        console.log('Delete user from the list');
+      }
     } catch (error) {
       this.setState({apiError: error});
     }

@@ -51,3 +51,24 @@ export const getUser = `query getUser($id: ID!) {
         id
     }
 }`;
+
+export const getUserLists = `query getUser($id: ID!) {
+    getUser(id: $id) {
+    	groceryLists {
+    	    nextToken
+            items {
+                groceryList {
+                    id
+                    title
+                }
+            }
+    	} 
+    }
+    listGroceryLists(filter: {owner: {eq: $id}}) {
+    	items {
+            id
+            title
+        }
+    }
+}
+`;

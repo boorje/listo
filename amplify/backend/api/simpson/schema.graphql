@@ -10,8 +10,11 @@ type GroceryListEditor @model(queries: null) {
   editor: User! @connection(name: "UserEditors")
 }
 
-type GroceryList @model @auth(rules: [{allow: owner}]) {
+type GroceryList
+  @model
+  @auth(rules: [{allow: owner, operations: [create, delete]}]) {
   id: ID!
+  owner: ID
   title: String!
   groceries: [GroceryItem] @connection(name: "GroceryItems")
   editors: [GroceryListEditor] @connection(name: "GroceryListEditors")
