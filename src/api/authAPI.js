@@ -61,6 +61,5 @@ export const deleteEditor = async id => {
   const {data} = await API.graphql(
     graphqlOperation(mutations.deleteEditor, {id}),
   );
-  console.log(data);
   return data;
 };

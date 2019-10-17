@@ -39,7 +39,6 @@ class HomeScreen extends React.Component {
     try {
       const user = await Auth.currentAuthenticatedUser();
       const groceryLists = await getUserLists(user.username);
-      console.log(groceryLists);
       this.setState({groceryLists});
     } catch (error) {
       console.log(error);
@@ -64,30 +63,31 @@ class HomeScreen extends React.Component {
     }
   };
 
+  // TODO: Remove the user and list from the editor model when deleting the list.
   removeGroceryList = async (id, index) => {
-    try {
-      // check if user is owner of the list
-      let isOwner = false;
-      this.state.groceryLists.map(list => {
-        if (list.id === id) {
-          if (list.isOwner) {
-            isOwner = true;
-          }
-        }
-      });
-      if (isOwner) {
-        const deletedGroceryList = await deleteGroceryList(id);
-        const groceryListsCopy = this.state.groceryLists.filter(
-          groceryList => groceryList.id !== deletedGroceryList.id,
-        );
-        this.setState({groceryLists: groceryListsCopy});
-      } else {
-        // TODO: Delete the user from the list as shared
-        console.log('Delete user from the list');
-      }
-    } catch (error) {
-      this.setState({apiError: error});
-    }
+    // try {
+    //   // check if user is owner of the list
+    //   let isOwner = false;
+    //   this.state.groceryLists.map(list => {
+    //     if (list.id === id) {
+    //       if (list.isOwner) {
+    //         isOwner = true;
+    //       }
+    //     }
+    //   });
+    //   if (isOwner) {
+    //     const deletedGroceryList = await deleteGroceryList(id);
+    //     const groceryListsCopy = this.state.groceryLists.filter(
+    //       groceryList => groceryList.id !== deletedGroceryList.id,
+    //     );
+    //     this.setState({groceryLists: groceryListsCopy});
+    //   } else {
+    //     // TODO: Delete the user from the list as shared
+    //     console.log('Delete user from the list');
+    //   }
+    // } catch (error) {
+    //   this.setState({apiError: error});
+    // }
   };
 
   render() {

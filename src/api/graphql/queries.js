@@ -60,6 +60,7 @@ export const getUserLists = `query getUser($id: ID!) {
                 list {
                     id
                     title
+                    owner
                 }
             }
     	} 
@@ -68,6 +69,7 @@ export const getUserLists = `query getUser($id: ID!) {
     	items {
             id
             title
+            owner
         }
     }
 }
