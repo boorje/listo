@@ -1,9 +1,9 @@
 import React from 'react';
 import {Button, Text, TextInput, View} from 'react-native';
 import * as yup from 'yup';
+import Message from '../components/message';
 
 import {createEditor, getEditors} from '../api/groceryListsAPI';
-
 import {getUserIDByEmail} from '../api/authAPI';
 
 // TODO: Add FORMIK Form ?
@@ -12,6 +12,7 @@ export default class ListSettingsScreen extends React.Component {
     groceryList: {},
     editors: [],
     emailInput: '',
+    apiError: '',
   };
 
   componentDidMount = async () => {
@@ -23,8 +24,7 @@ export default class ListSettingsScreen extends React.Component {
       const editors = await this.getEditors(groceryList.id);
       this.setState({groceryList, editors});
     } catch (error) {
-      console.log(error);
-      alert(error);
+      this.setState({apiError: error});
     }
   };
 
@@ -33,11 +33,11 @@ export default class ListSettingsScreen extends React.Component {
     try {
       return await getEditors(listId);
     } catch (error) {
-      console.log(error);
       throw 'Could not fetch editors';
     }
   };
 
+  // validates the user input
   validateEmail = email => {
     return new Promise(async (resolve, reject) => {
       try {
@@ -89,8 +89,7 @@ export default class ListSettingsScreen extends React.Component {
         }));
       }
     } catch (error) {
-      console.log(error);
-      alert(error);
+      this.setState({apiError: error});
     }
   };
 
@@ -98,9 +97,10 @@ export default class ListSettingsScreen extends React.Component {
   removeEditor = async () => {};
 
   render() {
-    const {editors, emailInput, groceryList} = this.state;
+    const {apiError, editors, emailInput, groceryList} = this.state;
     return (
       <View>
+        {apiError.length > 0 && <Message message={apiError} />}
         <Text>Delas med:</Text>
         {editors.length > 0 &&
           editors.map(editor => <Text key={editor.id}>{editor.email}</Text>)}
