@@ -1,5 +1,12 @@
 import React from 'react';
-import {Button, Text, TextInput, View} from 'react-native';
+import {
+  Button,
+  FlatList,
+  Text,
+  TextInput,
+  TouchableHighlight,
+  View,
+} from 'react-native';
 import * as yup from 'yup';
 import Message from '../components/message';
 
@@ -139,12 +146,27 @@ export default class ListSettingsScreen extends React.Component {
       <View>
         {apiError.length > 0 && <Message message={apiError} />}
         <Text>List members</Text>
-        {editors.length > 0 &&
-          editors.map(editor => (
-            <Text key={editor.id} onPress={() => this.deleteEditor(editor.id)}>
-              {editor.email} {editor.isOwner ? '(owner)' : null}
-            </Text>
-          ))}
+        {editors.length > 0 && (
+          <FlatList
+            data={editors}
+            renderItem={({item}) => (
+              <TouchableHighlight
+                onPress={() => this.deleteEditor(item.id)}
+                style={{
+                  alignItems: 'center',
+                  borderWidth: 1,
+                  borderColor: 'blue',
+                  padding: 20,
+                }}
+                disabled={item.isOwner}>
+                <Text>
+                  {item.email} {item.isOwner ? '(owner)' : null}
+                </Text>
+              </TouchableHighlight>
+            )}
+            keyExtractor={item => item.id}
+          />
+        )}
         {groceryList.isOwner && (
           <React.Fragment>
             <TextInput
@@ -152,6 +174,7 @@ export default class ListSettingsScreen extends React.Component {
               onChangeText={text => this.setState({emailInput: text})}
               value={emailInput}
               autoCapitalize="none"
+              autoCorrect={false}
             />
             <Button title="share" onPress={() => this.addEditor()} />
           </React.Fragment>
