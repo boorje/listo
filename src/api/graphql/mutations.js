@@ -59,6 +59,9 @@ export const createEditor = `mutation createEditor($input: CreateEditorInput!) {
 
 export const deleteEditor = `mutation deleteEditor($input: DeleteEditorInput!) {
   deleteEditor(input: $input) {
-    id
+    user {
+      id
+      email
+    }
   }
 }`;

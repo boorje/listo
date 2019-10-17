@@ -83,3 +83,11 @@ export const getUserIDByEmail = `query getUserIDByEmail($filter: ModelUserFilter
       }
     }
   }`;
+
+export const getEditorId = `query listEditors($filter: ModelEditorFilterInput) {
+    listEditors(filter: $filter) {
+      items {
+        id
+      }
+    }
+  }`;

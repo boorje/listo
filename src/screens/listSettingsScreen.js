@@ -3,7 +3,12 @@ import {Button, Text, TextInput, View} from 'react-native';
 import * as yup from 'yup';
 import Message from '../components/message';
 
-import {createEditor, getEditors} from '../api/groceryListsAPI';
+import {
+  createEditor,
+  deleteEditor,
+  getEditors,
+  getEditorId,
+} from '../api/groceryListsAPI';
 import {getUser, getUserIDByEmail} from '../api/authAPI';
 
 // TODO: Add FORMIK Form ?
@@ -29,6 +34,7 @@ export default class ListSettingsScreen extends React.Component {
       editors.unshift(owner);
       this.setState({editors});
     } catch (error) {
+      console.log(error);
       this.setState({apiError: error});
     }
   };
@@ -114,8 +120,18 @@ export default class ListSettingsScreen extends React.Component {
     }
   };
 
-  // remove editor from the list
-  removeEditor = async () => {};
+  // delete editor from the list
+  deleteEditor = async id => {
+    try {
+      const {editors, groceryList} = this.state;
+      const editorId = await getEditorId(groceryList.id, id);
+      const res = await deleteEditor(editorId);
+      const newEditors = editors.filter(editor => editor.id !== res.id);
+      this.setState({editors: newEditors});
+    } catch (error) {
+      this.setState({apiError: 'Could not remove the user.'});
+    }
+  };
 
   render() {
     const {apiError, editors, emailInput, groceryList} = this.state;
@@ -125,7 +141,7 @@ export default class ListSettingsScreen extends React.Component {
         <Text>List members</Text>
         {editors.length > 0 &&
           editors.map(editor => (
-            <Text key={editor.id}>
+            <Text key={editor.id} onPress={() => this.deleteEditor(editor.id)}>
               {editor.email} {editor.isOwner ? '(owner)' : null}
             </Text>
           ))}

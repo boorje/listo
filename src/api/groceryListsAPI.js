@@ -35,6 +35,17 @@ export const getEditors = async id => {
   return data.getGroceryList.editors.items.map(({user}) => user);
 };
 
+export const getEditorId = async (listID, userID) => {
+  const filter = {
+    editorListId: {eq: listID},
+    editorUserId: {eq: userID},
+  };
+  const {data} = await API.graphql(
+    graphqlOperation(queries.getEditorId, {filter}),
+  );
+  return data.listEditors.items[0].id;
+};
+
 // -- MUTATIONS --
 
 /**
@@ -120,4 +131,16 @@ export const createEditor = async input => {
     graphqlOperation(mutations.createEditor, {input}),
   );
   return data.createEditor.user;
+};
+
+/**
+ * Deletes the editor between user and list
+ * @param {Object} input
+ */
+export const deleteEditor = async id => {
+  const {data} = await API.graphql(
+    graphqlOperation(mutations.deleteEditor, {input: {id}}),
+  );
+  console.log(data);
+  return data.deleteEditor.user;
 };

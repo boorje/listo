@@ -27,3 +27,13 @@ type GroceryItem @model {
   unit: String
   groceryList: GroceryList! @connection(name: "GroceryItems")
 }
+
+# --- ADD TO BUILD
+# input ModelEditorFilterInput {
+#   id: ModelIDFilterInput
+#   list: ModelIDFilterInput
+#   user: ModelIDFilterInput
+#   and: [ModelEditorFilterInput]
+#   or: [ModelEditorFilterInput]
+#   not: ModelEditorFilterInput
+# }
