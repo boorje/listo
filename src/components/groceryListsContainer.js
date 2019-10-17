@@ -29,7 +29,6 @@ export default class GroceryListsContainer extends React.Component {
     autoClose: true,
   };
   renderList(item, index) {
-    console.log('item: ', item);
     return (
       <Swipeout
         style={GroceryListStyles.swipeout}

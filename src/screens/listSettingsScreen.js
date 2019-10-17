@@ -15,6 +15,8 @@ export default class ListSettingsScreen extends React.Component {
     apiError: '',
   };
 
+  // TODO: add so that it says "you" instead of email if the logged in
+  // TODO: user is the owner of the list.
   componentDidMount = async () => {
     try {
       const groceryList = await this.props.navigation.getParam(
