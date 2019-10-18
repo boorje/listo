@@ -101,7 +101,6 @@ const GroceryListItemStyles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#FE9501',
-    opacity: 0.6,
     borderRadius: 50,
     width: 30,
     height: 30,

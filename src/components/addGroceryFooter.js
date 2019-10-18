@@ -18,10 +18,12 @@ export default class AddGroceryFooter extends React.Component {
             <Text style={textStyles.default}>Lägg till vara...</Text>
           </TouchableOpacity>
         ) : (
-          <GroceryForm
-            closeGroceryForm={this.props.showAddGrocery}
-            addGrocery={this.props.addGrocery}
-          />
+          <View style={{paddingTop: 10}}>
+            <GroceryForm
+              closeGroceryForm={this.props.showAddGrocery}
+              addGrocery={this.props.addGrocery}
+            />
+          </View>
         )}
         <View style={styles.icons}>
           <IoniconsIcon

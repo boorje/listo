@@ -34,7 +34,8 @@ class HomeScreen extends React.Component {
 
   componentDidMount = async () => {
     try {
-      const groceryLists = await listGroceryLists();
+      // const groceryLists = await listGroceryLists();
+      const groceryLists = [{id: 1, title: 'Adam'}]; //! REMOVE
       const groceries = groceryLists.map(
         list => getGroceryList(list.id).length,
       );

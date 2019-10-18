@@ -9,16 +9,9 @@ const ListScreenHeader = props => (
         size={50}
         color={'#808080'}
         name="ios-arrow-round-back"
-        onPress={() => props.goBack('Settings')}
+        onPress={() => props.goBack()}
       />
       <View style={styles.icons2}>
-        <IoniconsIcon
-          style={{paddingRight: '3%'}}
-          size={35}
-          color={'#808080'}
-          name="ios-list"
-          onPress={() => {}}
-        />
         <IoniconsIcon
           size={35}
           color={'#808080'}
