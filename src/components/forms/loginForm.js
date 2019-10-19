@@ -40,10 +40,14 @@ const LoginForm = props => (
             value={values.email}
             onChangeText={handleChange('email')}
             onBlur={() => setFieldTouched('email')}
+            b
             placeholder="E-mail"
+            placeholderTextColor="black"
+            selectionColor="#37AE15"
             autoCapitalize="none"
             style={formStyles.formTextInput}
           />
+
           {touched.email && errors.email && (
             <Text style={formStyles.inputError}>{errors.email}</Text>
           )}
@@ -51,6 +55,8 @@ const LoginForm = props => (
             value={values.password}
             onChangeText={handleChange('password')}
             placeholder="Password"
+            placeholderTextColor="black"
+            selectionColor="#37AE15"
             onBlur={() => setFieldTouched('password')}
             secureTextEntry={status.hidePassword}
             style={formStyles.formTextInput}
@@ -68,12 +74,15 @@ const LoginForm = props => (
                   setStatus({hidePassword: true});
                 }
               }}
-              style={{color: status.hidePassword ? '#666' : '#333'}}>
-              Show password
+              style={{
+                color: status.hidePassword ? '#000' : '#666',
+                fontFamily: 'Avenir Next',
+              }}>
+              Visa lösenord
             </Text>
           </View>
           <SubmitButton
-            title="LOGIN"
+            title="Logga in"
             disabled={!isValid}
             onPress={handleSubmit}
             type="submit"

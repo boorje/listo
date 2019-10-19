@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import * as colors from '../../styles/colors';
+import textStyles from '../../styles/textStyles';
 
 const PrimaryButton = props => {
   const {disabled, title, onPress, loading} = props;
@@ -22,7 +23,7 @@ const PrimaryButton = props => {
       {loading ? (
         <ActivityIndicator size="small" color="#fff" />
       ) : (
-        <Text style={styles.text}>{title}</Text>
+        <Text style={textStyles.button}>{title}</Text>
       )}
     </TouchableOpacity>
   );
@@ -40,7 +41,7 @@ PrimaryButton.propTypes = {
 const styles = StyleSheet.create({
   button: {
     height: 59,
-    borderRadius: 5,
+    borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 10,

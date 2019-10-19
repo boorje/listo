@@ -9,6 +9,8 @@ export default StyleSheet.create({
     borderColor: '#ddd',
     borderRadius: 3,
     height: 60,
+    backgroundColor: 'white',
+    opacity: 0.8,
   },
   inputError: {fontSize: 11, color: 'red', marginLeft: 20},
   forgotPassword: {

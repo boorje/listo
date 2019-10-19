@@ -1,6 +1,7 @@
 import React from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, View, Image, Text} from 'react-native';
 import {Auth} from 'aws-amplify';
+import textStyles from '../../styles/textStyles';
 
 // -- Components --
 import SignupForm from '../../components/forms/signupForm';
@@ -8,6 +9,9 @@ import Message from '../../components/message';
 
 // -- Helpers --
 import validateValues from '../../helpers/validateFormValues';
+
+const BACKGROUND_URL =
+  'https://images.unsplash.com/photo-1516594798947-e65505dbb29d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80';
 
 class SignupScreen extends React.Component {
   state = {
@@ -49,8 +53,17 @@ class SignupScreen extends React.Component {
     const {loading, signupError} = this.state;
     return (
       <View style={styles.container}>
-        {signupError.length > 0 && <Message message={signupError} />}
-        <SignupForm handleSubmit={this.handleSubmit} loading={loading} />
+        <Image
+          style={styles.background}
+          source={{
+            uri: BACKGROUND_URL,
+          }}
+        />
+        <View style={styles.form}>
+          <Text style={textStyles.loginHeadline}>Fyll i formuläret</Text>
+          {signupError.length > 0 && <Message message={signupError} />}
+          <SignupForm handleSubmit={this.handleSubmit} loading={loading} />
+        </View>
       </View>
     );
   }
@@ -59,5 +72,7 @@ class SignupScreen extends React.Component {
 export default SignupScreen;
 
 const styles = StyleSheet.create({
-  container: {margin: 30},
+  container: {flex: 1, justifyContent: 'center'},
+  background: {flex: 1, opacity: 0.67},
+  form: {width: '70%', position: 'absolute', alignSelf: 'center'},
 });

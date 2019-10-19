@@ -35,6 +35,8 @@ const ForgotPasswordForm = props => {
               onChangeText={handleChange('email')}
               onBlur={() => setFieldTouched('email')}
               placeholder="E-mail"
+              placeholderTextColor="black"
+              selectionColor="#37AE15"
               autoCapitalize="none"
               style={formStyles.formTextInput}
             />
@@ -42,7 +44,7 @@ const ForgotPasswordForm = props => {
               <Text style={formStyles.inputError}>{errors.email}</Text>
             )}
             <SubmitButton
-              title="SEND EMAIL"
+              title="Skicka"
               disabled={!isValid}
               onPress={handleSubmit}
               type="submit"
