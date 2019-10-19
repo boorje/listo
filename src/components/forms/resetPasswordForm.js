@@ -39,7 +39,9 @@ const ResetPasswordForm = props => {
               value={values.code}
               onChangeText={handleChange('code')}
               onBlur={() => setFieldTouched('code')}
-              placeholder="Your verification code"
+              placeholder="Din verifieringskod"
+              placeholderTextColor="black"
+              selectionColor="#37AE15"
               keyboardType="number-pad"
               style={formStyles.formTextInput}
             />
@@ -49,7 +51,9 @@ const ResetPasswordForm = props => {
             <TextInput
               value={values.new_password}
               onChangeText={handleChange('new_password')}
-              placeholder="New password"
+              placeholder="Nytt lösenord"
+              placeholderTextColor="black"
+              selectionColor="#37AE15"
               onBlur={() => setFieldTouched('new_password')}
               secureTextEntry={true}
               style={formStyles.formTextInput}
@@ -58,7 +62,7 @@ const ResetPasswordForm = props => {
               <Text style={formStyles.inputError}>{errors.new_password}</Text>
             )}
             <SubmitButton
-              title="RESET PASSWORD"
+              title="Återställ lösenord"
               disabled={!isValid}
               onPress={handleSubmit}
               type="submit"

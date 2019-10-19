@@ -35,7 +35,7 @@ const MainStack = createStackNavigator({
 
 const AuthStack = createStackNavigator(
   {
-    Login: ForgotPasswordScreen,
+    Login: PasswordFinishedScreen,
     Signup: SignupScreen,
     Verify: VerifyScreen,
     Signedup: SignedupScreen,
