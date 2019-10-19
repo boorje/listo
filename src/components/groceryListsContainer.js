@@ -9,15 +9,14 @@ const GroceryListItem = props => {
   return (
     <TouchableHighlight
       style={GroceryListItemStyles.container}
-      backgroundColor={'white'}
       underlayColor={'transparent'}
       fontSize={50}
       onPress={() => props.goToGroceryList(props.item)}>
       <View style={GroceryListItemStyles.container2}>
-        <Text style={GroceryListItemStyles.text}>{props.item.title}</Text>
+        <Text style={textStyles.default}>{props.item.title}</Text>
         <View style={GroceryListItemStyles.badge}>
           {/* // TODO: add dynamic item count */}
-          <Text style={textStyles.badge}>5</Text>
+          <Text style={textStyles.badge}>{props.numberOfItems}</Text>
         </View>
       </View>
     </TouchableHighlight>
@@ -45,14 +44,11 @@ export default class GroceryListsContainer extends React.Component {
         <GroceryListItem
           item={item}
           goToGroceryList={this.props.goToGroceryList}
+          numberOfItems={this.props.numberOfItems}
         />
       </Swipeout>
     );
   }
-
-  FlatListItemSeparator = () => {
-    return <View style={GroceryListStyles.separator} />;
-  };
 
   render() {
     return (
@@ -62,7 +58,6 @@ export default class GroceryListsContainer extends React.Component {
           return this.renderList(item, index);
         }}
         keyExtractor={item => item.id}
-        ItemSeparatorComponent={this.FlatListItemSeparator}
       />
     );
   }
@@ -79,14 +74,11 @@ const GroceryListStyles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingLeft: '10%',
-    paddingRight: '10%',
   },
   separator: {
     height: 2,
     width: '97%',
     marginLeft: '3%',
-    marginRight: '0%',
     backgroundColor: '#607D8B',
   },
 });
@@ -95,24 +87,20 @@ const GroceryListItemStyles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
-    padding: 5,
+    padding: '2%',
+    width: '95%',
+    alignSelf: 'center',
+    marginBottom: '3%',
   },
   container2: {
-    flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingLeft: '3%',
-    paddingRight: '3%',
-    paddingBottom: '3%',
-  },
-  text: {
-    fontSize: 25,
   },
   badge: {
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'green',
+    backgroundColor: '#FE9501',
     borderRadius: 50,
     width: 30,
     height: 30,

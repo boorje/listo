@@ -83,9 +83,10 @@ class GroceriesContainer extends React.Component {
         // gestureState.d{x,y} will be set to zero now
 
         this.currentIdx = this.yToIndex(gestureState.y0);
+        //console.log('Index pressed: ' + this.currentIdx);
         this.currentY = gestureState.y0;
         Animated.event([{y: this.point.y}])({
-          y: gestureState.y0 - 2.4 * this.rowHeight,
+          y: gestureState.y0 - 4.3 * this.rowHeight,
         });
         this.active = true;
         this.setState({dragging: true, draggingIdx: this.currentIdx}, () => {
@@ -95,7 +96,7 @@ class GroceriesContainer extends React.Component {
       onPanResponderMove: (evt, gestureState) => {
         this.currentY = gestureState.moveY;
         Animated.event([{y: this.point.y}])({
-          y: gestureState.moveY - 2.4 * this.rowHeight,
+          y: gestureState.moveY - 4.3 * this.rowHeight,
         });
         // The most recent move distance is gestureState.move{X,Y}
         // The accumulated gesture distance since becoming responder is
@@ -148,13 +149,14 @@ class GroceriesContainer extends React.Component {
     const value = Math.floor(
       (this.scrollOffset + y - this.flatlistTopOffset) / this.rowHeight,
     );
-    if (value < 2) {
+    console.log(value);
+    if (value < 0) {
       return 0;
     }
-    if (value > this.state.groceries.length) {
+    if (value > this.state.groceries.length - 1) {
       return this.state.groceries.length - 1;
     }
-    return value - 2;
+    return value - 4; //adjusted with -4 because container is placed further down
   };
 
   reset = () => {
@@ -170,7 +172,21 @@ class GroceriesContainer extends React.Component {
       );
       this.setState({groceryListID: groceryList.id});
       this.props.navigation.setParams({title: groceryList.title});
-      const groceries = await getGroceryList(groceryList.id);
+      // const groceries = await getGroceryList(groceryList.id);
+      const groceries = [
+        {id: 1, content: 'Cola', quantity: 2, unit: 'kg'},
+        {id: 2, content: 'Fanta', quantity: 2, unit: 'kg'},
+        {id: 3, content: 'Sprite', quantity: 2, unit: 'kg'},
+        {id: 4, content: '7Up', quantity: 2, unit: 'kg'},
+        {id: 5, content: 'Birra', quantity: 2, unit: 'kg'},
+        {id: 6, content: 'Peroni', quantity: 2, unit: 'kg'},
+        {id: 1, content: 'Cola', quantity: 2, unit: 'kg'},
+        {id: 2, content: 'Fanta', quantity: 2, unit: 'kg'},
+        {id: 3, content: 'Sprite', quantity: 2, unit: 'kg'},
+        {id: 4, content: '7Up', quantity: 2, unit: 'kg'},
+        {id: 5, content: 'Birra', quantity: 2, unit: 'kg'},
+        {id: 6, content: 'Peroni', quantity: 2, unit: 'kg'},
+      ]; //! REMOVE
       if (groceries) {
         //! NOT WORKING
         groceries.details = false;
@@ -283,7 +299,8 @@ class GroceriesContainer extends React.Component {
         <View style={styles.container2}>
           <View
             style={{flex: 1}}
-            {...(noPanResponder ? {} : this._panResponder.panHandlers)}>
+            //{...(noPanResponder ? {} : this._panResponder.panHandlers)}
+          >
             {item.details ? (
               <GroceryForm
                 closeGroceryForm={() => this.showGroceryForm(item, index)}
@@ -291,7 +308,11 @@ class GroceriesContainer extends React.Component {
                 item={item}
               />
             ) : (
-              <Text style={textStyles.default}>{item.content}</Text>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <Text style={textStyles.default}>{item.content}</Text>
+                <Text style={textStyles.groceryDetails}>{item.quantity}</Text>
+                <Text style={textStyles.groceryDetails}>{item.unit}</Text>
+              </View>
             )}
           </View>
           <Icon
@@ -321,7 +342,7 @@ class GroceriesContainer extends React.Component {
               style={{
                 position: 'absolute',
                 backgroundColor: 'white',
-                //zIndex: 2,
+                zIndex: 1,
                 width: '100%',
                 top: this.point.getLayout().top,
               }}>
@@ -348,8 +369,7 @@ class GroceriesContainer extends React.Component {
         <View
           style={{
             justifyContent: !this.state.adjustFooter ? 'center' : 'flex-start',
-            flex: !this.state.adjustFooter ? 1 : 9,
-            paddingTop: !this.state.adjustFooter ? 0 : 20,
+            flex: !this.state.adjustFooter ? 1 : 10,
             borderTopWidth: 0.5,
             paddingBottom: 0,
           }}>
