@@ -257,11 +257,17 @@ class GroceriesContainer extends React.Component {
       this.setState({adjustFooter: false, addItemOpen: false});
     }
     let groceriesCopy = [...this.state.groceries];
+
     if (grocery.details) {
+      console.log('hej');
       groceriesCopy[index].details = false;
     } else {
+      groceriesCopy.map(item => {
+        item.details = false;
+      });
       groceriesCopy[index].details = true;
     }
+
     LayoutAnimation.configureNext(animations.default);
     this.setState({
       groceries: groceriesCopy,
