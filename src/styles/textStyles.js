@@ -32,6 +32,20 @@ const textStyles = StyleSheet.create({
     color: 'gray',
     paddingLeft: '1%',
   },
+  button: {
+    fontSize: 20,
+    fontFamily: 'Avenir Next',
+    color: 'white',
+  },
+  loginHeadline: {
+    fontSize: 40,
+    fontFamily: 'Avenir Next',
+    color: 'white',
+    fontWeight: 'bold',
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: {width: -1, height: 1},
+    textShadowRadius: 10,
+  },
 });
 
 export default textStyles;
