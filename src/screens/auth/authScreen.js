@@ -11,7 +11,7 @@ class AuthLoadingScreen extends React.Component {
   _isSignedIn = async () => {
     try {
       await Auth.currentAuthenticatedUser();
-      this.props.navigation.navigate('Auth');
+      this.props.navigation.navigate('App');
     } catch (e) {
       this.props.navigation.navigate('Auth');
     }
