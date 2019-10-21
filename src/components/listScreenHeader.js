@@ -16,7 +16,7 @@ const ListScreenHeader = props => (
           size={35}
           color={'#808080'}
           name="md-person-add"
-          onPress={() => {}}
+          onPress={() => props.sharingOptions()}
         />
       </View>
     </View>

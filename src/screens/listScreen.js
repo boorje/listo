@@ -48,7 +48,10 @@ export default class ListScreen extends React.Component {
     return (
       <View style={styles.container}>
         {apiError.length > 0 && <Message message={apiError} />}
-        <ListScreenHeader goBack={() => this.props.navigation.goBack()} />
+        <ListScreenHeader
+          goBack={() => this.props.navigation.goBack()}
+          sharingOptions={() => this.props.navigation.navigate('Sharing')}
+        />
         <View style={{paddingLeft: '3%'}}>
           <Text style={textStyles.listTitle}>
             {this.props.navigation.state.params.title}

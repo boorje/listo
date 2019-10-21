@@ -2,6 +2,7 @@ import React from 'react';
 import {StyleSheet, Text, View, Image} from 'react-native';
 import {Auth} from 'aws-amplify';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
+import textStyles from '../../styles/textStyles';
 
 // -- Components --
 import LoginForm from '../../components/forms/loginForm';
@@ -77,7 +78,7 @@ class LoginScreen extends React.Component {
           <LoginForm handleSubmit={this.handleLogin} loading={loading} />
           <Text
             onPress={() => this.props.navigation.navigate('ForgotPassword')}
-            style={styles.forgotPsw}>
+            style={[textStyles.smallText, {color: 'white'}]}>
             Glömt lösenord?
           </Text>
           <View style={styles.divider} />
@@ -101,6 +102,5 @@ const styles = StyleSheet.create({
   background: {flex: 1, opacity: 0.67},
   logo: {alignItems: 'center'},
   form: {width: '70%', position: 'absolute', alignSelf: 'center'},
-  forgotPsw: {alignSelf: 'center', fontFamily: 'Avenir Next', padding: 10},
   divider: {marginBottom: 20, borderWidth: 1, borderColor: '#ddd'},
 });

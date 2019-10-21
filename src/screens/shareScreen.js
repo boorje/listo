@@ -4,32 +4,21 @@ import {Auth} from 'aws-amplify';
 
 import PrimaryButton from '../components/buttons/primaryButton';
 
-class SettingsScreen extends React.Component {
+class ShareScreen extends React.Component {
   static navigationOptions = {
-    headerTitle: 'Settings',
-  };
-
-  _logout = async () => {
-    try {
-      await Auth.signOut();
-      this.props.navigation.navigate('Auth');
-    } catch (error) {
-      console.log(error);
-    }
+    headerTitle: 'Delningsinställningar',
   };
 
   render() {
     return (
       <View style={styles.container}>
-        <ScrollView>
-          <Text>Delas med: </Text>
-          <PrimaryButton title="Logga ut" onPress={() => this._logout()} />
-        </ScrollView>
+        <Text>Delas med: </Text>
+        <ScrollView></ScrollView>
       </View>
     );
   }
 }
-export default SettingsScreen;
+export default ShareScreen;
 
 const styles = StyleSheet.create({
   container: {

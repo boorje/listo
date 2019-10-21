@@ -7,6 +7,7 @@ import * as yup from 'yup';
 import SubmitButton from '../buttons/submitButton';
 
 import formStyles from '../../styles/formStyles';
+import textStyles from '../../styles/textStyles';
 
 const LoginForm = props => (
   <View>
@@ -74,10 +75,12 @@ const LoginForm = props => (
                   setStatus({hidePassword: true});
                 }
               }}
-              style={{
-                color: status.hidePassword ? '#000' : '#666',
-                fontFamily: 'Avenir Next',
-              }}>
+              style={[
+                {
+                  color: status.hidePassword ? '#fff' : '#aaa',
+                },
+                textStyles.smallText,
+              ]}>
               Visa lösenord
             </Text>
           </View>
