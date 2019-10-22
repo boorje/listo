@@ -9,7 +9,7 @@ const GroceryListItem = props => {
   return (
     <TouchableHighlight
       style={GroceryListItemStyles.container}
-      underlayColor={'transparent'}
+      underlayColor={'none'}
       fontSize={50}
       onPress={() => props.goToGroceryList(props.item)}>
       <View style={GroceryListItemStyles.container2}>
