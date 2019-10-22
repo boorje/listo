@@ -3,13 +3,15 @@ import {StyleSheet, Text, View, Image} from 'react-native';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 import textStyles from '../styles/textStyles';
 
+const BACKGROUND_URL =
+  'https://images.unsplash.com/photo-1516594798947-e65505dbb29d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80';
+
 const Background = props => (
   <View style={{flex: 3}}>
     <Image
-      style={{flex: 1, opacity: 0.8, top: 0}}
+      style={{flex: 1, opacity: 0.6, top: 0}}
       source={{
-        uri:
-          'https://images.unsplash.com/photo-1506202687253-52e1b29d3527?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80',
+        uri: BACKGROUND_URL,
       }}
     />
     <View style={styles.headline1}>

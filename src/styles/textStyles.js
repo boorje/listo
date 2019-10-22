@@ -9,7 +9,7 @@ const textStyles = StyleSheet.create({
   textInputActive: {
     fontSize: 20,
     fontFamily: 'Avenir Next',
-    color: 'gray',
+    color: 'black',
   },
   badge: {
     fontSize: 20,
@@ -20,6 +20,9 @@ const textStyles = StyleSheet.create({
     fontSize: 40,
     fontFamily: 'Avenir Next',
     color: 'white',
+    textShadowColor: 'rgba(0, 0, 0, 1)',
+    textShadowOffset: {width: 2, height: 2},
+    textShadowRadius: 10,
   },
   listTitle: {
     fontSize: 30,

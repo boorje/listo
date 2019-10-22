@@ -8,9 +8,9 @@ export default class AddGroceryListFooter extends React.Component {
   render() {
     return (
       <IoniconsIcon
-        size={68}
+        size={80}
         style={styles.icon}
-        color={'#F46706'}
+        color={'#06BA63'}
         name="ios-add-circle"
         onPress={() => this.props.addGroceryList()}
       />
@@ -19,7 +19,7 @@ export default class AddGroceryListFooter extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  icon: {position: 'absolute', bottom: '10%', right: '10%', opacity: 0.8},
+  icon: {position: 'absolute', bottom: '10%', right: '15%', opacity: 0.8},
 });
 
 AddGroceryListFooter.propTypes = {

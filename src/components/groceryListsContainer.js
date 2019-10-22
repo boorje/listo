@@ -26,11 +26,13 @@ const GroceryListItem = props => {
 export default class GroceryListsContainer extends React.Component {
   swipeSettings = {
     autoClose: true,
+    sensitivity: 50,
+    buttonWidth: 100,
   };
   renderList(item, index) {
     return (
       <Swipeout
-        style={GroceryListStyles.swipeout}
+        style={GroceryListItemStyles.swipeout}
         {...this.swipeSettings}
         right={[
           {
@@ -63,44 +65,30 @@ export default class GroceryListsContainer extends React.Component {
   }
 }
 
-const GroceryListStyles = StyleSheet.create({
-  swipeout: {
-    backgroundColor: 'transparent',
-  },
-  container: {
-    flex: 1,
-    width: '100%',
-    backgroundColor: 'blue',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  separator: {
-    height: 2,
-    width: '97%',
-    marginLeft: '3%',
-    backgroundColor: '#607D8B',
-  },
-});
-
 const GroceryListItemStyles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
-    padding: '2%',
-    width: '95%',
+    padding: '3%',
+    width: '97%',
+    marginLeft: '3%',
     alignSelf: 'center',
-    marginBottom: '3%',
+    borderTopLeftRadius: 15,
+    borderBottomLeftRadius: 15,
   },
   container2: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+  swipeout: {
+    backgroundColor: 'transparent',
+    marginBottom: '2%',
+  },
   badge: {
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#FE9501',
+    backgroundColor: '#06BA63',
     borderRadius: 50,
     width: 30,
     height: 30,

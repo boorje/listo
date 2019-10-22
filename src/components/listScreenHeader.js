@@ -7,14 +7,14 @@ const ListScreenHeader = props => (
     <View style={styles.icons1}>
       <IoniconsIcon
         size={50}
-        color={'#808080'}
+        color={'#06BA63'}
         name="ios-arrow-round-back"
         onPress={() => props.goBack()}
       />
       <View style={styles.icons2}>
         <IoniconsIcon
           size={35}
-          color={'#808080'}
+          color={'#06BA63'}
           name="md-person-add"
           onPress={() => props.sharingOptions()}
         />
