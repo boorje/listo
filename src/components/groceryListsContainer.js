@@ -36,7 +36,7 @@ export default class GroceryListsContainer extends React.Component {
         {...this.swipeSettings}
         right={[
           {
-            text: 'Delete',
+            text: 'Ta bort',
             type: 'delete',
             onPress: () => {
               this.props.removeGroceryList(item.id);

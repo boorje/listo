@@ -71,7 +71,7 @@ class LoginScreen extends React.Component {
               style={{marginRight: '3%'}}
               size={159}
               name={'ios-list'}
-              color={'#37AE15'}
+              color={'#06BA63'}
               onPress={() => {}}
             />
           </View>
