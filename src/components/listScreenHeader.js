@@ -1,24 +1,35 @@
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Image, View, Text} from 'react-native';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
+import textStyles from '../styles/textStyles';
+
+const BACKGROUND_URL =
+  'https://images.unsplash.com/photo-1456324504439-367cee3b3c32?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80';
 
 const ListScreenHeader = props => (
   <View style={styles.container}>
-    <View style={styles.icons1}>
+    <Image
+      style={styles.image}
+      source={{
+        uri: BACKGROUND_URL,
+      }}
+    />
+    <View style={styles.iconView}>
       <IoniconsIcon
+        style={styles.iconStyle}
         size={50}
-        color={'#06BA63'}
+        color={'white'}
         name="ios-arrow-round-back"
         onPress={() => props.goBack()}
       />
-      <View style={styles.icons2}>
-        <IoniconsIcon
-          size={35}
-          color={'#06BA63'}
-          name="md-person-add"
-          onPress={() => props.sharingOptions()}
-        />
-      </View>
+      <Text style={textStyles.listTitle}>{props.navigation}</Text>
+      <IoniconsIcon
+        style={styles.iconStyle}
+        size={35}
+        color={'white'}
+        name="md-person-add"
+        onPress={() => props.sharingOptions()}
+      />
     </View>
   </View>
 );
@@ -28,19 +39,23 @@ export default ListScreenHeader;
 const styles = StyleSheet.create({
   container: {
     top: 0,
-    height: '12%',
+    height: '15%',
+    justifyContent: 'flex-end',
   },
-  icons1: {
+  image: {flex: 1, opacity: 0.6, top: 0},
+  iconView: {
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    bottom: 0,
-    paddingLeft: '3%',
-    paddingRight: '3%',
+
+    paddingBottom: '3%',
     position: 'absolute',
   },
-  icons2: {
-    flexDirection: 'row',
+  iconStyle: {
+    paddingLeft: '5%',
+    paddingRight: '5%',
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: {width: 3, height: 1},
+    textShadowRadius: 10,
   },
 });

@@ -14,12 +14,13 @@ const Background = props => (
         uri: BACKGROUND_URL,
       }}
     />
-    <View style={styles.headline1}>
+    <View style={styles.headline}>
       <Text style={textStyles.myLists}>Mina</Text>
       <Text style={textStyles.myLists}>Listor</Text>
     </View>
-    <View style={styles.headline2}>
+    <View style={styles.iconView}>
       <IoniconsIcon
+        style={styles.icon}
         size={40}
         color={'white'}
         name="ios-cog"
@@ -32,6 +33,15 @@ const Background = props => (
 export default Background;
 
 const styles = StyleSheet.create({
-  headline1: {position: 'absolute', bottom: '10%', marginLeft: '8%'},
-  headline2: {position: 'absolute', bottom: '10%', right: '8%'},
+  headline: {
+    position: 'absolute',
+    bottom: '10%',
+    marginLeft: '8%',
+  },
+  iconView: {position: 'absolute', bottom: '10%', right: '8%'},
+  icon: {
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: {width: 3, height: 1},
+    textShadowRadius: 10,
+  },
 });

@@ -22,7 +22,6 @@ class SettingsScreen extends React.Component {
     return (
       <View style={styles.container}>
         <ScrollView>
-          <Text>Delas med: </Text>
           <PrimaryButton title="Logga ut" onPress={() => this._logout()} />
         </ScrollView>
       </View>

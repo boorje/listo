@@ -51,12 +51,9 @@ export default class ListScreen extends React.Component {
         <ListScreenHeader
           goBack={() => this.props.navigation.goBack()}
           sharingOptions={() => this.props.navigation.navigate('Sharing')}
+          navigation={this.props.navigation.state.params.title}
         />
-        <View style={{paddingLeft: '3%'}}>
-          <Text style={textStyles.listTitle}>
-            {this.props.navigation.state.params.title}
-          </Text>
-        </View>
+
         <View style={styles.separator} />
         <GroceriesContainer
           navigation={this.props.navigation}
@@ -75,7 +72,6 @@ const styles = StyleSheet.create({
     height: 1,
     backgroundColor: '#808080',
     opacity: 0.5,
-    marginTop: '3%',
     marginBottom: '2%',
   },
 });

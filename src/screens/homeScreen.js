@@ -42,7 +42,7 @@ class HomeScreen extends React.Component {
       console.log(groceries);
       this.setState({groceryLists});
     } catch (error) {
-      this.setState({apiError: 'Could not fetch lists. Please try again.'});
+      this.setState({apiError: 'Kunde inte hämta listor. Försök igen.'});
     }
   };
 
@@ -59,7 +59,9 @@ class HomeScreen extends React.Component {
       });
       this.setState({groceryLists: [...this.state.groceryLists, res]});
     } catch (error) {
-      this.setState({apiError: `Could not add ${title}. Please try again.`});
+      this.setState({
+        apiError: `Kunde inte skapa listan "${title}". Försök igen.`,
+      });
     }
   };
 
@@ -79,7 +81,6 @@ class HomeScreen extends React.Component {
     const {apiError, groceryLists, modalOpen, numberOfItems} = this.state;
     return (
       <View style={styles.container}>
-        {apiError.length > 0 && <Message message={apiError} />}
         {modalOpen && (
           <AddGroceryListModal
             closeModal={() => this.toggleModal()}
@@ -90,6 +91,7 @@ class HomeScreen extends React.Component {
         <Background
           navigate={() => this.props.navigation.navigate('Settings')}
         />
+        {apiError.length > 0 && <Message message={apiError} />}
         <SafeAreaView style={{flex: 5, marginTop: '3%'}}>
           <GroceryListsContainer
             lists={groceryLists}
