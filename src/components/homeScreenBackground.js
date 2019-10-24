@@ -24,7 +24,7 @@ const HomeScreenBackground = props => (
         size={40}
         color={'white'}
         name="ios-cog"
-        onPress={() => props.navigate('Settings')}
+        onPress={() => props.openSettings()}
       />
     </View>
   </View>

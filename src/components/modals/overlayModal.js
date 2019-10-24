@@ -6,10 +6,13 @@ import {
   View,
   TouchableOpacity,
   LayoutAnimation,
+  Text,
   Dimensions,
   Animated,
 } from 'react-native';
 import animations from '../../styles/animations';
+import IoniconsIcon from 'react-native-vector-icons/Ionicons';
+import textStyles from '../../styles/textStyles';
 
 const screenHeight = Dimensions.get('window').height;
 
@@ -17,7 +20,6 @@ class OverlayModal extends React.Component {
   constructor(props) {
     super(props);
     this._panResponder = PanResponder.create({
-      // Ask to be the responder:
       onStartShouldSetPanResponder: (evt, gestureState) => true,
       onStartShouldSetPanResponderCapture: (evt, gestureState) => true,
       onMoveShouldSetPanResponder: (evt, gestureState) => true,
@@ -56,7 +58,6 @@ class OverlayModal extends React.Component {
         }
         //Modal fully open
         else {
-          //this.setState({pan: new Animated.ValueXY()});
           if (this.state.pan.y._value >= screenHeight / 3.5) {
             this.props.closeModal();
           } else if (this.state.pan.y._value >= screenHeight / 8) {
@@ -76,7 +77,6 @@ class OverlayModal extends React.Component {
         }
         this.state.pan.flattenOffset();
       },
-
       onPanResponderTerminationRequest: (evt, gestureState) => true,
     });
   }
@@ -91,6 +91,7 @@ class OverlayModal extends React.Component {
     const [translateX, translateY] = [0, pan.y];
     const viewStyle = {transform: [{translateX}, {translateY}]};
 
+    // TODO: Close modal when clicking above modal.
     return (
       <Modal animationType="slide" transparent={true} visible={true}>
         <Animated.View style={[viewStyle, styles.container]}>
@@ -98,6 +99,19 @@ class OverlayModal extends React.Component {
             style={styles.handleContainer}
             {...this._panResponder.panHandlers}>
             <View style={styles.dragHandle} />
+          </View>
+          <View style={styles.closeIcon}>
+            <IoniconsIcon
+              size={35}
+              color={'rgba(52, 52, 52, 1)'}
+              name={'ios-close-circle'}
+              onPress={() => {
+                this.props.closeModal();
+              }}
+            />
+          </View>
+          <View style={styles.headline}>
+            <Text style={textStyles.modalTitle}>{this.props.modalTitle}</Text>
           </View>
           {this.props.children}
         </Animated.View>
@@ -114,17 +128,32 @@ const styles = StyleSheet.create({
     top: '50%',
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
-    backgroundColor: 'rgba(52, 52, 52, 1)',
+    borderWidth: 0.8,
+    backgroundColor: 'white',
+  },
+  touchableOpacity: {
+    flex: 1,
+    backgroundColor: 'red',
   },
   handleContainer: {
     justifyContent: 'center',
+    alignItems: 'center',
     height: '3%',
   },
   dragHandle: {
     height: 4,
     width: '35%',
-    backgroundColor: 'white',
+    backgroundColor: 'rgba(52, 52, 52, 1)',
     borderRadius: 10,
     alignSelf: 'center',
+  },
+  closeIcon: {
+    position: 'absolute',
+    zIndex: 1,
+    top: '1%',
+    right: '5%',
+  },
+  headline: {
+    alignItems: 'center',
   },
 });

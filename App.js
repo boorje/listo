@@ -7,8 +7,6 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 // -- SCREENS --
 import HomeScreen from './src/screens/homeScreen';
 import ListScreen from './src/screens/listScreen';
-import SettingsScreen from './src/screens/settingsScreen';
-import ShareScreen from './src/screens/shareScreen';
 
 import AuthScreen from './src/screens/auth/authScreen';
 import LoginScreen from './src/screens/auth/loginScreen';
@@ -31,8 +29,6 @@ console.disableYellowBox = true;
 const MainStack = createStackNavigator({
   Home: HomeScreen,
   List: ListScreen,
-  Settings: SettingsScreen,
-  Sharing: ShareScreen,
 });
 
 const AuthStack = createStackNavigator(

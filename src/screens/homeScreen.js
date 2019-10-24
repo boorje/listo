@@ -1,13 +1,13 @@
 import React from 'react';
 import {StyleSheet, View, Image, SafeAreaView, Text} from 'react-native';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
-import textStyles from '../styles/textStyles';
 
 // -- Components --
 import GroceryListsContainer from '../components/groceryListsContainer';
 import AddGroceryListModal from '../components/modals/AddGroceryListModal';
 import Message from '../components/message';
 import HomeScreenBackground from '../components/homeScreenBackground';
+import SettingsModal from './modals/settingsModal';
 
 // -- API helpers --
 import {
@@ -26,6 +26,7 @@ class HomeScreen extends React.Component {
 
   state = {
     modalOpen: false,
+    settingsOpen: false,
     groceryLists: [],
     apiError: '',
     numberOfItems: 8,
@@ -49,6 +50,10 @@ class HomeScreen extends React.Component {
     this.setState(prevstate => ({
       modalOpen: prevstate.modalOpen ? false : true,
     }));
+  };
+
+  openSettings = () => {
+    this.setState({settingsOpen: this.state.settingsOpen ? false : true});
   };
 
   addGroceryList = async title => {
@@ -77,7 +82,13 @@ class HomeScreen extends React.Component {
   };
 
   render() {
-    const {apiError, groceryLists, modalOpen, numberOfItems} = this.state;
+    const {
+      apiError,
+      groceryLists,
+      modalOpen,
+      numberOfItems,
+      settingsOpen,
+    } = this.state;
     return (
       <View style={styles.container}>
         {modalOpen && (
@@ -87,9 +98,10 @@ class HomeScreen extends React.Component {
             addGroceryList={this.addGroceryList}
           />
         )}
-        <HomeScreenBackground
-          navigate={() => this.props.navigation.navigate('Settings')}
-        />
+        {settingsOpen && (
+          <SettingsModal closeModal={() => this.openSettings()} />
+        )}
+        <HomeScreenBackground openSettings={() => this.openSettings()} />
         {apiError.length > 0 && <Message message={apiError} />}
         <SafeAreaView style={{flex: 5, marginTop: '3%'}}>
           <GroceryListsContainer

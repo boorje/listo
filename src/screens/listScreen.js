@@ -8,6 +8,7 @@ import GroceriesContainer from '../components/groceriesContainer';
 import Message from '../components/message';
 import ScreenHeader from '../components/screenHeader';
 import PreviousGroceries from '../components/modals/overlayModal';
+import SharingModal from './modals/sharingModal';
 
 // -- API helpers --
 import {updateGroceryList} from '../api/groceryListsAPI';
@@ -26,10 +27,15 @@ export default class ListScreen extends React.Component {
   state = {
     apiError: '',
     historyOpen: false,
+    sharingOpen: false,
   };
 
   openGroceryHistory = () => {
     this.setState({historyOpen: this.state.historyOpen ? false : true});
+  };
+
+  openSharingSettings = () => {
+    this.setState({sharingOpen: this.state.sharingOpen ? false : true});
   };
 
   updateApiError = message => {
@@ -51,17 +57,20 @@ export default class ListScreen extends React.Component {
   };
 
   render() {
-    const {apiError, groceries, historyOpen} = this.state;
+    const {apiError, groceries, historyOpen, sharingOpen} = this.state;
     return (
       <View style={styles.container}>
         {historyOpen && (
           <PreviousGroceries closeModal={() => this.openGroceryHistory()} />
         )}
+        {sharingOpen && (
+          <SharingModal closeModal={() => this.openSharingSettings()} />
+        )}
         {apiError.length > 0 && <Message message={apiError} />}
         <ScreenHeader
           leftIconPress={() => this.props.navigation.goBack()}
           rightIcon1Press={() => this.openGroceryHistory()}
-          rightIcon2Press={() => this.props.navigation.navigate('Sharing')}
+          rightIcon2Press={() => this.openSharingSettings()}
           headerTitle={this.props.navigation.state.params.title}
           leftIcon={'ios-arrow-round-back'}
           rightIcon1={'md-hourglass'}
