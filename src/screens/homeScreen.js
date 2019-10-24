@@ -7,8 +7,7 @@ import textStyles from '../styles/textStyles';
 import GroceryListsContainer from '../components/groceryListsContainer';
 import AddGroceryListModal from '../components/modals/AddGroceryListModal';
 import Message from '../components/message';
-import AddGroceryListFooter from '../components/addGroceryListFooter';
-import Background from '../components/background';
+import HomeScreenBackground from '../components/homeScreenBackground';
 
 // -- API helpers --
 import {
@@ -88,7 +87,7 @@ class HomeScreen extends React.Component {
             addGroceryList={this.addGroceryList}
           />
         )}
-        <Background
+        <HomeScreenBackground
           navigate={() => this.props.navigation.navigate('Settings')}
         />
         {apiError.length > 0 && <Message message={apiError} />}
@@ -103,7 +102,13 @@ class HomeScreen extends React.Component {
           />
         </SafeAreaView>
 
-        <AddGroceryListFooter addGroceryList={this.toggleModal} />
+        <IoniconsIcon
+          size={80}
+          style={styles.icon}
+          color={'#06BA63'}
+          name="ios-add-circle"
+          onPress={() => this.toggleModal()}
+        />
       </View>
     );
   }
@@ -115,4 +120,5 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#E3E3E3',
   },
+  icon: {position: 'absolute', bottom: '10%', right: '15%', opacity: 0.8},
 });

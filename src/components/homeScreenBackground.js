@@ -6,7 +6,7 @@ import textStyles from '../styles/textStyles';
 const BACKGROUND_URL =
   'https://images.unsplash.com/photo-1516594798947-e65505dbb29d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80';
 
-const Background = props => (
+const HomeScreenBackground = props => (
   <View style={{flex: 3}}>
     <Image
       style={{flex: 1, opacity: 0.6, top: 0}}
@@ -30,7 +30,7 @@ const Background = props => (
   </View>
 );
 
-export default Background;
+export default HomeScreenBackground;
 
 const styles = StyleSheet.create({
   headline: {
