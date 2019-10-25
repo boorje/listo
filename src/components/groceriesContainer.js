@@ -54,114 +54,6 @@ class GroceriesContainer extends React.Component {
     apiError: '',
     adjustFooter: false,
     addItemOpen: false,
-    dragging: false,
-    draggingIdx: -1,
-  };
-
-  // DRAGGABLE FLATLIST
-  point = new Animated.ValueXY();
-  currentY = 0;
-  scrollOffset = 0;
-  flatlistTopOffset = 0;
-  rowHeight = 0;
-  currentIdx = -1;
-  active = false;
-
-  constructor(props) {
-    super(props);
-
-    this._panResponder = PanResponder.create({
-      // Ask to be the responder:
-      onStartShouldSetPanResponder: (evt, gestureState) => true,
-      onStartShouldSetPanResponderCapture: (evt, gestureState) => true,
-      onMoveShouldSetPanResponder: (evt, gestureState) => true,
-      onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
-
-      onPanResponderGrant: (evt, gestureState) => {
-        // The gesture has started. Show visual feedback so the user knows
-        // what is happening!
-        // gestureState.d{x,y} will be set to zero now
-
-        this.currentIdx = this.yToIndex(gestureState.y0);
-        //console.log('Index pressed: ' + this.currentIdx);
-        this.currentY = gestureState.y0;
-        Animated.event([{y: this.point.y}])({
-          y: gestureState.y0 - 4.3 * this.rowHeight,
-        });
-        this.active = true;
-        this.setState({dragging: true, draggingIdx: this.currentIdx}, () => {
-          this.animateList();
-        });
-      },
-      onPanResponderMove: (evt, gestureState) => {
-        this.currentY = gestureState.moveY;
-        Animated.event([{y: this.point.y}])({
-          y: gestureState.moveY - 4.3 * this.rowHeight,
-        });
-        // The most recent move distance is gestureState.move{X,Y}
-        // The accumulated gesture distance since becoming responder is
-        // gestureState.d{x,y}
-      },
-      onPanResponderTerminationRequest: (evt, gestureState) => false,
-      onPanResponderRelease: (evt, gestureState) => {
-        // The user has released all touches while this view is the
-        // responder. This typically means a gesture has succeeded
-        this.reset();
-      },
-      onPanResponderTerminate: (evt, gestureState) => {
-        // Another component has become the responder, so this gesture
-        // should be cancelled
-        this.reset();
-      },
-      onShouldBlockNativeResponder: (evt, gestureState) => {
-        // Returns whether this component should block native components from becoming the JS
-        // responder. Returns true by default. Is currently only supported on android.
-        return true;
-      },
-    });
-  }
-
-  animateList = () => {
-    if (!this.active) {
-      return;
-    }
-    requestAnimationFrame(() => {
-      // check y value see if we need to reorder
-      const newIdx = this.yToIndex(this.currentY);
-
-      if (this.currentIdx !== newIdx) {
-        this.setState({
-          groceries: immutableMove(
-            this.state.groceries,
-            this.currentIdx,
-            newIdx,
-          ),
-          draggingIdx: newIdx,
-        });
-        this.currentIdx = newIdx;
-      }
-
-      this.animateList();
-    });
-  };
-
-  yToIndex = y => {
-    const value = Math.floor(
-      (this.scrollOffset + y - this.flatlistTopOffset) / this.rowHeight,
-    );
-    console.log(value);
-    if (value < 0) {
-      return 0;
-    }
-    if (value > this.state.groceries.length - 1) {
-      return this.state.groceries.length - 1;
-    }
-    return value - 4; //adjusted with -4 because container is placed further down
-  };
-
-  reset = () => {
-    this.active = false;
-    this.setState({dragging: false, draggingIdx: -1});
   };
 
   componentDidMount = async () => {
@@ -286,16 +178,14 @@ class GroceriesContainer extends React.Component {
   };
 
   adjustFooter = () => {
+    // Move to method above?
     LayoutAnimation.configureNext(animations.default);
     this.setState({adjustFooter: !this.state.adjustFooter ? true : false});
   };
 
-  renderList(item, index, noPanResponder) {
+  renderList(item, index) {
     return (
       <TouchableHighlight
-        onLayout={e => {
-          this.rowHeight = e.nativeEvent.layout.height;
-        }}
         style={{flex: 1, opacity: this.state.draggingIdx === index ? 0 : 1}}
         fontSize={50}
         onPress={() => {
@@ -303,10 +193,7 @@ class GroceriesContainer extends React.Component {
         }}
         underlayColor={'transparent'}>
         <View style={styles.container2}>
-          <View
-            style={{flex: 1}}
-            //{...(noPanResponder ? {} : this._panResponder.panHandlers)}
-          >
+          <View style={{flex: 1}}>
             {item.details ? (
               <GroceryForm
                 closeGroceryForm={() => this.showGroceryForm(item, index)}
@@ -341,51 +228,36 @@ class GroceriesContainer extends React.Component {
   render() {
     const {groceries, dragging, draggingIdx} = this.state;
     return (
-      <SafeAreaView style={{flex: 1}}>
+      <View style={{flex: 1}}>
         <View style={{flex: 8}}>
-          {dragging && (
-            <Animated.View
-              style={{
-                position: 'absolute',
-                backgroundColor: 'white',
-                zIndex: 1,
-                width: '100%',
-                top: this.point.getLayout().top,
-              }}>
-              {this.renderList(groceries[draggingIdx], -1, true)}
-            </Animated.View>
-          )}
           <KeyboardAwareFlatList
             scrollEnabled={true}
             data={groceries}
-            renderItem={({item, index}, noPanResponder = false) => {
-              return this.renderList(item, index, noPanResponder);
+            renderItem={({item, index}) => {
+              return this.renderList(item, index);
             }}
             keyExtractor={item => item.id}
             ItemSeparatorComponent={this.FlatListItemSeparator}
             keyboardShouldPersistTaps="always"
-            onScroll={e => {
-              this.scrollOffset = e.nativeEvent.contentOffset.y;
-            }}
-            onLayout={e => {
-              this.flatlistTopOffset = e.nativeEvent.layout.y;
-            }}
           />
         </View>
         <View
-          style={{
-            justifyContent: !this.state.adjustFooter ? 'center' : 'flex-start',
-            flex: !this.state.adjustFooter ? 1 : 10,
-            borderTopWidth: 0.5,
-            paddingBottom: 0,
-          }}>
+          style={[
+            styles.footer,
+            {
+              justifyContent: !this.state.adjustFooter
+                ? 'center'
+                : 'flex-start',
+              flex: !this.state.adjustFooter ? 1 : 10,
+            },
+          ]}>
           <AddGroceryFooter
             addGrocery={this.addGrocery}
             addItemOpen={this.state.addItemOpen}
             showAddGrocery={this.showAddGrocery}
           />
         </View>
-      </SafeAreaView>
+      </View>
     );
   }
 }
@@ -420,9 +292,8 @@ const styles = StyleSheet.create({
     paddingRight: '3%',
     paddingBottom: '3%',
   },
-  text: {
-    fontSize: 20,
-    fontFamily: 'Avenir Next',
+  footer: {
+    paddingBottom: 0,
   },
 });
 

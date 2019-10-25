@@ -14,9 +14,33 @@ export default class AddGroceryFooter extends React.Component {
     return (
       <View style={styles.container}>
         {!this.props.addItemOpen ? (
-          <TouchableOpacity onPress={() => this.props.showAddGrocery()}>
-            <Text style={textStyles.default}>Lägg till vara...</Text>
-          </TouchableOpacity>
+          <View style={{flex: 1}}>
+            <View style={styles.sideIcons}>
+              <IoniconsIcon
+                style={styles.sideIconStyle}
+                size={50}
+                name={'ios-camera'}
+                color={'white'}
+                onPress={() => {}}
+              />
+              <IoniconsIcon
+                style={styles.sideIconStyle}
+                size={40}
+                name={'md-images'}
+                color={'white'}
+                onPress={() => {}}
+              />
+            </View>
+            <View style={styles.addIconView}>
+              <IoniconsIcon
+                style={styles.addIcon}
+                size={100}
+                name={'ios-add-circle'}
+                color={'#06BA63'}
+                onPress={() => this.props.showAddGrocery()}
+              />
+            </View>
+          </View>
         ) : (
           <View style={{paddingTop: 10}}>
             <GroceryForm
@@ -25,22 +49,6 @@ export default class AddGroceryFooter extends React.Component {
             />
           </View>
         )}
-        <View style={styles.icons}>
-          <IoniconsIcon
-            style={{marginRight: '3%'}}
-            size={37}
-            name={'ios-camera'}
-            color={'black'}
-            onPress={() => {}}
-          />
-          <IoniconsIcon
-            style={{marginRight: '3%'}}
-            size={32}
-            name={'md-images'}
-            color={'black'}
-            onPress={() => {}}
-          />
-        </View>
       </View>
     );
   }
@@ -48,17 +56,43 @@ export default class AddGroceryFooter extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+  },
+  sideIcons: {
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingLeft: '3%',
-    paddingRight: '3%',
+    backgroundColor: '#E3E3E3',
+    paddingRight: '10%',
+    paddingLeft: '10%',
+    shadowColor: 'black',
+    shadowOffset: {width: 0, height: 0},
+    shadowRadius: 2,
+    shadowOpacity: 1,
   },
-  icons: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
+  addIconView: {
+    backgroundColor: 'white',
+    position: 'absolute',
+    alignSelf: 'center',
+    justifyContent: 'center',
+    top: '-47%',
+    borderRadius: 50,
+  },
+  addIcon: {
+    marginBottom: -20,
+    marginTop: -11,
+    marginRight: -1,
+    shadowColor: 'black',
+    shadowOffset: {width: 0, height: 0},
+    shadowRadius: 2,
+    shadowOpacity: 1,
+  },
+  sideIconStyle: {
+    shadowColor: 'black',
+    shadowOffset: {width: 0, height: 0},
+    shadowRadius: 2,
+    shadowOpacity: 1,
   },
 });
 
