@@ -13,7 +13,7 @@ class AuthLoadingScreen extends React.Component {
       await Auth.currentAuthenticatedUser();
       this.props.navigation.navigate('App');
     } catch (e) {
-      this.props.navigation.navigate('Auth');
+      this.props.navigation.navigate('App');
     }
   };
   render() {

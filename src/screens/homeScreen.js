@@ -1,14 +1,13 @@
 import React from 'react';
 import {StyleSheet, View, Image, SafeAreaView, Text} from 'react-native';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
-import textStyles from '../styles/textStyles';
 
 // -- Components --
 import GroceryListsContainer from '../components/groceryListsContainer';
 import AddGroceryListModal from '../components/modals/AddGroceryListModal';
 import Message from '../components/message';
-import AddGroceryListFooter from '../components/addGroceryListFooter';
-import Background from '../components/background';
+import HomeScreenBackground from '../components/homeScreenBackground';
+import SettingsModal from './modals/settingsModal';
 
 // -- API helpers --
 import {
@@ -27,6 +26,7 @@ class HomeScreen extends React.Component {
 
   state = {
     modalOpen: false,
+    settingsOpen: false,
     groceryLists: [],
     apiError: '',
     numberOfItems: 8,
@@ -42,7 +42,7 @@ class HomeScreen extends React.Component {
       console.log(groceries);
       this.setState({groceryLists});
     } catch (error) {
-      this.setState({apiError: 'Could not fetch lists. Please try again.'});
+      this.setState({apiError: 'Kunde inte hämta listor. Försök igen.'});
     }
   };
 
@@ -52,6 +52,10 @@ class HomeScreen extends React.Component {
     }));
   };
 
+  openSettings = () => {
+    this.setState({settingsOpen: this.state.settingsOpen ? false : true});
+  };
+
   addGroceryList = async title => {
     try {
       const res = await createGroceryList({
@@ -59,7 +63,9 @@ class HomeScreen extends React.Component {
       });
       this.setState({groceryLists: [...this.state.groceryLists, res]});
     } catch (error) {
-      this.setState({apiError: `Could not add ${title}. Please try again.`});
+      this.setState({
+        apiError: `Kunde inte skapa listan "${title}". Försök igen.`,
+      });
     }
   };
 
@@ -76,10 +82,15 @@ class HomeScreen extends React.Component {
   };
 
   render() {
-    const {apiError, groceryLists, modalOpen, numberOfItems} = this.state;
+    const {
+      apiError,
+      groceryLists,
+      modalOpen,
+      numberOfItems,
+      settingsOpen,
+    } = this.state;
     return (
       <View style={styles.container}>
-        {apiError.length > 0 && <Message message={apiError} />}
         {modalOpen && (
           <AddGroceryListModal
             closeModal={() => this.toggleModal()}
@@ -87,9 +98,11 @@ class HomeScreen extends React.Component {
             addGroceryList={this.addGroceryList}
           />
         )}
-        <Background
-          navigate={() => this.props.navigation.navigate('Settings')}
-        />
+        {settingsOpen && (
+          <SettingsModal closeModal={() => this.openSettings()} />
+        )}
+        <HomeScreenBackground openSettings={() => this.openSettings()} />
+        {apiError.length > 0 && <Message message={apiError} />}
         <SafeAreaView style={{flex: 5, marginTop: '3%'}}>
           <GroceryListsContainer
             lists={groceryLists}
@@ -101,7 +114,13 @@ class HomeScreen extends React.Component {
           />
         </SafeAreaView>
 
-        <AddGroceryListFooter addGroceryList={this.toggleModal} />
+        <IoniconsIcon
+          size={80}
+          style={styles.icon}
+          color={'#06BA63'}
+          name="ios-add-circle"
+          onPress={() => this.toggleModal()}
+        />
       </View>
     );
   }
@@ -113,4 +132,5 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#E3E3E3',
   },
+  icon: {position: 'absolute', bottom: '10%', right: '15%', opacity: 0.8},
 });

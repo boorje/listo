@@ -403,10 +403,9 @@ const styles = StyleSheet.create({
     paddingRight: '10%',
   },
   separator: {
-    height: 1,
+    height: 0.5,
     width: '97%',
     marginLeft: '3%',
-    marginRight: '0%',
     backgroundColor: '#607D8B',
   },
   container1: {
