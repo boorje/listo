@@ -31,16 +31,13 @@ const textStyles = StyleSheet.create({
     color: 'white',
     textShadowColor: 'rgba(0, 0, 0, 0.75)',
     textShadowOffset: {width: 5, height: 1},
-    textShadowRadius: 10,
+    textShadowRadius: 5,
   },
   modalTitle: {
     fontSize: 20,
     fontFamily: 'Avenir Next',
     color: 'rgba(52, 52, 52, 1)',
     padding: 5,
-    textShadowColor: 'rgba(0, 0, 0, 0.75)',
-    textShadowOffset: {width: 1, height: 0},
-    textShadowRadius: 10,
   },
   groceryDetails: {
     fontSize: 15,

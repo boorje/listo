@@ -7,7 +7,7 @@ import textStyles from '../styles/textStyles';
 import GroceriesContainer from '../components/groceriesContainer';
 import Message from '../components/message';
 import ScreenHeader from '../components/screenHeader';
-import PreviousGroceries from '../components/modals/overlayModal';
+import PreviousGroceriesModal from './modals/previousGroceriesModal';
 import SharingModal from './modals/sharingModal';
 
 // -- API helpers --
@@ -28,6 +28,7 @@ export default class ListScreen extends React.Component {
     apiError: '',
     historyOpen: false,
     sharingOpen: false,
+    previousGroceries: [],
   };
 
   openGroceryHistory = () => {
@@ -61,7 +62,9 @@ export default class ListScreen extends React.Component {
     return (
       <View style={styles.container}>
         {historyOpen && (
-          <PreviousGroceries closeModal={() => this.openGroceryHistory()} />
+          <PreviousGroceriesModal
+            closeModal={() => this.openGroceryHistory()}
+          />
         )}
         {sharingOpen && (
           <SharingModal closeModal={() => this.openSharingSettings()} />
