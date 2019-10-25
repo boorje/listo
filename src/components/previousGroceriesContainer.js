@@ -14,12 +14,7 @@ import PrimaryButton from '../components/buttons/primaryButton';
 import {KeyboardAwareFlatList} from 'react-native-keyboard-aware-scroll-view';
 
 // -- API helpers --
-import {
-  getGroceryList,
-  createGroceryItem,
-  deleteGroceryItem,
-  updateGroceryItem,
-} from '../api/groceryListsAPI';
+import {getGroceryList, createGroceryItem} from '../api/groceryListsAPI';
 
 class PreviousGroceriesContainer extends React.Component {
   state = {
@@ -107,7 +102,7 @@ class PreviousGroceriesContainer extends React.Component {
 
   addButton = (
     <View style={styles.button}>
-      <PrimaryButton title="Lägg till" onPress={{}} />
+      <PrimaryButton title="Lägg till" onPress={() => {}} />
     </View>
   );
 
@@ -159,7 +154,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#607D8B',
   },
   button: {
-    paddingTop: '5%',
+    paddingTop: '10%',
     width: '70%',
     alignSelf: 'center',
   },
