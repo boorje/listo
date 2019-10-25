@@ -128,12 +128,14 @@ const styles = StyleSheet.create({
     top: '50%',
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
-    borderWidth: 0.8,
     backgroundColor: 'white',
+    shadowColor: 'black',
+    shadowOffset: {width: 0, height: 0},
+    shadowRadius: 2,
+    shadowOpacity: 1,
   },
   touchableOpacity: {
     flex: 1,
-    backgroundColor: 'red',
   },
   handleContainer: {
     justifyContent: 'center',
@@ -143,7 +145,7 @@ const styles = StyleSheet.create({
   dragHandle: {
     height: 4,
     width: '35%',
-    backgroundColor: 'rgba(52, 52, 52, 1)',
+    backgroundColor: 'rgba(52, 52, 52, 1)s',
     borderRadius: 10,
     alignSelf: 'center',
   },
