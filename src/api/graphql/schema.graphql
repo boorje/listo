@@ -1,0 +1,335 @@
+﻿type User {
+  id: ID!
+  email: AWSEmail!
+  groceryLists(
+    filter: ModelEditorFilterInput
+    sortDirection: ModelSortDirection
+    limit: Int
+    nextToken: String
+  ): ModelEditorConnection
+}
+
+type Editor {
+  listId: ID!
+  userId: ID!
+  id: String!
+  list: GroceryList!
+  user: User!
+}
+
+type GroceryList {
+  id: ID!
+  owner: ID!
+  title: String!
+  groceries(
+    filter: ModelGroceryItemFilterInput
+    sortDirection: ModelSortDirection
+    limit: Int
+    nextToken: String
+  ): ModelGroceryItemConnection
+  editors(
+    filter: ModelEditorFilterInput
+    sortDirection: ModelSortDirection
+    limit: Int
+    nextToken: String
+  ): ModelEditorConnection
+}
+
+type GroceryItem {
+  id: ID!
+  content: String!
+  quantity: String
+  unit: String
+  groceryList: GroceryList!
+}
+
+enum ModelSortDirection {
+  ASC
+  DESC
+}
+
+type ModelUserConnection {
+  items: [User]
+  nextToken: String
+}
+
+input ModelStringFilterInput {
+  ne: String
+  eq: String
+  le: String
+  lt: String
+  ge: String
+  gt: String
+  contains: String
+  notContains: String
+  between: [String]
+  beginsWith: String
+}
+
+input ModelIDFilterInput {
+  ne: ID
+  eq: ID
+  le: ID
+  lt: ID
+  ge: ID
+  gt: ID
+  contains: ID
+  notContains: ID
+  between: [ID]
+  beginsWith: ID
+}
+
+input ModelIntFilterInput {
+  ne: Int
+  eq: Int
+  le: Int
+  lt: Int
+  ge: Int
+  gt: Int
+  contains: Int
+  notContains: Int
+  between: [Int]
+}
+
+input ModelFloatFilterInput {
+  ne: Float
+  eq: Float
+  le: Float
+  lt: Float
+  ge: Float
+  gt: Float
+  contains: Float
+  notContains: Float
+  between: [Float]
+}
+
+input ModelBooleanFilterInput {
+  ne: Boolean
+  eq: Boolean
+}
+
+input ModelUserFilterInput {
+  id: ModelIDFilterInput
+  email: ModelStringFilterInput
+  and: [ModelUserFilterInput]
+  or: [ModelUserFilterInput]
+  not: ModelUserFilterInput
+}
+
+type Query {
+  getUser(id: ID!): User
+  listUsers(
+    id: ID
+    filter: ModelUserFilterInput
+    limit: Int
+    nextToken: String
+    sortDirection: ModelSortDirection
+  ): ModelUserConnection
+  getEditor(listId: ID!, userId: ID!): Editor
+  listEditors(
+    listId: ID
+    userId: ModelIDKeyConditionInput
+    filter: ModelEditorFilterInput
+    limit: Int
+    nextToken: String
+    sortDirection: ModelSortDirection
+  ): ModelEditorConnection
+  getGroceryList(id: ID!): GroceryList
+  listGroceryLists(
+    filter: ModelGroceryListFilterInput
+    limit: Int
+    nextToken: String
+  ): ModelGroceryListConnection
+  getGroceryItem(id: ID!): GroceryItem
+  listGroceryItems(
+    filter: ModelGroceryItemFilterInput
+    limit: Int
+    nextToken: String
+  ): ModelGroceryItemConnection
+  userByEmail(
+    email: AWSEmail
+    sortDirection: ModelSortDirection
+    filter: ModelUserFilterInput
+    limit: Int
+    nextToken: String
+  ): ModelUserConnection
+  editorsByListId(
+    listId: ID
+    id: ModelStringKeyConditionInput
+    sortDirection: ModelSortDirection
+    filter: ModelEditorFilterInput
+    limit: Int
+    nextToken: String
+  ): ModelEditorConnection
+  editorsByUserId(
+    userId: ID
+    id: ModelStringKeyConditionInput
+    sortDirection: ModelSortDirection
+    filter: ModelEditorFilterInput
+    limit: Int
+    nextToken: String
+  ): ModelEditorConnection
+}
+
+input CreateUserInput {
+  email: AWSEmail!
+}
+
+input UpdateUserInput {
+  id: ID!
+  email: AWSEmail
+}
+
+input DeleteUserInput {
+  id: ID!
+}
+
+type Mutation {
+  createUser(input: CreateUserInput!): User
+  updateUser(input: UpdateUserInput!): User
+  deleteUser(input: DeleteUserInput!): User
+  createEditor(input: CreateEditorInput!): Editor
+  updateEditor(input: UpdateEditorInput!): Editor
+  deleteEditor(input: DeleteEditorInput!): Editor
+  createGroceryList(input: CreateGroceryListInput!): GroceryList
+  updateGroceryList(input: UpdateGroceryListInput!): GroceryList
+  deleteGroceryList(input: DeleteGroceryListInput!): GroceryList
+  createGroceryItem(input: CreateGroceryItemInput!): GroceryItem
+  updateGroceryItem(input: UpdateGroceryItemInput!): GroceryItem
+  deleteGroceryItem(input: DeleteGroceryItemInput!): GroceryItem
+}
+
+type Subscription {
+  onCreateUser: User @aws_subscribe(mutations: ["createUser"])
+  onUpdateUser: User @aws_subscribe(mutations: ["updateUser"])
+  onDeleteUser: User @aws_subscribe(mutations: ["deleteUser"])
+  onCreateEditor: Editor @aws_subscribe(mutations: ["createEditor"])
+  onUpdateEditor: Editor @aws_subscribe(mutations: ["updateEditor"])
+  onDeleteEditor: Editor @aws_subscribe(mutations: ["deleteEditor"])
+  onCreateGroceryList(owner: String!): GroceryList
+    @aws_subscribe(mutations: ["createGroceryList"])
+  onUpdateGroceryList: GroceryList
+    @aws_subscribe(mutations: ["updateGroceryList"])
+  onDeleteGroceryList(owner: String!): GroceryList
+    @aws_subscribe(mutations: ["deleteGroceryList"])
+  onCreateGroceryItem: GroceryItem
+    @aws_subscribe(mutations: ["createGroceryItem"])
+  onUpdateGroceryItem: GroceryItem
+    @aws_subscribe(mutations: ["updateGroceryItem"])
+  onDeleteGroceryItem: GroceryItem
+    @aws_subscribe(mutations: ["deleteGroceryItem"])
+}
+
+type ModelEditorConnection {
+  items: [Editor]
+  nextToken: String
+}
+
+input ModelEditorFilterInput {
+  listId: ModelIDFilterInput
+  userId: ModelIDFilterInput
+  id: ModelStringFilterInput
+  and: [ModelEditorFilterInput]
+  or: [ModelEditorFilterInput]
+  not: ModelEditorFilterInput
+}
+
+input CreateEditorInput {
+  editorListId: ID!
+  editorUserId: ID!
+}
+
+input UpdateEditorInput {
+  listId: ID!
+  userId: ID!
+  id: String!
+  editorListId: ID
+  editorUserId: ID
+}
+
+input DeleteEditorInput {
+  listId: ID!
+  userId: ID!
+}
+
+type ModelGroceryListConnection {
+  items: [GroceryList]
+  nextToken: String
+}
+
+input ModelGroceryListFilterInput {
+  id: ModelIDFilterInput
+  owner: ModelIDFilterInput
+  title: ModelStringFilterInput
+  and: [ModelGroceryListFilterInput]
+  or: [ModelGroceryListFilterInput]
+  not: ModelGroceryListFilterInput
+}
+
+input CreateGroceryListInput {
+  title: String!
+}
+
+input UpdateGroceryListInput {
+  id: ID!
+  owner: ID
+  title: String
+}
+
+input DeleteGroceryListInput {
+  id: ID
+}
+
+type ModelGroceryItemConnection {
+  items: [GroceryItem]
+  nextToken: String
+}
+
+input ModelGroceryItemFilterInput {
+  id: ModelIDFilterInput
+  content: ModelStringFilterInput
+  quantity: ModelStringFilterInput
+  unit: ModelStringFilterInput
+  and: [ModelGroceryItemFilterInput]
+  or: [ModelGroceryItemFilterInput]
+  not: ModelGroceryItemFilterInput
+}
+
+input CreateGroceryItemInput {
+  content: String!
+  quantity: String
+  unit: String
+  groceryItemGroceryListId: ID!
+}
+
+input UpdateGroceryItemInput {
+  id: ID!
+  content: String
+  quantity: String
+  unit: String
+  groceryItemGroceryListId: ID
+}
+
+input DeleteGroceryItemInput {
+  id: ID
+}
+
+input ModelIDKeyConditionInput {
+  eq: ID
+  le: ID
+  lt: ID
+  ge: ID
+  gt: ID
+  between: [ID]
+  beginsWith: ID
+}
+
+input ModelStringKeyConditionInput {
+  eq: String
+  le: String
+  lt: String
+  ge: String
+  gt: String
+  between: [String]
+  beginsWith: String
+}

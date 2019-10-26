@@ -26,6 +26,7 @@ class LoginScreen extends React.Component {
         username: email,
         password,
       });
+      // ! Remove this, add inside the homescreen instead. After successfully logged in, if getUser() is not found, then add it
       await addUserToDB(user.attributes);
       this.setState({loading: false});
       this.props.navigation.navigate('Home', {

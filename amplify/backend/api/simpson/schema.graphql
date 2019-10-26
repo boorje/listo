@@ -1,11 +1,33 @@
-type User @model {
-  id: ID!
+# TODO: Update keys of User table -> New temporary table: UserTemp
+type User
+  @model
+  @key(fields: ["id"])
+  @key(name: "ByEmail", fields: ["email"], queryField: "userByEmail") {
+  id: ID! # Set with custom resolver
   email: AWSEmail!
   groceryLists: [Editor] @connection(name: "UserEditors")
 }
 
-type Editor @model {
-  id: ID!
+# id: "listId-userEmail"
+# SINGLE DELETE: @key(fields: ["listId", "userId"]) -> deleteEditor(listId, userId)
+# BATCH DELETE BY EMAIL: @key(name: "ByListId", fields: ["listId", "id"], queryField: "editorsByListId") -> listEditors(listId, id: {beginsWith: "FIRST PART OF id = listId"})
+# BATCH DELETE BY USER: @key(name: "ByUserId", fields: ["userId", "id"], queryField: "editorsByUserId") -> listEditors(listId, id: {contains: "SECOND PART OF id = userId"})
+type Editor
+  @model
+  @key(fields: ["listId", "userId"])
+  @key(
+    name: "ByListId"
+    fields: ["listId", "id"]
+    queryField: "editorsByListId"
+  )
+  @key(
+    name: "ByUserId"
+    fields: ["userId", "id"]
+    queryField: "editorsByUserId"
+  ) #! THIS KEY IS NOT USABLE {
+  listId: ID! # Set with custom resolver
+  userId: ID! # Set with custom resolver
+  id: String! # Set to listId-userEmail with custom resolver
   list: GroceryList! @connection(name: "ListEditors")
   user: User! @connection(name: "UserEditors")
 }
@@ -13,32 +35,23 @@ type Editor @model {
 type GroceryList
   @model
   @auth(rules: [{allow: owner, operations: [create, delete]}]) {
-  id: ID!
-  owner: ID
+  id: ID! # Set by custom resolver
+  owner: ID! # Set by custom resolver
   title: String!
   groceries: [GroceryItem] @connection(name: "GroceryItems")
   editors: [Editor] @connection(name: "ListEditors")
 }
 
 type GroceryItem @model {
-  id: ID!
+  id: ID! # Set by custom resolver
   content: String!
   quantity: String
   unit: String
   groceryList: GroceryList! @connection(name: "GroceryItems")
 }
 
-type Mutation {
-  batchDeleteEditors(ids: [ID!]!): [Editor]
-}
+## ---
 
-# --- ADD TO BUILD
-
-# input ModelEditorFilterInput {
-#   id: ModelIDFilterInput
-#   editorListId: ModelIDFilterInput
-#   editorUserId: ModelIDFilterInput
-#   and: [ModelEditorFilterInput]
-#   or: [ModelEditorFilterInput]
-#   not: ModelEditorFilterInput
+# type Mutation {
+#   batchDeleteEditors(ids: [ID!]!): [Member]
 # }

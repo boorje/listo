@@ -1,7 +1,6 @@
 import React from 'react';
 import {ActionSheetIOS, StyleSheet, View, SafeAreaView} from 'react-native';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
-import {Auth} from 'aws-amplify';
 
 // -- Components --
 import GroceryListsContainer from '../components/groceryListsContainer';
@@ -13,12 +12,10 @@ import AddGroceryListFooter from '../components/addGroceryListFooter';
 import {
   createGroceryList,
   deleteGroceryList,
-  deleteGroceryListAndEditors,
   deleteEditor,
-  getEditorId,
 } from '../api/groceryListsAPI';
 
-import {getUserLists} from '../api/authAPI';
+import {getUser, createUser} from '../api/authAPI';
 
 class HomeScreen extends React.Component {
   static navigationOptions = ({navigation}) => {
@@ -48,30 +45,44 @@ class HomeScreen extends React.Component {
 
   componentDidMount = async () => {
     try {
-      const user = await this.props.navigation.getParam('user', null);
-      const groceryLists = await getUserLists(user.username);
-      this.setState({
-        groceryLists,
-        user: {id: user.username, email: user.attributes.email},
-      });
-      this.props.navigation.setParams({userEmail: user.attributes.email});
+      await this.fetchUserLists();
     } catch (error) {
-      console.log(error);
-      this.setState({apiError: 'Could not fetch lists. Please try again.'});
+      this.setState({
+        apiError: error ? error : 'Could not fetch lists. Please try again.',
+      });
     }
   };
 
-  toggleModal = () => {
-    this.setState(prevstate => ({
-      modalOpen: prevstate.modalOpen ? false : true,
-    }));
+  fetchUserLists = async () => {
+    try {
+      const cognitoUser = await this.props.navigation.getParam('user', null);
+      const user = await getUser(cognitoUser.username);
+      if (!user || user === null) {
+        // create the user in the database
+        const {id, email} = await createUser(cognitoUser.attributes.email);
+        this.setState({user: {id, email}});
+      } else {
+        const groceryLists = user.groceryLists.items;
+        this.setState({
+          groceryLists,
+          user: {id: user.id, email: user.email},
+        });
+        // TODO: Set this if new user is created
+        this.props.navigation.setParams({userEmail: user.email});
+      }
+    } catch (error) {
+      if (error.errors) {
+        if (error.errors[0].message === 'Network Error') {
+          throw 'Network error. Please check your connection.';
+        }
+      }
+      throw 'Could not fetch lists. Please try again.';
+    }
   };
 
   addGroceryList = async title => {
     try {
-      const res = await createGroceryList({
-        title,
-      });
+      const res = await createGroceryList({title});
       res.isOwner = true;
       this.setState({groceryLists: [...this.state.groceryLists, res]});
     } catch (error) {
@@ -79,71 +90,57 @@ class HomeScreen extends React.Component {
     }
   };
 
-  // TODO: Remove the user and list from the editor model when deleting the list.
-  removeGroceryList = async listID => {
+  removeGroceryList = async ({list}) => {
     try {
-      // check if user is owner of the list
-      let isOwner = false;
-      this.state.groceryLists.map(list => {
-        if (list.id === listID) {
-          if (list.isOwner) {
-            isOwner = true;
+      const isOwner = this.isOwnerOfList(list.owner);
+      const actionSheetTitle = `Do you want to ${
+        isOwner ? 'delete' : 'leave'
+      } this list?`;
+      const actionSheetButton = isOwner ? 'Delete' : 'Leave';
+      ActionSheetIOS.showActionSheetWithOptions(
+        {
+          title: actionSheetTitle,
+          options: ['Cancel', actionSheetButton],
+          destructiveButtonIndex: 1,
+          cancelButtonIndex: 0,
+        },
+        async buttonIndex => {
+          if (buttonIndex === 1) {
+            let res;
+            if (isOwner) {
+              // TODO: Create a resolver which deletes all the editors of the list using the batch delete
+              res = await deleteGroceryList(list.id);
+            } else {
+              res = await deleteEditor({
+                listId: list.id,
+                userId: this.state.user.id,
+              });
+            }
+            if (!res || res === null) {
+              throw isOwner
+                ? 'Could not delete the list. Please try again.'
+                : 'Could not leave the list. Please try again.';
+            }
           }
-        }
-      });
-      if (isOwner) {
-        // TODO: Needs to delete all editors from the list when the owner deletes the list
-        // 1. Query for the id of editors where listID = listID
-        // 2. Mutations on deleteGroceryListAndEditors with batch delete on editors
-        // --
-        // --
-        // TODO: Query for the ids of the editors that have the listID
-        const ids = ['85f19694-7b34-48fd-b0f8-46c2513dbe02'];
-        ActionSheetIOS.showActionSheetWithOptions(
-          {
-            title: 'Do you want to remove the list?',
-            options: ['Cancel', 'Remove'],
-            destructiveButtonIndex: 1,
-            cancelButtonIndex: 0,
-          },
-          async buttonIndex => {
-            if (buttonIndex === 1) {
-              const deletedGroceryList = await deleteGroceryListAndEditors(
-                listID,
-                ids,
-              );
-              const groceryListsCopy = this.state.groceryLists.filter(
-                groceryList => groceryList.id !== deletedGroceryList.id,
-              );
-              this.setState({groceryLists: groceryListsCopy});
-            }
-          },
-        );
-      } else {
-        ActionSheetIOS.showActionSheetWithOptions(
-          {
-            title: 'Do you want to leave the list?',
-            options: ['Cancel', 'Leave'],
-            destructiveButtonIndex: 1,
-            cancelButtonIndex: 0,
-          },
-          async buttonIndex => {
-            if (buttonIndex === 1) {
-              const userID = this.state.user.id;
-              const editorID = await getEditorId(listID, userID);
-              const {list} = await deleteEditor(editorID);
-              const updatedList = this.state.groceryLists.filter(
-                groceryList => groceryList.id !== list.id,
-              );
-              this.setState({groceryLists: updatedList});
-            }
-          },
-        );
-      }
+        },
+      );
+      const groceryListsCopy = this.state.groceryLists.filter(
+        groceryList => groceryList.id !== list.id,
+      );
+      this.setState({groceryLists: groceryListsCopy});
     } catch (error) {
-      console.log(error);
       this.setState({apiError: error});
     }
+  };
+
+  isOwnerOfList = listOwner => {
+    return listOwner === this.state.user.id;
+  };
+
+  toggleModal = () => {
+    this.setState(prevstate => ({
+      modalOpen: prevstate.modalOpen ? false : true,
+    }));
   };
 
   render() {

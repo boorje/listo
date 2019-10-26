@@ -3,6 +3,7 @@ import {API, graphqlOperation} from 'aws-amplify';
 import * as queries from './graphql/queries';
 import * as mutations from './graphql/mutations';
 
+// ! UPDATED
 export const getUser = async id => {
   const {data} = await API.graphql(graphqlOperation(queries.getUser, {id}));
   return data.getUser;
@@ -28,6 +29,7 @@ export const getUserLists = async id => {
 /**
  * Queries for a users id by email. Returns the id of the user
  * @param {String} id
+ * TODO: UPDATE
  */
 export const getUserIDByEmail = async email => {
   const filter = {
@@ -47,13 +49,12 @@ export const getUserIDByEmail = async email => {
 
 /**
  * Adds the user to the database
- * @param {Object} input // user's id and email
  */
-export const createUser = async input => {
+export const createUser = async email => {
   const {data} = await API.graphql(
-    graphqlOperation(mutations.createUser, {input}),
+    graphqlOperation(mutations.createUser, {input: {email}}),
   );
-  return data.createUser;
+  return data.createUser.id;
 };
 
 // TODO: Move to grocerListAPI.js

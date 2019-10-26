@@ -6,8 +6,8 @@ import {Auth} from 'aws-amplify';
 import CodeForm from '../../components/forms/codeForm';
 import Message from '../../components/message';
 
-// -- Helpers --
-import {addNewUserToDB} from '../../helpers/addUserToDB';
+// -- API --
+import {createUser} from '../../api/authAPI';
 
 class VerifyScreen extends React.Component {
   state = {
@@ -61,8 +61,8 @@ class VerifyScreen extends React.Component {
   _signUserInAndAddToDB = async () => {
     try {
       const {email, password} = this.props.navigation.getParam('values', null);
-      const user = await Auth.signIn({username: email, password});
-      addNewUserToDB(user.attributes);
+      await Auth.signIn({username: email, password});
+      await createUser(email);
     } catch (error) {
       this.props.navigation.navigate('Login');
     }

@@ -66,17 +66,34 @@ export default class ListScreen extends React.Component {
         title: groceryList.title,
         groceryList: groceryList,
       });
+      await this.fetchListItems(groceryList.id);
       this.setState({groceryList});
-      const groceries = await getGroceryList(groceryList.id);
+    } catch (error) {
+      this.setState({
+        apiError: error
+          ? error
+          : 'Could not fetch list items. Please try again. ',
+      });
+    }
+  };
+
+  fetchListItems = async listId => {
+    try {
+      const groceries = await getGroceryList(listId);
       this.setState({groceries});
     } catch (error) {
-      this.setState({apiError: error});
+      if (error.errors) {
+        if (error.errors[0].message === 'Network Error') {
+          throw 'Network error. Please check your connection.';
+        }
+      }
+      throw 'Could not fetch lists. Please try again.';
     }
   };
 
   addGrocery = async grocery => {
     try {
-      const newGroceryID = await createGroceryItem(
+      const newGroceryItemID = await createGroceryItem(
         grocery,
         this.state.groceryList.id,
       );
@@ -90,7 +107,7 @@ export default class ListScreen extends React.Component {
             quantity,
             unit,
             details: false,
-            id: newGroceryID,
+            id: newGroceryItemID,
           },
         ],
       });
@@ -101,9 +118,12 @@ export default class ListScreen extends React.Component {
 
   removeGrocery = async id => {
     try {
-      const deleteGrocery = await deleteGroceryItem(id);
+      const deletedGrocery = await deleteGroceryItem(id);
+      if (!deletedGrocery || deletedGrocery === null) {
+        throw 'Could not remove item. Please try again.';
+      }
       const stateCopy = this.state.groceries.filter(
-        grocery => grocery.id !== deleteGrocery.id,
+        grocery => grocery.id !== deletedGrocery.id,
       );
       this.setState({groceries: stateCopy});
     } catch (error) {
@@ -114,16 +134,16 @@ export default class ListScreen extends React.Component {
   updateGrocery = async updatedGrocery => {
     try {
       const res = await updateGroceryItem(updatedGrocery);
+      console.log(res);
       const stateCopy = this.state.groceries.map(grocery => {
         if (grocery.id === res.id) {
-          grocery.content = updatedGrocery.content;
-          grocery.quantity = updatedGrocery.quantity;
-          grocery.unit = updatedGrocery.unit;
+          return updatedGrocery;
         }
         return grocery;
       });
       this.setState({groceries: stateCopy});
     } catch (error) {
+      console.log(error);
       this.setState({apiError: error});
     }
   };

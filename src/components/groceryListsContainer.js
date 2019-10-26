@@ -28,22 +28,22 @@ export default class GroceryListsContainer extends React.Component {
   swipeSettings = {
     autoClose: true,
   };
-  renderList(item, index) {
+  renderList({list}) {
     return (
       <Swipeout
         style={GroceryListStyles.swipeout}
         {...this.swipeSettings}
         right={[
           {
-            text: item.isOwner ? 'Delete' : 'Leave',
+            text: 'Remove', // TODO: Check if owner of list
             type: 'delete',
             onPress: () => {
-              this.props.removeGroceryList(item.id);
+              this.props.removeGroceryList(list);
             },
           },
         ]}>
         <GroceryListItem
-          item={item}
+          item={list}
           goToGroceryList={this.props.goToGroceryList}
         />
       </Swipeout>
@@ -58,8 +58,8 @@ export default class GroceryListsContainer extends React.Component {
     return (
       <KeyboardAwareFlatList
         data={this.props.lists}
-        renderItem={({item, index}) => {
-          return this.renderList(item, index);
+        renderItem={({item}) => {
+          return this.renderList(item);
         }}
         keyExtractor={item => item.id}
         ItemSeparatorComponent={this.FlatListItemSeparator}
