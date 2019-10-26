@@ -2,72 +2,17 @@ import {API, graphqlOperation} from 'aws-amplify';
 import * as mutations from './graphql/mutations';
 import * as queries from './graphql/queries';
 
-// -- QUERIES --
-
-/**
- * Returns the users lists including title, id and owner
- * TODO: CHANGE TO USE getUser instead
- */
-export const listGroceryLists = async () => {
-  const {data} = await API.graphql(
-    graphqlOperation(queries.listGroceryLists, {}),
-  );
-  return data.listGroceryLists.items;
-};
-
-/**
- *
- * @param {String}
- */
-export const getEditors = async id => {
-  const {data} = await API.graphql(graphqlOperation(queries.getEditors, {id}));
-  return data.getGroceryList.editors.items.map(({user}) => user);
-};
-
-export const getEditorId = async (listID, userID) => {
-  const filter = {
-    editorListId: {eq: listID},
-    editorUserId: {eq: userID},
-  };
-  const {data} = await API.graphql(
-    graphqlOperation(queries.getEditorId, {filter}),
-  );
-  return data.listEditors.items[0].id;
-};
-
-// -- MUTATIONS --
-
-/**
- * Updates a grocery list and returns ??
- * @param {String} id
- */
-export const updateGroceryList = async input => {
-  const {data} = await API.graphql(
-    graphqlOperation(mutations.updateGroceryList, {input}),
-  );
-  return data.updateGroceryList;
-};
-
-/**
- * Adds a editor to the grocery list and returns it.
- * @param {Object} input
- */
-export const createEditor = async input => {
-  const {data} = await API.graphql(
-    graphqlOperation(mutations.createEditor, {input}),
-  );
-  return data.createEditor.user;
-};
-
 /**
  * ----------------
  * UPDATED AND USED
  * ----------------
+ * TODO: Update doc of funcs to include spec of objects
  */
 
 /**
  * Creates a new grocery list and returns it.
- * @param {Object} input
+ * @param {object} input - the input to create a new grocery list
+ * @param {string} input.title - the list of the title
  * @returns {Object} object of created grocery list
  * TODO: Add a resolver which adds the editor.
  */
@@ -83,7 +28,7 @@ export const createGroceryList = async input => {
     editorUserId: owner,
   };
   await API.graphql(
-    graphqlOperation(mutations.createEditor, {
+    graphqlOperation(mutations.createOwnerEditor, {
       input: createEditorInput,
     }),
   );
@@ -100,6 +45,28 @@ export const deleteGroceryList = async id => {
     graphqlOperation(mutations.deleteGroceryList, {input: {id}}),
   );
   return data.deleteGroceryList;
+};
+
+/**
+ * Returns the email of editors for the list
+ * @param {String} id list id
+ * @returns {Object} object with editors
+ */
+export const getEditors = async id => {
+  const {data} = await API.graphql(graphqlOperation(queries.getEditors, {id}));
+  return data.getGroceryList;
+};
+
+/**
+ * Adds a editor to the grocery list and returns it.
+ * @param {Object} input
+ * @returns {Object} object with user and list
+ */
+export const createEditor = async input => {
+  const {data} = await API.graphql(
+    graphqlOperation(mutations.createEditor, {input}),
+  );
+  return data.createEditor;
 };
 
 /**

@@ -10,13 +10,8 @@ import {
 import * as yup from 'yup';
 import Message from '../components/message';
 
-import {
-  createEditor,
-  deleteEditor,
-  getEditors,
-  getEditorId,
-} from '../api/groceryListsAPI';
-import {getUser, getUserIDByEmail} from '../api/authAPI';
+import {createEditor, deleteEditor, getEditors} from '../api/groceryListsAPI';
+import {getUserByEmail} from '../api/authAPI';
 
 /**
  * TODO:
@@ -30,9 +25,9 @@ export default class ListSettingsScreen extends React.Component {
     editors: [],
     emailInput: '',
     apiError: '',
+    loggedInUserIsListOwner: false,
   };
 
-  // TODO: add so that it says "you" instead of email if the logged in user is the owner of the list.
   componentDidMount = async () => {
     try {
       const groceryList = await this.props.navigation.getParam(
@@ -40,28 +35,41 @@ export default class ListSettingsScreen extends React.Component {
         null,
       );
       this.setState({groceryList});
-      const owner = await this.getOwnerEmail(groceryList.owner);
-      let editors = await this.getEditors(groceryList.id);
-      editors.unshift(owner);
+      await this.fetchEditors(groceryList.id);
+      const userId = await this.props.navigation.getParam('userId', null);
+      const loggedInUserIsListOwner = userId === groceryList.owner;
+      this.setState({loggedInUserIsListOwner});
+    } catch (error) {
+      this.setState({
+        apiError: error ? error : 'Could not fetch editors. Please try again.',
+      });
+    }
+  };
+
+  fetchEditors = async listId => {
+    try {
+      const res = await getEditors(listId);
+      if (!res || res === null) {
+        throw 'Could not fetch editors. Please try again.';
+      }
+      let editors = [];
+      res.editors.items.map(({user}) => {
+        editors.push(user);
+      });
+      editors = await this.addOwnerProp(editors);
       this.setState({editors});
     } catch (error) {
-      this.setState({apiError: error});
+      throw 'Could not fetch editors. Please try again.';
     }
   };
 
-  getOwnerEmail = async id => {
-    let owner = await getUser(id);
-    owner.isOwner = true;
-    return owner;
-  };
-
-  // get the current editors of the list
-  getEditors = async listId => {
-    try {
-      return await getEditors(listId);
-    } catch (error) {
-      throw 'Could not fetch editors';
-    }
+  addOwnerProp = async editors => {
+    return await editors.map(editor => {
+      if (editor.id === this.state.groceryList.owner) {
+        editor.listOwner = true;
+      }
+      return editor;
+    });
   };
 
   // validates the user input
@@ -86,9 +94,9 @@ export default class ListSettingsScreen extends React.Component {
   // add editor to the list
   addEditor = async () => {
     try {
-      // check if logged in user is owner of list
-      if (!this.state.groceryList.isOwner) {
-        throw 'Only the admin has right to share the list';
+      // TODO: check if logged in user is owner of list
+      if (!this.state.loggedInUserIsListOwner) {
+        throw 'Only the owner of the list can perform add users';
       } else {
         // check for valid user input
         const enteredEmail = this.state.emailInput;
@@ -96,32 +104,30 @@ export default class ListSettingsScreen extends React.Component {
 
         // check if the email already exists in the list
         if (this.state.editors.length > 0) {
-          this.state.editors.map(editor => {
-            if (editor.email === enteredEmail) {
+          this.state.editors.map(({email}) => {
+            if (email === enteredEmail) {
               throw 'User already has access to the list.';
             }
           });
         }
-
-        const userID = await getUserIDByEmail(enteredEmail);
-        // check if input email is the owner of the list
-        if (this.state.groceryList.owner === userID) {
-          throw 'You already have access to the list.';
+        const res = await getUserByEmail(enteredEmail);
+        if (!res || res === null) {
+          throw 'User does not exist. Please try again.';
         }
-        // checks if the user already exists
+        // checks if the user id already exists
         if (this.state.editors.length > 0) {
           this.state.editors.map(editor => {
-            if (editor.id === userID) {
+            if (editor.id === res.id) {
               throw 'User already has access to the list.';
             }
           });
         }
         const editor = await createEditor({
           editorListId: this.state.groceryList.id,
-          editorUserId: userID,
+          editorUserId: res.items[0].id,
         });
         this.setState(prevState => ({
-          editors: [...prevState.editors, editor],
+          editors: [...prevState.editors, editor.user],
           emailInput: '',
         }));
       }
@@ -131,21 +137,31 @@ export default class ListSettingsScreen extends React.Component {
   };
 
   // delete editor from the list
-  deleteEditor = async id => {
+  // TODO: Add so only owner of the list can delete users
+  // TODO: Validate that list owner is not deleted
+  // TODO: What happens if i delete myself? -> has to be list owner to delete
+  deleteEditor = async userId => {
     try {
+      if (!this.state.loggedInUserIsListOwner) {
+        throw 'Only the owner of the list can remove users.';
+      }
       const {editors, groceryList} = this.state;
-      const editorId = await getEditorId(groceryList.id, id);
-      const {user} = await deleteEditor(editorId);
-      const newEditors = editors.filter(editor => editor.id !== user.id);
+      const res = await deleteEditor({
+        listId: groceryList.id,
+        userId,
+      });
+      if (!res || res === null) {
+        throw 'Could not remove user. Please try again.';
+      }
+      const newEditors = editors.filter(editor => editor.id !== userId);
       this.setState({editors: newEditors});
     } catch (error) {
-      console.log(error);
-      this.setState({apiError: 'Could not remove the user.'});
+      this.setState({apiError: error ? error : 'Could not remove the user.'});
     }
   };
 
   render() {
-    const {apiError, editors, emailInput, groceryList} = this.state;
+    const {apiError, editors, emailInput, loggedInUserIsListOwner} = this.state;
     return (
       <View>
         {apiError.length > 0 && <Message message={apiError} />}
@@ -162,23 +178,29 @@ export default class ListSettingsScreen extends React.Component {
                   borderColor: 'blue',
                   padding: 20,
                 }}
-                disabled={item.isOwner}>
+                disabled={item.listOwner || !loggedInUserIsListOwner}>
                 <Text>
-                  {item.email} {item.isOwner ? '(owner)' : null}
+                  {item.email} {item.listOwner ? '(owner)' : null}
                 </Text>
               </TouchableHighlight>
             )}
             keyExtractor={item => item.id}
           />
         )}
-        {groceryList.isOwner && (
+        {loggedInUserIsListOwner && (
           <React.Fragment>
             <TextInput
-              style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+              style={{
+                margin: 20,
+                height: 40,
+                borderColor: 'gray',
+                borderWidth: 1,
+              }}
               onChangeText={text => this.setState({emailInput: text})}
               value={emailInput}
               autoCapitalize="none"
               autoCorrect={false}
+              placeholder="enter email of user to share with"
             />
             <Button title="share" onPress={() => this.addEditor()} />
           </React.Fragment>

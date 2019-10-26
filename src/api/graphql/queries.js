@@ -14,19 +14,19 @@ export const getUser = `query getUser($id: ID!) {
   }
 }`;
 
-/**
- * ---
- * List API
- * ---
- */
-
-export const getEditorsByListID = `query editorsByListId($listId: ID!, $id: String!) {
-  editorsByListId(listId: $listId, id: {beginsWith: $id}) {
+export const getUserByEmail = `query userByEmail($email: AWSEmail!) {
+  userByEmail(email: $email, limit: 1) {
     items {
       id
     }
   }
 }`;
+
+/**
+ * ---
+ * List API
+ * ---
+ */
 
 export const getGroceryList = `query getGroceryList($id: ID!) {
   getGroceryList(id: $id) {
@@ -36,6 +36,19 @@ export const getGroceryList = `query getGroceryList($id: ID!) {
         content
         quantity
         unit
+      }
+    }
+  }
+}`;
+
+export const getEditors = `query getEditors($id: ID!) {
+  getGroceryList(id: $id) {
+    editors {
+      items {
+        user {
+          id
+          email
+        }
       }
     }
   }

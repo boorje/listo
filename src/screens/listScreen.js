@@ -40,6 +40,7 @@ export default class ListScreen extends React.Component {
           onPress={() => {
             navigation.navigate('ListSettings', {
               groceryList: navigation.state.params.groceryList,
+              userId: navigation.state.params.userId,
             });
           }}
           style={{marginRight: 15}}
@@ -68,6 +69,10 @@ export default class ListScreen extends React.Component {
       });
       await this.fetchListItems(groceryList.id);
       this.setState({groceryList});
+      const user = await this.props.navigation.getParam('user', null);
+      this.props.navigation.setParams({
+        userId: user.id,
+      });
     } catch (error) {
       this.setState({
         apiError: error
@@ -134,7 +139,6 @@ export default class ListScreen extends React.Component {
   updateGrocery = async updatedGrocery => {
     try {
       const res = await updateGroceryItem(updatedGrocery);
-      console.log(res);
       const stateCopy = this.state.groceries.map(grocery => {
         if (grocery.id === res.id) {
           return updatedGrocery;
@@ -143,7 +147,6 @@ export default class ListScreen extends React.Component {
       });
       this.setState({groceries: stateCopy});
     } catch (error) {
-      console.log(error);
       this.setState({apiError: error});
     }
   };

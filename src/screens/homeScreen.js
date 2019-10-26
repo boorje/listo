@@ -144,7 +144,7 @@ class HomeScreen extends React.Component {
   };
 
   render() {
-    const {apiError, groceryLists, modalOpen} = this.state;
+    const {apiError, groceryLists, modalOpen, user} = this.state;
     return (
       <View style={styles.container}>
         {apiError.length > 0 && <Message message={apiError} />}
@@ -160,7 +160,7 @@ class HomeScreen extends React.Component {
             lists={groceryLists}
             removeGroceryList={this.removeGroceryList}
             goToGroceryList={groceryList =>
-              this.props.navigation.navigate('List', {groceryList})
+              this.props.navigation.navigate('List', {groceryList, user})
             }
           />
         </SafeAreaView>

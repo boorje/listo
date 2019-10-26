@@ -11,6 +11,10 @@ export const createUser = `mutation createUser($email: CreateUserInput!) {
  * --------
  */
 
+/**
+ * Grocery List
+ */
+
 export const createGroceryList = `mutation createGroceryList($input: CreateGroceryListInput!) {
   createGroceryList(input: $input) {
     id
@@ -25,7 +29,23 @@ export const deleteGroceryList = `mutation deleteGroceryList($input: DeleteGroce
   }
 }`;
 
+/**
+ * Editor
+ */
+
 export const createEditor = `mutation createEditor($input: CreateEditorInput!) {
+  createEditor(input: $input) {
+    user {
+      id
+      email
+    }
+    list {
+      id
+    }
+  }
+}`;
+
+export const createOwnerEditor = `mutation createEditor($input: CreateEditorInput!) {
   createEditor(input: $input) {
     id
   }
@@ -36,6 +56,10 @@ export const deleteEditor = `mutation deleteEditor($input: DeleteEditorInput!) {
     id
   }
 }`;
+
+/**
+ * Grocery Item
+ */
 
 export const createGroceryItem = `mutation createGroceryItem($input: CreateGroceryItemInput!) {
   createGroceryItem(input: $input) {
