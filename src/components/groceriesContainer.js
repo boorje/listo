@@ -241,16 +241,7 @@ class GroceriesContainer extends React.Component {
             keyboardShouldPersistTaps="always"
           />
         </View>
-        <View
-          style={[
-            styles.footer,
-            {
-              justifyContent: !this.state.adjustFooter
-                ? 'center'
-                : 'flex-start',
-              flex: !this.state.adjustFooter ? 1 : 10,
-            },
-          ]}>
+        <View style={[styles.footer, {justifyContent: 'center', flex: 1}]}>
           <AddGroceryFooter
             addGrocery={this.addGrocery}
             addItemOpen={this.state.addItemOpen}

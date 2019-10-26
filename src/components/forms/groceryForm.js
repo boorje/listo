@@ -99,7 +99,7 @@ export default class GroceryForm extends React.Component {
                 this.setState({isFocused: '3'});
               }}
               placeholder={'Enhet...'}
-              placeholderTextColor={'gray'}
+              placeholderTextColor={this.props.placeholderColor || 'gray'}
               borderColor={'black'}
               returnKeyType="done"
               autoCorrect={false}

@@ -91,7 +91,7 @@ class OverlayModal extends React.Component {
     const [translateX, translateY] = [0, pan.y];
     const viewStyle = {transform: [{translateX}, {translateY}]};
 
-    // TODO: Close modal when clicking above modal.
+    // TODO: Close modal when clicking outside modal.
     return (
       <Modal animationType="slide" transparent={true} visible={true}>
         <Animated.View style={[viewStyle, styles.container]}>
