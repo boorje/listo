@@ -1,14 +1,14 @@
 import React from 'react';
-import {StyleSheet, View, Text} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import PropTypes from 'prop-types';
+// components
 import OverlayModal from '../../components/modals/overlayModal';
 import PreviousGroceriesContainer from '../../components/previousGroceriesContainer';
-import textStyles from '../../styles/textStyles';
 
 const PreviousGroceriesModal = props => (
-  <OverlayModal closeModal={props.closeModal} modalTitle={'Tidigare varor'}>
+  <OverlayModal closeModal={props.closeModal} modalTitle={'Crossed-off items'}>
     <View style={styles.container}>
-      <PreviousGroceriesContainer></PreviousGroceriesContainer>
+      <PreviousGroceriesContainer />
     </View>
   </OverlayModal>
 );

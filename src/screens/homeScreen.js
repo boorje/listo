@@ -1,49 +1,126 @@
 import React from 'react';
-import {StyleSheet, View, Image, SafeAreaView, Text} from 'react-native';
+import {ActionSheetIOS, SafeAreaView, StyleSheet, View} from 'react-native';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
-
-// -- Components --
+// components
 import GroceryListsContainer from '../components/groceryListsContainer';
 import AddGroceryListModal from '../components/modals/AddGroceryListModal';
 import Message from '../components/message';
 import HomeScreenBackground from '../components/homeScreenBackground';
-import SettingsModal from './modals/settingsModal';
-
-// -- API helpers --
+// api
 import {
-  getGroceryList,
   createGroceryList,
-  listGroceryLists,
   deleteGroceryList,
+  deleteEditor,
 } from '../api/groceryListsAPI';
+import {getUser, createUser} from '../api/authAPI';
 
-class HomeScreen extends React.Component {
-  static navigationOptions = ({navigation}) => {
-    return {
-      header: null,
-    };
-  };
-
+export default class HomeScreen extends React.Component {
   state = {
     modalOpen: false,
-    settingsOpen: false,
     groceryLists: [],
+    user: {},
     apiError: '',
-    numberOfItems: 8,
   };
 
   componentDidMount = async () => {
     try {
-      // const groceryLists = await listGroceryLists();
-      const groceryLists = [{id: 1, title: 'Adam'}]; //! REMOVE
-      const groceries = groceryLists.map(
-        list => getGroceryList(list.id).length,
-      );
-      console.log(groceries);
-      this.setState({groceryLists});
+      await this.fetchUserLists();
     } catch (error) {
-      this.setState({apiError: 'Kunde inte hämta listor. Försök igen.'});
+      this.setState({
+        apiError: error ? error : 'Could not fetch lists. Please try again.',
+      });
     }
+  };
+
+  fetchUserLists = async () => {
+    try {
+      const cognitoUser = await this.props.navigation.getParam('user', null);
+      if (!cognitoUser) {
+        this.props.navigation.navigate('login');
+      }
+      const user = await getUser(cognitoUser.username);
+      if (!user || user === null) {
+        // create the user in the database
+        const {id, email} = await createUser(cognitoUser.attributes.email);
+        this.setState({user: {id, email}});
+      } else {
+        const groceryLists = user.groceryLists.items;
+        this.setState({
+          groceryLists,
+          user: {id: user.id, email: user.email},
+        });
+        // TODO: Set this if new user is created
+        this.props.navigation.setParams({userEmail: user.email});
+      }
+    } catch (error) {
+      console.log(error);
+      if (error.errors) {
+        if (error.errors[0].message === 'Network Error') {
+          throw 'Network error. Please check your connection.';
+        }
+      }
+      throw 'Could not fetch lists. Please try again.';
+    }
+  };
+
+  // TODO: Create a resolver which adds the user as a editor
+  addGroceryList = async title => {
+    try {
+      const res = await createGroceryList({title});
+      res.isOwner = true;
+      this.setState({groceryLists: [...this.state.groceryLists, {list: res}]});
+    } catch (error) {
+      this.setState({
+        apiError: `Kunde inte skapa listan "${title}". Försök igen.`,
+      });
+    }
+  };
+
+  // TODO: Create a resolver which batch deletes editors
+  removeGroceryList = async ({list}) => {
+    try {
+      const isOwner = this.isOwnerOfList(list.owner);
+      const actionSheetTitle = `Do you want to ${
+        isOwner ? 'delete' : 'leave'
+      } this list?`;
+      const actionSheetButton = isOwner ? 'Delete' : 'Leave';
+      ActionSheetIOS.showActionSheetWithOptions(
+        {
+          title: actionSheetTitle,
+          options: ['Cancel', actionSheetButton],
+          destructiveButtonIndex: 1,
+          cancelButtonIndex: 0,
+        },
+        async buttonIndex => {
+          if (buttonIndex === 1) {
+            let res;
+            if (isOwner) {
+              // TODO: Create a resolver which deletes all the editors of the list using the batch delete
+              res = await deleteGroceryList(list.id);
+            }
+            res = await deleteEditor({
+              listId: list.id,
+              userId: this.state.user.id,
+            });
+            if (!res || res === null) {
+              throw isOwner
+                ? 'Could not delete the list. Please try again.'
+                : 'Could not leave the list. Please try again.';
+            }
+            const groceryListsCopy = this.state.groceryLists.filter(
+              groceryList => groceryList.list.id !== list.id,
+            );
+            this.setState({groceryLists: groceryListsCopy});
+          }
+        },
+      );
+    } catch (error) {
+      this.setState({apiError: error});
+    }
+  };
+
+  isOwnerOfList = listOwner => {
+    return listOwner === this.state.user.id;
   };
 
   toggleModal = () => {
@@ -52,43 +129,8 @@ class HomeScreen extends React.Component {
     }));
   };
 
-  openSettings = () => {
-    this.setState({settingsOpen: this.state.settingsOpen ? false : true});
-  };
-
-  addGroceryList = async title => {
-    try {
-      const res = await createGroceryList({
-        title,
-      });
-      this.setState({groceryLists: [...this.state.groceryLists, res]});
-    } catch (error) {
-      this.setState({
-        apiError: `Kunde inte skapa listan "${title}". Försök igen.`,
-      });
-    }
-  };
-
-  removeGroceryList = async (id, index) => {
-    try {
-      const deletedGroceryList = await deleteGroceryList(id);
-      const groceryListsCopy = this.state.groceryLists.filter(
-        groceryList => groceryList.id !== deletedGroceryList.id,
-      );
-      this.setState({groceryLists: groceryListsCopy});
-    } catch (error) {
-      this.setState({apiError: error});
-    }
-  };
-
   render() {
-    const {
-      apiError,
-      groceryLists,
-      modalOpen,
-      numberOfItems,
-      settingsOpen,
-    } = this.state;
+    const {apiError, groceryLists, modalOpen, user} = this.state;
     return (
       <View style={styles.container}>
         {modalOpen && (
@@ -98,22 +140,21 @@ class HomeScreen extends React.Component {
             addGroceryList={this.addGroceryList}
           />
         )}
-        {settingsOpen && (
-          <SettingsModal closeModal={() => this.openSettings()} />
-        )}
-        <HomeScreenBackground openSettings={() => this.openSettings()} />
+        <HomeScreenBackground
+          openSettings={() =>
+            this.props.navigation.navigate('Settings', {user})
+          }
+        />
         {apiError.length > 0 && <Message message={apiError} />}
         <SafeAreaView style={{flex: 5, marginTop: '3%'}}>
           <GroceryListsContainer
-            lists={groceryLists}
+            groceryLists={groceryLists}
             removeGroceryList={this.removeGroceryList}
             goToGroceryList={groceryList =>
-              this.props.navigation.navigate('List', {groceryList})
+              this.props.navigation.navigate('List', {groceryList, user})
             }
-            numberOfItems={numberOfItems}
           />
         </SafeAreaView>
-
         <IoniconsIcon
           size={80}
           style={styles.icon}
@@ -125,7 +166,6 @@ class HomeScreen extends React.Component {
     );
   }
 }
-export default HomeScreen;
 
 const styles = StyleSheet.create({
   container: {

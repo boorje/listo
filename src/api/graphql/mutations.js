@@ -1,17 +1,27 @@
-export const createGroceryList = `mutation createGroceryList($input: CreateGroceryListInput!) {
-    createGroceryList(input: $input) {
-      id
-      title
-      owner
-    }
+export const createUser = `mutation createUser($input: CreateUserInput!) {
+  createUser(input: $input) {
+    id
+    email
   }
-  `;
+}`;
 
-export const createGroceryItem = `mutation createGroceryItem($input: CreateGroceryItemInput!) {
-    createGroceryItem(input: $input) {
-      id
-    }
-  }`;
+/**
+ * --------
+ * List API
+ * --------
+ */
+
+/**
+ * Grocery List
+ */
+
+export const createGroceryList = `mutation createGroceryList($input: CreateGroceryListInput!) {
+  createGroceryList(input: $input) {
+    id
+    owner
+    title 
+  }
+ }`;
 
 export const deleteGroceryList = `mutation deleteGroceryList($input: DeleteGroceryListInput!) {
   deleteGroceryList(input: $input) {
@@ -19,16 +29,47 @@ export const deleteGroceryList = `mutation deleteGroceryList($input: DeleteGroce
   }
 }`;
 
-export const deleteGroceryItem = `mutation deleteGroceryItem($input: DeleteGroceryItemInput!) {
-  deleteGroceryItem(input: $input) {
+/**
+ * Editor
+ */
+
+export const createEditor = `mutation createEditor($input: CreateEditorInput!) {
+  createEditor(input: $input) {
+    user {
+      id
+      email
+    }
+    list {
+      id
+    }
+  }
+}`;
+
+export const createOwnerEditor = `mutation createEditor($input: CreateEditorInput!) {
+  createEditor(input: $input) {
+    id
+  }
+ }`;
+
+export const deleteEditor = `mutation deleteEditor($input: DeleteEditorInput!) {
+  deleteEditor(input: $input) {
     id
   }
 }`;
 
-export const updateGroceryList = `mutation updateGroceryList($input: UpdateGroceryListInput!) {
-  updateGroceryList(input: $input) {
+/**
+ * Grocery Item
+ */
+
+export const createGroceryItem = `mutation createGroceryItem($input: CreateGroceryItemInput!) {
+  createGroceryItem(input: $input) {
     id
-    editors
+  }
+}`;
+
+export const deleteGroceryItem = `mutation deleteGroceryItem($input: DeleteGroceryItemInput!) {
+  deleteGroceryItem(input: $input) {
+    id
   }
 }`;
 

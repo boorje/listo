@@ -11,6 +11,7 @@ import Message from '../../components/message';
 
 // -- Helpers --
 import validateValues from '../../helpers/validateFormValues';
+import {addUserToDB} from '../../helpers/addUserToDB';
 
 const BACKGROUND_URL =
   'https://images.unsplash.com/photo-1516594798947-e65505dbb29d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80';
@@ -30,8 +31,10 @@ class LoginScreen extends React.Component {
         username: email,
         password,
       });
+      // ! Remove this, add inside the homescreen instead. After successfully logged in, if getUser() is not found, then add it
+      await addUserToDB(user.attributes);
       this.setState({loading: false});
-      this.props.navigation.navigate('App', {
+      this.props.navigation.navigate('Home', {
         user,
       });
     } catch (error) {
