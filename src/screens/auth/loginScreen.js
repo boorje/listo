@@ -1,6 +1,8 @@
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View, Image} from 'react-native';
 import {Auth} from 'aws-amplify';
+import IoniconsIcon from 'react-native-vector-icons/Ionicons';
+import textStyles from '../../styles/textStyles';
 
 // -- Components --
 import LoginForm from '../../components/forms/loginForm';
@@ -10,6 +12,9 @@ import Message from '../../components/message';
 // -- Helpers --
 import validateValues from '../../helpers/validateFormValues';
 import {addUserToDB} from '../../helpers/addUserToDB';
+
+const BACKGROUND_URL =
+  'https://images.unsplash.com/photo-1516594798947-e65505dbb29d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80';
 
 class LoginScreen extends React.Component {
   state = {
@@ -56,20 +61,32 @@ class LoginScreen extends React.Component {
     const {loading, signinError} = this.state;
     return (
       <View style={styles.container}>
-        <View style={styles.logo}>
-          <Text style={styles.logoText}>SIMPSON</Text>
-        </View>
+        <Image
+          style={styles.background}
+          source={{
+            uri: BACKGROUND_URL,
+          }}
+        />
         <View style={styles.form}>
           {signinError.length > 0 && <Message message={signinError} />}
+          <View style={styles.logo}>
+            <IoniconsIcon
+              style={{marginRight: '3%'}}
+              size={159}
+              name={'ios-list'}
+              color={'#06BA63'}
+              onPress={() => {}}
+            />
+          </View>
           <LoginForm handleSubmit={this.handleLogin} loading={loading} />
           <Text
             onPress={() => this.props.navigation.navigate('ForgotPassword')}
-            style={styles.forgotPsw}>
-            Forgot password?
+            style={[textStyles.smallText, {color: 'white'}]}>
+            Glömt lösenord?
           </Text>
           <View style={styles.divider} />
           <PrimaryButton
-            title="SIGN UP"
+            title="Registrera dig"
             onPress={() => this.props.navigation.navigate('Signup')}
           />
         </View>
@@ -82,14 +99,11 @@ export default LoginScreen;
 
 const styles = StyleSheet.create({
   container: {
-    margin: 50,
     flex: 1,
-    justifyContent: 'space-around',
-    marginBottom: 0,
+    justifyContent: 'center',
   },
-  logo: {flex: 1, justifyContent: 'center', alignItems: 'center'},
-  logoText: {fontSize: 50, fontWeight: 'bold'},
-  form: {flex: 2, justifyContent: 'flex-start'},
-  forgotPsw: {textAlign: 'center', margin: 10, marginBottom: 20},
-  divider: {marginBottom: 20, borderBottomWidth: 1, borderColor: '#ddd'},
+  background: {flex: 1, opacity: 0.67},
+  logo: {alignItems: 'center'},
+  form: {width: '70%', position: 'absolute', alignSelf: 'center'},
+  divider: {marginBottom: 20, borderWidth: 1, borderColor: '#ddd'},
 });

@@ -18,10 +18,12 @@ export default class AddGroceryFooter extends React.Component {
             <Text style={textStyles.default}>Lägg till vara...</Text>
           </TouchableOpacity>
         ) : (
-          <GroceryForm
-            closeGroceryForm={this.props.showAddGrocery}
-            addGrocery={this.props.addGrocery}
-          />
+          <View style={{paddingTop: 10}}>
+            <GroceryForm
+              closeGroceryForm={this.props.showAddGrocery}
+              addGrocery={this.props.addGrocery}
+            />
+          </View>
         )}
         <View style={styles.icons}>
           <IoniconsIcon
@@ -46,16 +48,11 @@ export default class AddGroceryFooter extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    //flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingLeft: '3%',
     paddingRight: '3%',
-  },
-  text: {
-    fontSize: 20,
-    fontFamily: 'Avenir Next',
   },
   icons: {
     flex: 1,

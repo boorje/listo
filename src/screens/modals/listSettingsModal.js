@@ -8,20 +8,27 @@ import {
   View,
 } from 'react-native';
 import * as yup from 'yup';
-import Message from '../components/message';
-
-import {createEditor, deleteEditor, getEditors} from '../api/groceryListsAPI';
-import {getUserByEmail} from '../api/authAPI';
+import PropTypes from 'prop-types';
+// components
+import OverlayModal from '../../components/modals/overlayModal';
+import Message from '../../components/message';
+// api
+import {
+  createEditor,
+  deleteEditor,
+  getEditors,
+} from '../../api/groceryListsAPI';
+import {getUserByEmail} from '../../api/authAPI';
 
 /**
  * TODO:
  * Add Formik
  * Add Stylesheet
- * Add prop-types
  */
-export default class ListSettingsScreen extends React.Component {
+export default class ListSettingsModal extends React.Component {
   state = {
-    groceryList: {},
+    groceryList: this.props.groceryList || {},
+    user: this.props.user || {},
     editors: [],
     emailInput: '',
     apiError: '',
@@ -30,14 +37,9 @@ export default class ListSettingsScreen extends React.Component {
 
   componentDidMount = async () => {
     try {
-      const groceryList = await this.props.navigation.getParam(
-        'groceryList',
-        null,
-      );
-      this.setState({groceryList});
-      await this.fetchEditors(groceryList.id);
-      const userId = await this.props.navigation.getParam('userId', null);
-      const loggedInUserIsListOwner = userId === groceryList.owner;
+      await this.fetchEditors(this.state.groceryList.id);
+      const loggedInUserIsListOwner =
+        this.state.user.id === this.state.groceryList.owner;
       this.setState({loggedInUserIsListOwner});
     } catch (error) {
       this.setState({
@@ -99,7 +101,8 @@ export default class ListSettingsScreen extends React.Component {
         throw 'Only the owner of the list can perform add users';
       } else {
         // check for valid user input
-        const enteredEmail = this.state.emailInput;
+        // const enteredEmail = this.state.emailInput;
+        const enteredEmail = 'adam@olivegren.se';
         await this.validateEmail(enteredEmail);
 
         // check if the email already exists in the list
@@ -112,6 +115,8 @@ export default class ListSettingsScreen extends React.Component {
         }
         const res = await getUserByEmail(enteredEmail);
         if (!res || res === null) {
+          throw 'User does not exist. Please try again.';
+        } else if (res.items.length < 1) {
           throw 'User does not exist. Please try again.';
         }
         // checks if the user id already exists
@@ -132,6 +137,7 @@ export default class ListSettingsScreen extends React.Component {
         }));
       }
     } catch (error) {
+      console.log(error);
       this.setState({apiError: error});
     }
   };
@@ -161,51 +167,60 @@ export default class ListSettingsScreen extends React.Component {
   };
 
   render() {
+    console.log(this.state);
     const {apiError, editors, emailInput, loggedInUserIsListOwner} = this.state;
     return (
-      <View>
-        {apiError.length > 0 && <Message message={apiError} />}
-        <Text>List members</Text>
-        {editors.length > 0 && (
-          <FlatList
-            data={editors}
-            renderItem={({item}) => (
-              <TouchableHighlight
-                onPress={() => this.deleteEditor(item.id)}
-                style={{
-                  alignItems: 'center',
-                  borderWidth: 1,
-                  borderColor: 'blue',
-                  padding: 20,
-                }}
-                disabled={item.listOwner || !loggedInUserIsListOwner}>
-                <Text>
-                  {item.email} {item.listOwner ? '(owner)' : null}
-                </Text>
-              </TouchableHighlight>
-            )}
-            keyExtractor={item => item.id}
-          />
-        )}
-        {loggedInUserIsListOwner && (
-          <React.Fragment>
-            <TextInput
-              style={{
-                margin: 20,
-                height: 40,
-                borderColor: 'gray',
-                borderWidth: 1,
-              }}
-              onChangeText={text => this.setState({emailInput: text})}
-              value={emailInput}
-              autoCapitalize="none"
-              autoCorrect={false}
-              placeholder="enter email of user to share with"
+      <OverlayModal closeModal={this.props.closeModal} modalTitle="Settings">
+        <View>
+          {apiError.length > 0 && <Message message={apiError} />}
+          <Text>List members</Text>
+          {editors.length > 0 && (
+            <FlatList
+              data={editors}
+              renderItem={({item}) => (
+                <TouchableHighlight
+                  onPress={() => this.deleteEditor(item.id)}
+                  style={{
+                    alignItems: 'center',
+                    borderWidth: 1,
+                    borderColor: 'blue',
+                    padding: 20,
+                  }}
+                  disabled={item.listOwner || !loggedInUserIsListOwner}>
+                  <Text>
+                    {item.email} {item.listOwner ? '(owner)' : null}
+                  </Text>
+                </TouchableHighlight>
+              )}
+              keyExtractor={item => item.id}
             />
-            <Button title="share" onPress={() => this.addEditor()} />
-          </React.Fragment>
-        )}
-      </View>
+          )}
+          {loggedInUserIsListOwner && (
+            <React.Fragment>
+              <TextInput
+                style={{
+                  margin: 20,
+                  height: 40,
+                  borderColor: 'gray',
+                  borderWidth: 1,
+                }}
+                onChangeText={text => this.setState({emailInput: text})}
+                value={emailInput}
+                autoCapitalize="none"
+                autoCorrect={false}
+                placeholder="enter email of user to share with"
+              />
+              <Button title="share" onPress={() => this.addEditor()} />
+            </React.Fragment>
+          )}
+        </View>
+      </OverlayModal>
     );
   }
 }
+
+ListSettingsModal.propTypes = {
+  closeModal: PropTypes.func.isRequired,
+  groceryList: PropTypes.shape().isRequired,
+  user: PropTypes.shape().isRequired,
+};

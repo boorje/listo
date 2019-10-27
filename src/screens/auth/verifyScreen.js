@@ -14,6 +14,7 @@ class VerifyScreen extends React.Component {
     verificationError: '',
     user: this.props.navigation.getParam('user', null),
     loading: false,
+    cognitoUser: {},
   };
 
   _validateCode = code => {
@@ -34,7 +35,9 @@ class VerifyScreen extends React.Component {
       await this._validateCode(code);
       await Auth.confirmSignUp(this.state.user.username, code);
       await this._signUserInAndAddToDB();
-      this.props.navigation.navigate('Signedup');
+      this.props.navigation.navigate('Signedup', {
+        user: this.state.cognitoUser,
+      });
       this.setState({loading: false});
     } catch (error) {
       this.setState({loading: false});
@@ -61,8 +64,9 @@ class VerifyScreen extends React.Component {
   _signUserInAndAddToDB = async () => {
     try {
       const {email, password} = this.props.navigation.getParam('values', null);
-      await Auth.signIn({username: email, password});
+      const cognitoUser = await Auth.signIn({username: email, password});
       await createUser(email);
+      this.setState({cognitoUser});
     } catch (error) {
       this.props.navigation.navigate('Login');
     }

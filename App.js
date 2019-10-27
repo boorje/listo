@@ -8,8 +8,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import HomeScreen from './src/screens/homeScreen';
 import ListScreen from './src/screens/listScreen';
 import SettingsScreen from './src/screens/settingsScreen';
-import ListSettingsScreen from './src/screens/listSettingsScreen';
-
+// auth
 import AuthScreen from './src/screens/auth/authScreen';
 import LoginScreen from './src/screens/auth/loginScreen';
 import SignupScreen from './src/screens/auth/signupScreen';
@@ -26,14 +25,14 @@ Amplify.configure(aws_exports);
 Icon.loadFont();
 IoniconsIcon.loadFont();
 
-//console.disableYellowBox = true;
-
-const MainStack = createStackNavigator({
-  Home: HomeScreen,
-  List: ListScreen,
-  Settings: SettingsScreen,
-  ListSettings: ListSettingsScreen,
-});
+const MainStack = createStackNavigator(
+  {
+    Home: HomeScreen,
+    List: ListScreen,
+    Settings: SettingsScreen,
+  },
+  {headerMode: 'none'},
+);
 
 const AuthStack = createStackNavigator(
   {
@@ -45,7 +44,7 @@ const AuthStack = createStackNavigator(
     ResetPassword: ResetPasswordScreen,
     PasswordFinished: PasswordFinishedScreen,
   },
-  //{headerMode: 'none'},
+  {headerMode: 'none'},
 );
 
 export default createAppContainer(

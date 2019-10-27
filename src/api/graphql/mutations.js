@@ -1,5 +1,5 @@
-export const createUser = `mutation createUser($email: CreateUserInput!) {
-  createUser(email: $email) {
+export const createUser = `mutation createUser($input: CreateUserInput!) {
+  createUser(input: $input) {
     id
     email
   }

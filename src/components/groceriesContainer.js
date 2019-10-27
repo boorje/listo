@@ -1,39 +1,107 @@
 import React from 'react';
-import {StyleSheet, View, Text, TouchableHighlight} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  TouchableHighlight,
+  LayoutAnimation,
+  SafeAreaView,
+} from 'react-native';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import GroceryForm from './forms/groceryForm';
-import textStyles from '../styles/textStyles';
 import {KeyboardAwareFlatList} from 'react-native-keyboard-aware-scroll-view';
+// components
+import AddGroceryFooter from '../components/addGroceryFooter';
+import GroceryForm from './forms/groceryForm';
+// styles
+import textStyles from '../styles/textStyles';
+import animations from '../styles/animations';
 
 class GroceriesContainer extends React.Component {
-  renderList(item, index) {
+  state = {
+    groceries: [],
+    adjustFooter: false,
+    addItemOpen: false,
+  };
+
+  componentDidMount = () => {
+    console.log(this.props.groceries);
+    this.setState({groceries: this.props.groceries});
+  };
+
+  showGroceryForm = grocery => {
+    console.log(grocery);
+    if (this.state.addItemOpen) {
+      this.setState({adjustFooter: false, addItemOpen: false});
+    }
+    console.log(this.state.groceries);
+    const copy = this.state.groceries.map(item => {
+      if (grocery.details || item.id !== grocery.id) {
+        console.log('false');
+        item.details = false;
+      } else {
+        item.details = true;
+      }
+      return item;
+    });
+    LayoutAnimation.configureNext(animations.default);
+    this.setState({
+      groceries: copy,
+    });
+  };
+
+  showAddGrocery = () => {
+    if (this.state.addItemOpen === false) {
+      LayoutAnimation.configureNext(animations.default);
+      this.setState({addItemOpen: true});
+    } else {
+      LayoutAnimation.configureNext(animations.default);
+      this.setState({addItemOpen: false});
+    }
+    this.adjustFooter();
+  };
+
+  adjustFooter = () => {
+    LayoutAnimation.configureNext(animations.default);
+    this.setState({adjustFooter: !this.state.adjustFooter ? true : false});
+  };
+
+  renderItem(grocery) {
     return (
       <TouchableHighlight
-        style={styles.container1}
+        onLayout={e => {
+          this.rowHeight = e.nativeEvent.layout.height;
+        }}
+        style={{flex: 1}}
         fontSize={50}
         onPress={() => {
-          this.props.removeGrocery(item.id);
+          this.props.removeGrocery(grocery.id);
         }}
         underlayColor={'transparent'}>
         <View style={styles.container2}>
-          <View style={styles.info}>
-            {!item.details ? (
-              <Text style={textStyles.default}>{item.content}</Text>
-            ) : (
+          <View style={{flex: 1}}>
+            {grocery.details ? (
               <GroceryForm
-                closeGroceryForm={() => this.props.showGroceryForm(item, index)}
+                closeGroceryForm={() => this.showGroceryForm(grocery)}
                 addGrocery={this.props.updateGrocery}
-                item={item}
+                item={grocery}
               />
+            ) : (
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <Text style={textStyles.default}>{grocery.content}</Text>
+                <Text style={textStyles.groceryDetails}>
+                  {grocery.quantity}
+                </Text>
+                <Text style={textStyles.groceryDetails}>{grocery.unit}</Text>
+              </View>
             )}
           </View>
           <Icon
             size={32}
-            name={!item.details ? 'expand-more' : 'expand-less'}
+            name={!grocery.details ? 'expand-more' : 'expand-less'}
             color={'black'}
             onPress={() => {
-              this.props.showGroceryForm(item, index);
+              this.showGroceryForm(grocery);
             }}
           />
         </View>
@@ -47,16 +115,31 @@ class GroceriesContainer extends React.Component {
 
   render() {
     return (
-      <KeyboardAwareFlatList
-        scrollEnabled={true}
-        data={this.props.items}
-        renderItem={({item, index}) => {
-          return this.renderList(item, index);
-        }}
-        keyExtractor={item => item.id}
-        ItemSeparatorComponent={this.FlatListItemSeparator}
-        keyboardShouldPersistTaps="always"
-      />
+      <SafeAreaView style={{flex: 1}}>
+        <View style={{flex: 8}}>
+          <KeyboardAwareFlatList
+            scrollEnabled={true}
+            data={this.props.groceries}
+            renderItem={({item}) => this.renderItem(item)}
+            keyExtractor={item => item.id}
+            ItemSeparatorComponent={this.FlatListItemSeparator}
+            keyboardShouldPersistTaps="always"
+          />
+        </View>
+        <View
+          style={{
+            justifyContent: !this.state.adjustFooter ? 'center' : 'flex-start',
+            flex: !this.state.adjustFooter ? 1 : 10,
+            borderTopWidth: 0.5,
+            paddingBottom: 0,
+          }}>
+          <AddGroceryFooter
+            addGrocery={this.props.addGrocery}
+            addItemOpen={this.state.addItemOpen}
+            showAddGrocery={this.showAddGrocery}
+          />
+        </View>
+      </SafeAreaView>
     );
   }
 }
@@ -74,16 +157,14 @@ const styles = StyleSheet.create({
     paddingRight: '10%',
   },
   separator: {
-    height: 1,
+    height: 0.5,
     width: '97%',
     marginLeft: '3%',
-    marginRight: '0%',
     backgroundColor: '#607D8B',
   },
   container1: {
     flex: 1,
   },
-  info: {},
   container2: {
     flex: 1,
     flexDirection: 'row',
@@ -100,15 +181,8 @@ const styles = StyleSheet.create({
 });
 
 GroceriesContainer.propTypes = {
-  showGroceryForm: PropTypes.func.isRequired,
+  groceries: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  addGrocery: PropTypes.func.isRequired,
   updateGrocery: PropTypes.func.isRequired,
   removeGrocery: PropTypes.func.isRequired,
-  items: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      content: PropTypes.string.isRequired,
-      quantity: PropTypes.number,
-      unit: PropTypes.string,
-    }).isRequired,
-  ),
 };

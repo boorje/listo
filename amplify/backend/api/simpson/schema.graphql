@@ -19,12 +19,7 @@ type Editor
     name: "ByListId"
     fields: ["listId", "id"]
     queryField: "editorsByListId"
-  )
-  @key(
-    name: "ByUserId"
-    fields: ["userId", "id"]
-    queryField: "editorsByUserId"
-  ) #! THIS KEY IS NOT USABLE {
+  ) {
   listId: ID! # Set with custom resolver
   userId: ID! # Set with custom resolver
   id: String! # Set to listId-userEmail with custom resolver
@@ -49,9 +44,3 @@ type GroceryItem @model {
   unit: String
   groceryList: GroceryList! @connection(name: "GroceryItems")
 }
-
-## ---
-
-# type Mutation {
-#   batchDeleteEditors(ids: [ID!]!): [Member]
-# }

@@ -1,21 +1,12 @@
 import React from 'react';
-import {
-  Button,
-  StyleSheet,
-  View,
-  LayoutAnimation,
-  SafeAreaView,
-} from 'react-native';
-import IoniconsIcon from 'react-native-vector-icons/Ionicons';
-
-// -- Components --
-import AddGroceryFooter from '../components/addGroceryFooter';
+import {LayoutAnimation, StyleSheet, View} from 'react-native';
+// components
 import GroceriesContainer from '../components/groceriesContainer';
 import Message from '../components/message';
-
-import animations from '../styles/animations';
-
-// -- API helpers --
+import ScreenHeader from '../components/screenHeader';
+import PreviousGroceriesModal from './modals/previousGroceriesModal';
+import ListSettingsModal from './modals/listSettingsModal';
+// api
 import {
   getGroceryList,
   createGroceryItem,
@@ -23,33 +14,18 @@ import {
   updateGroceryItem,
 } from '../api/groceryListsAPI';
 
-export default class ListScreen extends React.Component {
-  // ! TODO: Create custom header
-  static navigationOptions = ({navigation}) => {
-    return {
-      headerTitle: navigation.state.params.title,
-      headerRight: (
-        <IoniconsIcon
-          size={28}
-          name="md-settings"
-          onPress={() => {
-            navigation.navigate('ListSettings', {
-              groceryList: navigation.state.params.groceryList,
-              userId: navigation.state.params.userId,
-            });
-          }}
-          style={{marginRight: 15}}
-        />
-      ),
-    };
-  };
+const BACKGROUND_URL =
+  'https://images.unsplash.com/photo-1456324504439-367cee3b3c32?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80';
 
+export default class ListScreen extends React.Component {
   state = {
     groceryList: {},
     groceries: [],
+    user: {},
     apiError: '',
-    adjustFooter: false,
-    addItemOpen: false,
+    listSettingsOpen: false,
+    historyOpen: false,
+    previousGroceries: [],
   };
 
   componentDidMount = async () => {
@@ -58,16 +34,10 @@ export default class ListScreen extends React.Component {
         'groceryList',
         null,
       );
-      this.props.navigation.setParams({
-        title: groceryList.title,
-        groceryList: groceryList,
-      });
       await this.fetchListItems(groceryList.id);
       this.setState({groceryList});
       const user = await this.props.navigation.getParam('user', null);
-      this.props.navigation.setParams({
-        userId: user.id,
-      });
+      this.setState({user});
     } catch (error) {
       this.setState({
         apiError: error
@@ -146,67 +116,61 @@ export default class ListScreen extends React.Component {
     }
   };
 
-  showGroceryForm = (grocery, index) => {
-    if (this.state.addItemOpen) {
-      this.setState({adjustFooter: false, addItemOpen: false});
-    }
-    let groceriesCopy = [...this.state.groceries];
-    if (grocery.details) {
-      groceriesCopy[index].details = false;
-    } else {
-      groceriesCopy[index].details = true;
-    }
-    LayoutAnimation.configureNext(animations.default);
+  openListSettings = () => {
     this.setState({
-      groceries: groceriesCopy,
+      listSettingsOpen: this.state.listSettingsOpen ? false : true,
     });
   };
 
-  showAddGrocery = () => {
-    if (this.state.addItemOpen === false) {
-      LayoutAnimation.configureNext(animations.default);
-      this.setState({addItemOpen: true});
-    } else {
-      LayoutAnimation.configureNext(animations.default);
-      this.setState({addItemOpen: false});
-    }
-    this.adjustFooter();
-  };
-
-  adjustFooter = () => {
-    LayoutAnimation.configureNext(animations.default);
-    this.setState({adjustFooter: !this.state.adjustFooter ? true : false});
+  openGroceryHistory = () => {
+    this.setState({historyOpen: this.state.historyOpen ? false : true});
   };
 
   render() {
-    const {apiError, groceries} = this.state;
+    const {
+      apiError,
+      groceries,
+      groceryList,
+      historyOpen,
+      listSettingsOpen,
+      user,
+    } = this.state;
     return (
       <View style={styles.container}>
-        <View style={styles.scrollView}>
-          {apiError.length > 0 && <Message message={apiError} />}
-          <SafeAreaView style={{flex: 8}}>
-            <GroceriesContainer
-              items={groceries}
-              updateGrocery={this.updateGrocery}
-              removeGrocery={this.removeGrocery}
-              showGroceryForm={this.showGroceryForm}
-            />
-          </SafeAreaView>
-        </View>
-        <View
-          style={{
-            justifyContent: !this.state.adjustFooter ? 'center' : 'flex-start',
-            flex: !this.state.adjustFooter ? 1 : 10,
-            paddingTop: !this.state.adjustFooter ? 0 : 20,
-            borderTopWidth: 0.5,
-            paddingBottom: 0,
-          }}>
-          <AddGroceryFooter
-            addGrocery={this.addGrocery}
-            addItemOpen={this.state.addItemOpen}
-            showAddGrocery={this.showAddGrocery}
+        {historyOpen && (
+          <PreviousGroceriesModal
+            closeModal={() => this.openGroceryHistory()}
           />
-        </View>
+        )}
+        {listSettingsOpen && (
+          <ListSettingsModal
+            groceryList={groceryList}
+            user={user}
+            closeModal={() => this.openListSettings()}
+          />
+        )}
+        {apiError.length > 0 && <Message message={apiError} />}
+        <ScreenHeader
+          leftIconPress={() => this.props.navigation.goBack()}
+          rightIcon1Press={() => this.openGroceryHistory()}
+          rightIcon2Press={() => this.openListSettings()}
+          headerTitle={groceryList.title}
+          leftIcon={'ios-arrow-round-back'}
+          rightIcon1={'md-hourglass'}
+          rightIcon2={'md-person-add'}
+          background={BACKGROUND_URL}
+        />
+
+        <View style={styles.separator} />
+        {groceries && groceries.length ? (
+          <GroceriesContainer
+            groceries={groceries}
+            addGrocery={this.addGrocery}
+            updateGrocery={this.updateGrocery}
+            removeGrocery={this.removeGrocery}
+            navigation={this.props.navigation}
+          />
+        ) : null}
       </View>
     );
   }
@@ -216,13 +180,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  scrollView: {
-    flex: 8,
-  },
-  footer: {
-    justifyContent: 'center',
-    flex: 1,
-    borderTopWidth: 0.5,
-    paddingBottom: 0,
+  separator: {
+    height: 1,
+    backgroundColor: '#808080',
+    opacity: 0.5,
+    marginBottom: '2%',
   },
 });

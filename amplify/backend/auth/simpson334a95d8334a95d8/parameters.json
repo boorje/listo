@@ -1,8 +1,8 @@
 {
-    "identityPoolName": "simpson",
+    "identityPoolName": "simpson334a95d8_identitypool_334a95d8",
     "allowUnauthenticatedIdentities": false,
-    "resourceNameTruncated": "simpso67bed7d6",
-    "userPoolName": "simpson67bed7d6_userpool_67bed7d6",
+    "resourceNameTruncated": "simpso334a95d8",
+    "userPoolName": "simpson334a95d8_userpool_334a95d8",
     "autoVerifiedAttributes": [
         "email"
     ],
@@ -28,11 +28,11 @@
     "userpoolClientReadAttributes": [
         "email"
     ],
-    "userpoolClientLambdaRole": "simpso67bed7d6_userpoolclient_lambda_role",
+    "userpoolClientLambdaRole": "simpso334a95d8_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
     "useDefault": "manual",
     "authSelections": "identityPoolAndUserPool",
-    "resourceName": "simpson",
+    "resourceName": "simpson334a95d8334a95d8",
     "thirdPartyAuth": false,
     "usernameAttributes": [
         "email"

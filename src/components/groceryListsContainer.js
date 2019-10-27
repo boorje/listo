@@ -9,15 +9,14 @@ const GroceryListItem = props => {
   return (
     <TouchableHighlight
       style={GroceryListItemStyles.container}
-      backgroundColor={'white'}
-      underlayColor={'transparent'}
+      underlayColor="transparent"
       fontSize={50}
       onPress={() => props.goToGroceryList(props.item)}>
       <View style={GroceryListItemStyles.container2}>
-        <Text style={GroceryListItemStyles.text}>{props.item.title}</Text>
+        <Text style={textStyles.default}>{props.item.title}</Text>
         <View style={GroceryListItemStyles.badge}>
           {/* // TODO: add dynamic item count */}
-          <Text style={textStyles.badge}>5</Text>
+          <Text style={textStyles.badge}>{props.numberOfItems}</Text>
         </View>
       </View>
     </TouchableHighlight>
@@ -27,92 +26,69 @@ const GroceryListItem = props => {
 export default class GroceryListsContainer extends React.Component {
   swipeSettings = {
     autoClose: true,
+    sensitivity: 50,
+    buttonWidth: 100,
   };
   renderList({list}) {
     return (
       <Swipeout
-        style={GroceryListStyles.swipeout}
+        style={GroceryListItemStyles.swipeout}
         {...this.swipeSettings}
         right={[
           {
             text: 'Remove', // TODO: Check if owner of list
             type: 'delete',
             onPress: () => {
-              this.props.removeGroceryList(list);
+              this.props.removeGroceryList({list});
             },
           },
         ]}>
         <GroceryListItem
           item={list}
           goToGroceryList={this.props.goToGroceryList}
+          numberOfItems={this.props.numberOfItems}
         />
       </Swipeout>
     );
   }
 
-  FlatListItemSeparator = () => {
-    return <View style={GroceryListStyles.separator} />;
-  };
-
   render() {
     return (
       <KeyboardAwareFlatList
-        data={this.props.lists}
+        data={this.props.groceryLists}
         renderItem={({item}) => {
           return this.renderList(item);
         }}
-        keyExtractor={item => item.id}
-        ItemSeparatorComponent={this.FlatListItemSeparator}
+        keyExtractor={({list}) => list.id}
       />
     );
   }
 }
 
-const GroceryListStyles = StyleSheet.create({
-  swipeout: {
-    backgroundColor: 'transparent',
-  },
-  container: {
-    flex: 1,
-    width: '100%',
-    backgroundColor: 'blue',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingLeft: '10%',
-    paddingRight: '10%',
-  },
-  separator: {
-    height: 2,
-    width: '97%',
-    marginLeft: '3%',
-    marginRight: '0%',
-    backgroundColor: '#607D8B',
-  },
-});
-
 const GroceryListItemStyles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
-    padding: 5,
+    padding: '3%',
+    width: '97%',
+    marginLeft: '3%',
+    alignSelf: 'center',
+    borderTopLeftRadius: 15,
+    borderBottomLeftRadius: 15,
   },
   container2: {
-    flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingLeft: '3%',
-    paddingRight: '3%',
-    paddingBottom: '3%',
   },
-  text: {
-    fontSize: 25,
+  swipeout: {
+    backgroundColor: 'transparent',
+    marginBottom: '2%',
   },
   badge: {
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'green',
+    backgroundColor: '#06BA63',
     borderRadius: 50,
     width: 30,
     height: 30,
@@ -121,12 +97,6 @@ const GroceryListItemStyles = StyleSheet.create({
 
 GroceryListsContainer.propTypes = {
   goToGroceryList: PropTypes.func.isRequired,
-
   removeGroceryList: PropTypes.func.isRequired,
-  lists: PropTypes.arrayOf(
-    PropTypes.shape({
-      title: PropTypes.string.isRequired,
-      id: PropTypes.string.isRequired,
-    }),
-  ).isRequired,
+  groceryLists: PropTypes.array.isRequired,
 };

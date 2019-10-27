@@ -14,10 +14,8 @@ const Message = props => (
           props.type === 'SUCCESS' ? colors.submitColor : colors.errorColor,
       },
     ]}>
-    <View style={styles.container}>
-      <Icon size={34} name="warning" color="#fff" />
-      <Text style={styles.message}>{props.message}</Text>
-    </View>
+    <Icon size={34} name="warning" color="#fff" />
+    <Text style={styles.message}>{props.message}</Text>
   </View>
 );
 
@@ -30,16 +28,13 @@ Message.propTypes = {
 
 const styles = StyleSheet.create({
   wrapper: {
-    padding: 20,
-    display: 'flex',
+    padding: '8%',
+    width: '100%',
+    position: 'absolute',
     alignItems: 'center',
+    justifyContent: 'center',
   },
-  container: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-  },
+
   message: {
     color: '#fff',
     marginLeft: 20,

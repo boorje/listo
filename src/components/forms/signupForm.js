@@ -41,6 +41,8 @@ const SignupForm = props => (
             onChangeText={handleChange('email')}
             onBlur={() => setFieldTouched('email')}
             placeholder="E-mail"
+            placeholderTextColor="black"
+            selectionColor="#37AE15"
             autoCapitalize="none"
             style={formStyles.formTextInput}
           />
@@ -50,7 +52,9 @@ const SignupForm = props => (
           <TextInput
             value={values.password}
             onChangeText={handleChange('password')}
-            placeholder="Password"
+            placeholder="Lösenord"
+            placeholderTextColor="black"
+            selectionColor="#37AE15"
             onBlur={() => setFieldTouched('password')}
             secureTextEntry={status.hidePassword}
             style={formStyles.formTextInput}
@@ -67,8 +71,12 @@ const SignupForm = props => (
                 } else {
                   setStatus({hidePassword: true});
                 }
+              }}
+              style={{
+                color: status.hidePassword ? '#000' : '#666',
+                fontFamily: 'Avenir Next',
               }}>
-              Show password
+              Visa lösenord
             </Text>
           </View>
           <SubmitButton

@@ -1,10 +1,14 @@
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View, Image} from 'react-native';
 import {Auth} from 'aws-amplify';
+import textStyles from '../../styles/textStyles';
 
 // -- Components --
 import ForgotPasswordForm from '../../components/forms/forgotPasswordForm';
 import Message from '../../components/message';
+
+const BACKGROUND_URL =
+  'https://images.unsplash.com/photo-1516594798947-e65505dbb29d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80';
 
 class VerifyScreen extends React.Component {
   state = {
@@ -52,11 +56,20 @@ class VerifyScreen extends React.Component {
     const {loading, sendEmailError} = this.state;
     return (
       <View style={styles.container}>
-        {sendEmailError.length > 0 && <Message message={sendEmailError} />}
-        <ForgotPasswordForm
-          handleSubmit={this.sendResetEmail}
-          loading={loading}
+        <Image
+          style={styles.background}
+          source={{
+            uri: BACKGROUND_URL,
+          }}
         />
+        <View style={styles.form}>
+          <Text style={textStyles.loginHeadline}>Fyll i e-mail</Text>
+          {sendEmailError.length > 0 && <Message message={sendEmailError} />}
+          <ForgotPasswordForm
+            handleSubmit={this.sendResetEmail}
+            loading={loading}
+          />
+        </View>
       </View>
     );
   }
@@ -65,7 +78,13 @@ class VerifyScreen extends React.Component {
 export default VerifyScreen;
 
 const styles = StyleSheet.create({
-  container: {margin: 30},
+  container: {flex: 1, justifyContent: 'center'},
+  background: {flex: 1, opacity: 0.67},
+  form: {
+    width: '70%',
+    position: 'absolute',
+    alignSelf: 'center',
+  },
   textInfo: {
     textAlign: 'center',
   },

@@ -1,18 +1,18 @@
 {
-    "simpson": {
+    "dev": {
         "awscloudformation": {
-            "AuthRoleName": "simpson-simpson-20191004105122-authRole",
-            "UnauthRoleArn": "arn:aws:iam::668180977472:role/simpson-simpson-20191004105122-unauthRole",
-            "AuthRoleArn": "arn:aws:iam::668180977472:role/simpson-simpson-20191004105122-authRole",
+            "AuthRoleName": "simpson-dev-20191027110325-authRole",
+            "UnauthRoleArn": "arn:aws:iam::668180977472:role/simpson-dev-20191027110325-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::668180977472:role/simpson-dev-20191027110325-authRole",
             "Region": "eu-west-1",
-            "DeploymentBucketName": "simpson-simpson-20191004105122-deployment",
-            "UnauthRoleName": "simpson-simpson-20191004105122-unauthRole",
-            "StackName": "simpson-simpson-20191004105122",
-            "StackId": "arn:aws:cloudformation:eu-west-1:668180977472:stack/simpson-simpson-20191004105122/24dcc330-e684-11e9-9f3d-0abc432e4032"
+            "DeploymentBucketName": "simpson-dev-20191027110325-deployment",
+            "UnauthRoleName": "simpson-dev-20191027110325-unauthRole",
+            "StackName": "simpson-dev-20191027110325",
+            "StackId": "arn:aws:cloudformation:eu-west-1:668180977472:stack/simpson-dev-20191027110325/047b66d0-f8a1-11e9-a527-028618ba0c7c"
         },
         "categories": {
             "auth": {
-                "simpson": {}
+                "simpson334a95d8334a95d8": {}
             }
         }
     }

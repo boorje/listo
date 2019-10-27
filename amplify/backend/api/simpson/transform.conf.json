@@ -1,7 +1,3 @@
 {
-    "Version": 4,
-    "StackMapping": {
-        "QueryeditorsByListIdResolver": "ListEditor",
-        "QueryuserByEmailResolver": "UserTemp"
-    }
+    "Version": 4
 }

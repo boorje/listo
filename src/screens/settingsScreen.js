@@ -1,5 +1,11 @@
 import React from 'react';
-import {StyleSheet, View, ScrollView, Text} from 'react-native';
+import {
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableHighlight,
+} from 'react-native';
 import {Auth} from 'aws-amplify';
 
 import PrimaryButton from '../components/buttons/primaryButton';
@@ -10,15 +16,15 @@ class SettingsScreen extends React.Component {
   };
 
   state = {
-    userEmail: '',
+    user: {},
   };
 
   componentDidMount = async () => {
     try {
-      const userEmail = await this.props.navigation.getParam('userEmail', '');
-      this.setState({userEmail});
+      const user = await this.props.navigation.getParam('user', null);
+      this.setState({user});
     } catch (error) {
-      alert(error);
+      console.log(error);
     }
   };
 
@@ -32,14 +38,21 @@ class SettingsScreen extends React.Component {
   };
 
   render() {
-    const {userEmail} = this.state;
+    const {user} = this.state;
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <ScrollView>
-          {userEmail.length > 0 && <Text>Signed in as: {userEmail}</Text>}
+          {Object.entries(user).length > 0 && user.constructor === Object && (
+            <Text>Signed in as: {user.email}</Text>
+          )}
           <PrimaryButton title="LOGOUT" onPress={() => this._logout()} />
+          <TouchableHighlight
+            onPress={() => this.props.navigation.goBack()}
+            style={styles.goBackButton}>
+            <Text>Go back</Text>
+          </TouchableHighlight>
         </ScrollView>
-      </View>
+      </SafeAreaView>
     );
   }
 }
@@ -53,5 +66,11 @@ const styles = StyleSheet.create({
   headline: {
     height: '5%',
     backgroundColor: 'blue',
+  },
+  goBackButton: {
+    padding: 20,
+    margin: 50,
+    borderColor: '#ddd',
+    borderWidth: 2,
   },
 });
