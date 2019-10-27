@@ -27,7 +27,6 @@ class GroceriesContainer extends React.Component {
   // ? enough comparison
   componentDidUpdate(prevProps) {
     const {groceries} = this.props;
-    console.log('groc: ', groceries);
     if (groceries.length !== prevProps.groceries.length) {
       this.setState({groceries: this.props.groceries});
     }
@@ -47,7 +46,6 @@ class GroceriesContainer extends React.Component {
       }
       return item;
     });
-    console.log(copy);
     LayoutAnimation.configureNext(animations.default);
     this.setState({
       groceries: copy,
@@ -71,7 +69,6 @@ class GroceriesContainer extends React.Component {
   };
 
   renderItem(grocery) {
-    console.log('grocery:', grocery);
     return (
       <TouchableHighlight
         onLayout={e => {

@@ -167,7 +167,6 @@ export default class ListSettingsModal extends React.Component {
   };
 
   render() {
-    console.log(this.state);
     const {apiError, editors, emailInput, loggedInUserIsListOwner} = this.state;
     return (
       <OverlayModal closeModal={this.props.closeModal} modalTitle="Settings">
