@@ -80,6 +80,7 @@ class HomeScreen extends React.Component {
     }
   };
 
+  // TODO: Create a resolver which adds the user as a editor
   addGroceryList = async title => {
     try {
       const res = await createGroceryList({title});
@@ -90,6 +91,7 @@ class HomeScreen extends React.Component {
     }
   };
 
+  // TODO: Create a resolver which batch deletes editors
   removeGroceryList = async ({list}) => {
     try {
       const isOwner = this.isOwnerOfList(list.owner);

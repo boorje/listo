@@ -18,15 +18,10 @@ import animations from '../styles/animations';
 // -- API helpers --
 import {
   getGroceryList,
-  updateGroceryList,
   createGroceryItem,
   deleteGroceryItem,
   updateGroceryItem,
 } from '../api/groceryListsAPI';
-
-import {getUserID} from '../api/authAPI';
-
-// TODO: Create custom animation class
 
 export default class ListScreen extends React.Component {
   // ! TODO: Create custom header
