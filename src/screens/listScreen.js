@@ -74,8 +74,8 @@ export default class ListScreen extends React.Component {
           ...this.state.groceries,
           {
             content,
-            quantity,
-            unit,
+            quantity: quantity.length > 0 ? quantity : null,
+            unit: unit.length > 0 ? unit : null,
             details: false,
             id: newGroceryItemID,
           },
@@ -106,6 +106,7 @@ export default class ListScreen extends React.Component {
       const res = await updateGroceryItem(updatedGrocery);
       const stateCopy = this.state.groceries.map(grocery => {
         if (grocery.id === res.id) {
+          updatedGrocery.details = false;
           return updatedGrocery;
         }
         return grocery;
@@ -162,15 +163,13 @@ export default class ListScreen extends React.Component {
         />
 
         <View style={styles.separator} />
-        {groceries && groceries.length ? (
-          <GroceriesContainer
-            groceries={groceries}
-            addGrocery={this.addGrocery}
-            updateGrocery={this.updateGrocery}
-            removeGrocery={this.removeGrocery}
-            navigation={this.props.navigation}
-          />
-        ) : null}
+        <GroceriesContainer
+          groceries={groceries}
+          addGrocery={this.addGrocery}
+          updateGrocery={this.updateGrocery}
+          removeGrocery={this.removeGrocery}
+          navigation={this.props.navigation}
+        />
       </View>
     );
   }

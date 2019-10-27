@@ -19,31 +19,35 @@ import animations from '../styles/animations';
 
 class GroceriesContainer extends React.Component {
   state = {
-    groceries: [],
+    groceries: this.props.groceries,
     adjustFooter: false,
     addItemOpen: false,
   };
 
-  componentDidMount = () => {
-    console.log(this.props.groceries);
-    this.setState({groceries: this.props.groceries});
-  };
+  // ? enough comparison
+  componentDidUpdate(prevProps) {
+    const {groceries} = this.props;
+    console.log('groc: ', groceries);
+    if (groceries.length !== prevProps.groceries.length) {
+      this.setState({groceries: this.props.groceries});
+    }
+  }
 
+  // ! When updating item. Can not open details before reload.
+  // ! Sets the details = true correctly. Probably not re-rendering in renderItem()
   showGroceryForm = grocery => {
-    console.log(grocery);
     if (this.state.addItemOpen) {
       this.setState({adjustFooter: false, addItemOpen: false});
     }
-    console.log(this.state.groceries);
     const copy = this.state.groceries.map(item => {
       if (grocery.details || item.id !== grocery.id) {
-        console.log('false');
         item.details = false;
       } else {
         item.details = true;
       }
       return item;
     });
+    console.log(copy);
     LayoutAnimation.configureNext(animations.default);
     this.setState({
       groceries: copy,
@@ -67,6 +71,7 @@ class GroceriesContainer extends React.Component {
   };
 
   renderItem(grocery) {
+    console.log('grocery:', grocery);
     return (
       <TouchableHighlight
         onLayout={e => {
