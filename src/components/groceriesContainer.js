@@ -4,143 +4,51 @@ import {
   View,
   Text,
   TouchableHighlight,
-  PanResponder,
-  PanResponderInstance,
-  Animated,
   LayoutAnimation,
   SafeAreaView,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import {KeyboardAwareFlatList} from 'react-native-keyboard-aware-scroll-view';
+// components
+import AddGroceryFooter from '../components/addGroceryFooter';
 import GroceryForm from './forms/groceryForm';
+// styles
 import textStyles from '../styles/textStyles';
 import animations from '../styles/animations';
-import {KeyboardAwareFlatList} from 'react-native-keyboard-aware-scroll-view';
-import AddGroceryFooter from '../components/addGroceryFooter';
-
-// -- API helpers --
-import {
-  getGroceryList,
-  createGroceryItem,
-  deleteGroceryItem,
-  updateGroceryItem,
-} from '../api/groceryListsAPI';
 
 class GroceriesContainer extends React.Component {
   state = {
-    groceries: [],
-    groceryListID: '',
-    apiError: '',
+    groceries: this.props.groceries,
     adjustFooter: false,
     addItemOpen: false,
   };
 
-  componentDidMount = async () => {
-    try {
-      const groceryList = await this.props.navigation.getParam(
-        'groceryList',
-        null,
-      );
-      this.setState({groceryListID: groceryList.id});
-      this.props.navigation.setParams({title: groceryList.title});
-      // const groceries = await getGroceryList(groceryList.id);
-      const groceries = [
-        {id: 1, content: 'Cola', quantity: 2, unit: 'kg'},
-        {id: 2, content: 'Fanta', quantity: 2, unit: 'kg'},
-        {id: 3, content: 'Sprite', quantity: 2, unit: 'kg'},
-        {id: 4, content: '7Up', quantity: 2, unit: 'kg'},
-        {id: 5, content: 'Birra', quantity: 2, unit: 'kg'},
-        {id: 6, content: 'Peroni', quantity: 2, unit: 'kg'},
-        {id: 1, content: 'Cola', quantity: 2, unit: 'kg'},
-        {id: 2, content: 'Fanta', quantity: 2, unit: 'kg'},
-        {id: 3, content: 'Sprite', quantity: 2, unit: 'kg'},
-        {id: 4, content: '7Up', quantity: 2, unit: 'kg'},
-        {id: 5, content: 'Birra', quantity: 2, unit: 'kg'},
-        {id: 6, content: 'Peroni', quantity: 2, unit: 'kg'},
-      ]; //! REMOVE
-      if (groceries) {
-        //! NOT WORKING
-        groceries.details = false;
-        this.setState({groceries});
-      }
-    } catch (error) {
-      this.props.updateApiError(error);
+  // ? enough comparison
+  componentDidUpdate(prevProps) {
+    const {groceries} = this.props;
+    if (groceries.length !== prevProps.groceries.length) {
+      this.setState({groceries: this.props.groceries});
     }
-  };
+  }
 
-  addGrocery = async grocery => {
-    try {
-      const newGroceryID = await createGroceryItem(
-        grocery,
-        this.state.groceryListID,
-      );
-      const {content, quantity, unit} = grocery;
-      LayoutAnimation.spring();
-      this.setState({
-        groceries: [
-          ...this.state.groceries,
-          {
-            content,
-            quantity,
-            unit,
-            details: false,
-            id: newGroceryID,
-          },
-        ],
-      });
-    } catch (error) {
-      this.props.updateApiError(error);
-    }
-  };
-
-  removeGrocery = async id => {
-    try {
-      const deleteGrocery = await deleteGroceryItem(id);
-      const stateCopy = this.state.groceries.filter(
-        grocery => grocery.id !== deleteGrocery.id,
-      );
-      this.setState({groceries: stateCopy});
-    } catch (error) {
-      this.props.updateApiError(error);
-    }
-  };
-
-  updateGrocery = async updatedGrocery => {
-    try {
-      const res = await updateGroceryItem(updatedGrocery);
-      const stateCopy = this.state.groceries.map(grocery => {
-        if (grocery.id === res.id) {
-          grocery.content = updatedGrocery.content;
-          grocery.quantity = updatedGrocery.quantity;
-          grocery.unit = updatedGrocery.unit;
-        }
-        return grocery;
-      });
-      LayoutAnimation.spring();
-      this.setState({groceries: stateCopy});
-    } catch (error) {
-      this.props.updateApiError(error);
-    }
-  };
-
-  showGroceryForm = (grocery, index) => {
+  // ! When updating item. Can not open details before reload.
+  // ! Sets the details = true correctly. Probably not re-rendering in renderItem()
+  showGroceryForm = grocery => {
     if (this.state.addItemOpen) {
       this.setState({adjustFooter: false, addItemOpen: false});
     }
-    let groceriesCopy = [...this.state.groceries];
-
-    if (grocery.details) {
-      groceriesCopy[index].details = false;
-    } else {
-      groceriesCopy.map(item => {
+    const copy = this.state.groceries.map(item => {
+      if (grocery.details || item.id !== grocery.id) {
         item.details = false;
-      });
-      groceriesCopy[index].details = true;
-    }
-
+      } else {
+        item.details = true;
+      }
+      return item;
+    });
     LayoutAnimation.configureNext(animations.default);
     this.setState({
-      groceries: groceriesCopy,
+      groceries: copy,
     });
   };
 
@@ -161,40 +69,43 @@ class GroceriesContainer extends React.Component {
     this.setState({adjustFooter: !this.state.adjustFooter ? true : false});
   };
 
-  renderList(item, index) {
+  renderItem(grocery) {
     return (
       <TouchableHighlight
-        style={{flex: 1, opacity: this.state.draggingIdx === index ? 0 : 1}}
+        onLayout={e => {
+          this.rowHeight = e.nativeEvent.layout.height;
+        }}
+        style={{flex: 1}}
         fontSize={50}
         onPress={() => {
-          if (!this.state.addItemOpen) {
-            this.removeGrocery(item.id);
-          }
+          this.props.removeGrocery(grocery.id);
         }}
         underlayColor={'transparent'}>
         <View style={styles.container2}>
           <View style={{flex: 1}}>
-            {item.details ? (
+            {grocery.details ? (
               <GroceryForm
-                closeGroceryForm={() => this.showGroceryForm(item, index)}
-                addGrocery={this.updateGrocery}
-                item={item}
+                closeGroceryForm={() => this.showGroceryForm(grocery)}
+                addGrocery={this.props.updateGrocery}
+                item={grocery}
               />
             ) : (
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <Text style={textStyles.default}>{item.content}</Text>
-                <Text style={textStyles.groceryDetails}>{item.quantity}</Text>
-                <Text style={textStyles.groceryDetails}>{item.unit}</Text>
+                <Text style={textStyles.default}>{grocery.content}</Text>
+                <Text style={textStyles.groceryDetails}>
+                  {grocery.quantity}
+                </Text>
+                <Text style={textStyles.groceryDetails}>{grocery.unit}</Text>
               </View>
             )}
           </View>
           <Icon
             size={32}
-            name={!item.details ? 'expand-more' : 'expand-less'}
+            name={!grocery.details ? 'expand-more' : 'expand-less'}
             color={'black'}
             onPress={() => {
               if (!this.state.addItemOpen) {
-                this.showGroceryForm(item, index);
+                this.showGroceryForm(grocery);
               }
             }}
           />
@@ -208,16 +119,13 @@ class GroceriesContainer extends React.Component {
   };
 
   render() {
-    const {groceries, dragging, draggingIdx} = this.state;
     return (
       <View style={{flex: 1}}>
         <View style={{flex: 8}}>
           <KeyboardAwareFlatList
             scrollEnabled={true}
-            data={groceries}
-            renderItem={({item, index}) => {
-              return this.renderList(item, index);
-            }}
+            data={this.props.groceries}
+            renderItem={({item}) => this.renderItem(item)}
             keyExtractor={item => item.id}
             ItemSeparatorComponent={this.FlatListItemSeparator}
             keyboardShouldPersistTaps="always"
@@ -225,7 +133,7 @@ class GroceriesContainer extends React.Component {
         </View>
         <View style={[styles.footer, {justifyContent: 'center', flex: 1}]}>
           <AddGroceryFooter
-            addGrocery={this.addGrocery}
+            addGrocery={this.props.addGrocery}
             addItemOpen={this.state.addItemOpen}
             showAddGrocery={this.showAddGrocery}
           />
@@ -271,6 +179,8 @@ const styles = StyleSheet.create({
 });
 
 GroceriesContainer.propTypes = {
-  updateApiError: PropTypes.func.isRequired,
-  navigation: PropTypes.object.isRequired,
+  groceries: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  addGrocery: PropTypes.func.isRequired,
+  updateGrocery: PropTypes.func.isRequired,
+  removeGrocery: PropTypes.func.isRequired,
 };

@@ -22,7 +22,7 @@ export default class GroceryForm extends React.Component {
   componentDidMount = () => {
     if (this.props.item) {
       const {content, quantity, unit, id} = this.props.item;
-      this.setState({content: content, quantity: quantity, unit: unit, id: id});
+      this.setState({content, quantity, unit, id});
     }
   };
 

@@ -1,20 +1,44 @@
+# TODO: Update keys of User table -> New temporary table: UserTemp
+type User
+  @model
+  @key(fields: ["id"])
+  @key(name: "ByEmail", fields: ["email"], queryField: "userByEmail") {
+  id: ID! # Set with custom resolver
+  email: AWSEmail!
+  groceryLists: [Editor] @connection(name: "UserEditors")
+}
+
+# id: "listId-userEmail"
+# SINGLE DELETE: @key(fields: ["listId", "userId"]) -> deleteEditor(listId, userId)
+# BATCH DELETE BY EMAIL: @key(name: "ByListId", fields: ["listId", "id"], queryField: "editorsByListId") -> listEditors(listId, id: {beginsWith: "FIRST PART OF id = listId"})
+# BATCH DELETE BY USER: @key(name: "ByUserId", fields: ["userId", "id"], queryField: "editorsByUserId") -> listEditors(listId, id: {contains: "SECOND PART OF id = userId"})
+type Editor
+  @model
+  @key(fields: ["listId", "userId"])
+  @key(
+    name: "ByListId"
+    fields: ["listId", "id"]
+    queryField: "editorsByListId"
+  ) {
+  listId: ID! # Set with custom resolver
+  userId: ID! # Set with custom resolver
+  id: String! # Set to listId-userEmail with custom resolver
+  list: GroceryList! @connection(name: "ListEditors")
+  user: User! @connection(name: "UserEditors")
+}
+
 type GroceryList
   @model
-  @auth(
-    rules: [
-      {allow: owner}
-      {allow: owner, ownerField: "editors", operations: [update]}
-    ]
-  ) {
-  id: ID!
+  @auth(rules: [{allow: owner, operations: [create, delete]}]) {
+  id: ID! # Set by custom resolver
+  owner: ID! # Set by custom resolver
   title: String!
   groceries: [GroceryItem] @connection(name: "GroceryItems")
-  owner: String
-  editors: [String]
+  editors: [Editor] @connection(name: "ListEditors")
 }
 
 type GroceryItem @model {
-  id: ID!
+  id: ID! # Set by custom resolver
   content: String!
   quantity: String
   unit: String

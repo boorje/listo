@@ -9,7 +9,7 @@ const GroceryListItem = props => {
   return (
     <TouchableHighlight
       style={GroceryListItemStyles.container}
-      underlayColor={'none'}
+      underlayColor="transparent"
       fontSize={50}
       onPress={() => props.goToGroceryList(props.item)}>
       <View style={GroceryListItemStyles.container2}>
@@ -29,22 +29,22 @@ export default class GroceryListsContainer extends React.Component {
     sensitivity: 50,
     buttonWidth: 100,
   };
-  renderList(item, index) {
+  renderList({list}) {
     return (
       <Swipeout
         style={GroceryListItemStyles.swipeout}
         {...this.swipeSettings}
         right={[
           {
-            text: 'Ta bort',
+            text: 'Remove', // TODO: Check if owner of list
             type: 'delete',
             onPress: () => {
-              this.props.removeGroceryList(item.id);
+              this.props.removeGroceryList({list});
             },
           },
         ]}>
         <GroceryListItem
-          item={item}
+          item={list}
           goToGroceryList={this.props.goToGroceryList}
           numberOfItems={this.props.numberOfItems}
         />
@@ -55,11 +55,11 @@ export default class GroceryListsContainer extends React.Component {
   render() {
     return (
       <KeyboardAwareFlatList
-        data={this.props.lists}
-        renderItem={({item, index}) => {
-          return this.renderList(item, index);
+        data={this.props.groceryLists}
+        renderItem={({item}) => {
+          return this.renderList(item);
         }}
-        keyExtractor={item => item.id}
+        keyExtractor={({list}) => list.id}
       />
     );
   }
@@ -97,12 +97,6 @@ const GroceryListItemStyles = StyleSheet.create({
 
 GroceryListsContainer.propTypes = {
   goToGroceryList: PropTypes.func.isRequired,
-
   removeGroceryList: PropTypes.func.isRequired,
-  lists: PropTypes.arrayOf(
-    PropTypes.shape({
-      title: PropTypes.string.isRequired,
-      id: PropTypes.string.isRequired,
-    }),
-  ).isRequired,
+  groceryLists: PropTypes.array.isRequired,
 };

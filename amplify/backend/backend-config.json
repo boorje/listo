@@ -1,6 +1,6 @@
 {
 	"auth": {
-		"simpson": {
+		"simpson334a95d8334a95d8": {
 			"service": "Cognito",
 			"providerPlugin": "awscloudformation",
 			"dependsOn": []
@@ -16,7 +16,7 @@
 					"defaultAuthentication": {
 						"authenticationType": "AMAZON_COGNITO_USER_POOLS",
 						"userPoolConfig": {
-							"userPoolId": "authsimpson"
+							"userPoolId": "authsimpson334a95d8334a95d8"
 						}
 					}
 				}

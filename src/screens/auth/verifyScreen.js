@@ -6,11 +6,15 @@ import {Auth} from 'aws-amplify';
 import CodeForm from '../../components/forms/codeForm';
 import Message from '../../components/message';
 
+// -- API --
+import {createUser} from '../../api/authAPI';
+
 class VerifyScreen extends React.Component {
   state = {
     verificationError: '',
     user: this.props.navigation.getParam('user', null),
     loading: false,
+    cognitoUser: {},
   };
 
   _validateCode = code => {
@@ -30,7 +34,10 @@ class VerifyScreen extends React.Component {
       this.setState({loading: true});
       await this._validateCode(code);
       await Auth.confirmSignUp(this.state.user.username, code);
-      this.props.navigation.navigate('Signedup');
+      await this._signUserInAndAddToDB();
+      this.props.navigation.navigate('Signedup', {
+        user: this.state.cognitoUser,
+      });
       this.setState({loading: false});
     } catch (error) {
       this.setState({loading: false});
@@ -51,6 +58,17 @@ class VerifyScreen extends React.Component {
           });
           break;
       }
+    }
+  };
+
+  _signUserInAndAddToDB = async () => {
+    try {
+      const {email, password} = this.props.navigation.getParam('values', null);
+      const cognitoUser = await Auth.signIn({username: email, password});
+      await createUser(email);
+      this.setState({cognitoUser});
+    } catch (error) {
+      this.props.navigation.navigate('Login');
     }
   };
 

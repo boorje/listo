@@ -14,15 +14,15 @@ import PrimaryButton from '../components/buttons/primaryButton';
 import {KeyboardAwareFlatList} from 'react-native-keyboard-aware-scroll-view';
 
 // -- API helpers --
-import {getGroceryList, createGroceryItem} from '../api/groceryListsAPI';
+import {createGroceryItem} from '../api/groceryListsAPI';
 
 class PreviousGroceriesContainer extends React.Component {
   state = {
     groceries: [
-      {id: 1, content: 'Cola', quantity: 2, unit: 'kg', selected: false},
-      {id: 2, content: 'Fanta', quantity: 2, unit: 'kg', selected: false},
-      {id: 3, content: 'Sprite', quantity: 2, unit: 'kg', selected: false},
-      {id: 4, content: '7Up', quantity: 2, unit: 'kg', selected: false},
+      {id: '1', content: 'Cola', quantity: 2, unit: 'kg', selected: false},
+      {id: '2', content: 'Fanta', quantity: 2, unit: 'kg', selected: false},
+      {id: '3', content: 'Sprite', quantity: 2, unit: 'kg', selected: false},
+      {id: '4', content: '7Up', quantity: 2, unit: 'kg', selected: false},
     ],
     groceryListID: '',
     apiError: '',
@@ -42,28 +42,28 @@ class PreviousGroceriesContainer extends React.Component {
   };
 
   addGrocery = async grocery => {
-    try {
-      const newGroceryID = await createGroceryItem(
-        grocery,
-        this.state.groceryListID,
-      );
-      const {content, quantity, unit} = grocery;
-      LayoutAnimation.spring();
-      this.setState({
-        groceries: [
-          ...this.state.groceries,
-          {
-            content,
-            quantity,
-            unit,
-            details: false,
-            id: newGroceryID,
-          },
-        ],
-      });
-    } catch (error) {
-      this.props.updateApiError(error);
-    }
+    // try {
+    //   const newGroceryID = await createGroceryItem(
+    //     grocery,
+    //     this.state.groceryListID,
+    //   );
+    //   const {content, quantity, unit} = grocery;
+    //   LayoutAnimation.spring();
+    //   this.setState({
+    //     groceries: [
+    //       ...this.state.groceries,
+    //       {
+    //         content,
+    //         quantity,
+    //         unit,
+    //         details: false,
+    //         id: newGroceryID,
+    //       },
+    //     ],
+    //   });
+    // } catch (error) {
+    //   this.props.updateApiError(error);
+    // }
   };
 
   renderList(item, index) {
@@ -116,7 +116,7 @@ class PreviousGroceriesContainer extends React.Component {
           renderItem={({item, index}) => {
             return this.renderList(item, index);
           }}
-          keyExtractor={item => item.id}
+          keyExtractor={({id}) => id}
           ItemSeparatorComponent={this.FlatListItemSeparator}
           keyboardShouldPersistTaps="always"
           ListFooterComponent={this.addButton}
