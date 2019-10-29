@@ -4,13 +4,10 @@ import {
   Modal,
   PanResponder,
   View,
-  TouchableOpacity,
-  LayoutAnimation,
   Text,
   Dimensions,
   Animated,
 } from 'react-native';
-import animations from '../../styles/animations';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 import textStyles from '../../styles/textStyles';
 

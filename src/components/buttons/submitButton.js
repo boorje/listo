@@ -46,6 +46,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 10,
     marginBottom: 10,
+    shadowColor: 'black',
+    shadowOffset: {width: 0, height: 0},
+    shadowRadius: 2,
+    shadowOpacity: 0.4,
   },
   text: {
     color: '#fff',

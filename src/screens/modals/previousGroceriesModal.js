@@ -6,7 +6,7 @@ import OverlayModal from '../../components/modals/overlayModal';
 import PreviousGroceriesContainer from '../../components/previousGroceriesContainer';
 
 const PreviousGroceriesModal = props => (
-  <OverlayModal closeModal={props.closeModal} modalTitle={'Crossed-off items'}>
+  <OverlayModal closeModal={props.closeModal} modalTitle={'Tidigare varor'}>
     <View style={styles.container}>
       <PreviousGroceriesContainer />
     </View>

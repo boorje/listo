@@ -41,11 +41,11 @@ const LoginForm = props => (
             value={values.email}
             onChangeText={handleChange('email')}
             onBlur={() => setFieldTouched('email')}
-            b
             placeholder="E-mail"
             placeholderTextColor="black"
             selectionColor="#37AE15"
             autoCapitalize="none"
+            autoFocus={true}
             style={formStyles.formTextInput}
           />
 

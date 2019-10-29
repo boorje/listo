@@ -5,7 +5,7 @@ import {
   Text,
   TouchableHighlight,
   LayoutAnimation,
-  SafeAreaView,
+  Animated,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -99,16 +99,18 @@ class GroceriesContainer extends React.Component {
               </View>
             )}
           </View>
-          <Icon
-            size={32}
-            name={!grocery.details ? 'expand-more' : 'expand-less'}
-            color={'black'}
-            onPress={() => {
-              if (!this.state.addItemOpen) {
-                this.showGroceryForm(grocery);
-              }
-            }}
-          />
+          <Animated.View>
+            <Icon
+              size={32}
+              name={!grocery.details ? 'expand-more' : 'expand-less'}
+              color={'black'}
+              onPress={() => {
+                if (!this.state.addItemOpen) {
+                  this.showGroceryForm(grocery);
+                }
+              }}
+            />
+          </Animated.View>
         </View>
       </TouchableHighlight>
     );

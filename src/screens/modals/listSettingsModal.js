@@ -168,8 +168,12 @@ export default class ListSettingsModal extends React.Component {
 
   render() {
     const {apiError, editors, emailInput, loggedInUserIsListOwner} = this.state;
+
     return (
-      <OverlayModal closeModal={this.props.closeModal} modalTitle="Settings">
+      <OverlayModal
+        closeModal={this.props.closeModal}
+        modalTitle="Inställningar"
+        textInputActive={this.state.textInputActive}>
         <View>
           {apiError.length > 0 && <Message message={apiError} />}
           <Text>List members</Text>
