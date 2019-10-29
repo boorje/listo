@@ -6,6 +6,7 @@ import textStyles from '../../styles/textStyles';
 // -- Components --
 import SignupForm from '../../components/forms/signupForm';
 import Message from '../../components/message';
+import PrimaryButton from '../../components/buttons/primaryButton';
 
 // -- Helpers --
 import validateValues from '../../helpers/validateFormValues';
@@ -64,6 +65,10 @@ class SignupScreen extends React.Component {
           <Text style={textStyles.loginHeadline}>Fyll i formuläret</Text>
           {signupError.length > 0 && <Message message={signupError} />}
           <SignupForm handleSubmit={this.handleSubmit} loading={loading} />
+          <PrimaryButton
+            title="Avbryt"
+            onPress={() => this.props.navigation.navigate('Login')}
+          />
         </View>
       </View>
     );

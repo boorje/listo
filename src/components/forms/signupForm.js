@@ -5,6 +5,7 @@ import {Formik} from 'formik';
 import * as yup from 'yup';
 
 import SubmitButton from '../buttons/submitButton';
+import textStyles from '../../styles/textStyles';
 
 import formStyles from '../../styles/formStyles';
 
@@ -72,15 +73,17 @@ const SignupForm = props => (
                   setStatus({hidePassword: true});
                 }
               }}
-              style={{
-                color: status.hidePassword ? '#000' : '#666',
-                fontFamily: 'Avenir Next',
-              }}>
+              style={[
+                {
+                  color: status.hidePassword ? '#fff' : 'black',
+                },
+                textStyles.smallText,
+              ]}>
               Visa lösenord
             </Text>
           </View>
           <SubmitButton
-            title="SIGN UP"
+            title="Registrera"
             disabled={!isValid}
             onPress={handleSubmit}
             type="submit"
