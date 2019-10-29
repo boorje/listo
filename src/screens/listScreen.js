@@ -6,6 +6,7 @@ import Message from '../components/message';
 import ScreenHeader from '../components/screenHeader';
 import PreviousGroceriesModal from './modals/previousGroceriesModal';
 import ListSettingsModal from './modals/listSettingsModal';
+import textStyles from '../styles/textStyles';
 // api
 import {
   getGroceryList,

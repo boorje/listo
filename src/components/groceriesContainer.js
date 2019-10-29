@@ -64,6 +64,7 @@ class GroceriesContainer extends React.Component {
   };
 
   adjustFooter = () => {
+    // Move to method above?
     LayoutAnimation.configureNext(animations.default);
     this.setState({adjustFooter: !this.state.adjustFooter ? true : false});
   };
@@ -103,7 +104,9 @@ class GroceriesContainer extends React.Component {
             name={!grocery.details ? 'expand-more' : 'expand-less'}
             color={'black'}
             onPress={() => {
-              this.showGroceryForm(grocery);
+              if (!this.state.addItemOpen) {
+                this.showGroceryForm(grocery);
+              }
             }}
           />
         </View>
@@ -117,7 +120,7 @@ class GroceriesContainer extends React.Component {
 
   render() {
     return (
-      <SafeAreaView style={{flex: 1}}>
+      <View style={{flex: 1}}>
         <View style={{flex: 8}}>
           <KeyboardAwareFlatList
             scrollEnabled={true}
@@ -128,20 +131,14 @@ class GroceriesContainer extends React.Component {
             keyboardShouldPersistTaps="always"
           />
         </View>
-        <View
-          style={{
-            justifyContent: !this.state.adjustFooter ? 'center' : 'flex-start',
-            flex: !this.state.adjustFooter ? 1 : 10,
-            borderTopWidth: 0.5,
-            paddingBottom: 0,
-          }}>
+        <View style={[styles.footer, {justifyContent: 'center', flex: 1}]}>
           <AddGroceryFooter
             addGrocery={this.props.addGrocery}
             addItemOpen={this.state.addItemOpen}
             showAddGrocery={this.showAddGrocery}
           />
         </View>
-      </SafeAreaView>
+      </View>
     );
   }
 }
@@ -176,9 +173,8 @@ const styles = StyleSheet.create({
     paddingRight: '3%',
     paddingBottom: '3%',
   },
-  text: {
-    fontSize: 20,
-    fontFamily: 'Avenir Next',
+  footer: {
+    paddingBottom: 0,
   },
 });
 
