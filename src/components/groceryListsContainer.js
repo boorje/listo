@@ -1,5 +1,13 @@
 import React from 'react';
-import {StyleSheet, Text, TouchableHighlight, View} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  TouchableHighlight,
+  View,
+  PanResponder,
+  Animated,
+  Dimensions,
+} from 'react-native';
 import PropTypes from 'prop-types';
 import Swipeout from 'react-native-swipeout';
 import textStyles from '../styles/textStyles';
@@ -31,24 +39,11 @@ export default class GroceryListsContainer extends React.Component {
   };
   renderList({list}) {
     return (
-      <Swipeout
-        style={GroceryListItemStyles.swipeout}
-        {...this.swipeSettings}
-        right={[
-          {
-            text: 'Remove', // TODO: Check if owner of list
-            type: 'delete',
-            onPress: () => {
-              this.props.removeGroceryList({list});
-            },
-          },
-        ]}>
-        <GroceryListItem
-          item={list}
-          goToGroceryList={this.props.goToGroceryList}
-          numberOfItems={this.props.numberOfItems}
-        />
-      </Swipeout>
+      <GroceryListItem
+        item={list}
+        goToGroceryList={this.props.goToGroceryList}
+        numberOfItems={this.props.numberOfItems}
+      />
     );
   }
 

@@ -1,11 +1,18 @@
 import React from 'react';
-import {ActionSheetIOS, SafeAreaView, StyleSheet, View} from 'react-native';
+import {
+  ActionSheetIOS,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 // components
 import GroceryListsContainer from '../components/groceryListsContainer';
 import AddGroceryListModal from '../components/modals/AddGroceryListModal';
 import Message from '../components/message';
 import HomeScreenBackground from '../components/homeScreenBackground';
+import Swipeout from '../components/swipeout';
 // api
 import {
   createGroceryList,
@@ -155,6 +162,8 @@ export default class HomeScreen extends React.Component {
             }
           />
         </SafeAreaView>
+
+        <Swipeout></Swipeout>
         <IoniconsIcon
           size={80}
           style={styles.icon}
