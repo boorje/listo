@@ -163,7 +163,9 @@ export default class HomeScreen extends React.Component {
           />
         </SafeAreaView>
 
-        <Swipeout></Swipeout>
+        <Swipeout>
+          <Text style={{color: 'white'}}>Hejhejhe</Text>
+        </Swipeout>
         <IoniconsIcon
           size={80}
           style={styles.icon}

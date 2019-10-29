@@ -8,6 +8,7 @@ import {
   Text,
   Dimensions,
   Animated,
+  TouchableOpacity,
 } from 'react-native';
 
 const {height, width} = Dimensions.get('window');
@@ -16,24 +17,21 @@ const {Value, ValueXY} = Animated;
 class Swipeout extends React.Component {
   constructor(props) {
     super(props);
-    this.scaleX = new Value(1);
-    this.pan = new ValueXY({x: 1, y: 1});
 
+    this.xWidth = new Value(width);
+    this.xWidth2 = new Value(0);
     this._panResponder = PanResponder.create({
       onStartShouldSetPanResponder: (evt, gestureState) => true,
       onStartShouldSetPanResponderCapture: (evt, gestureState) => true,
       onMoveShouldSetPanResponder: (evt, gestureState) => true,
       onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
 
-      onPanResponderGrant: (evt, gestureState) => {
-        this.scaleX.setOffset(this.scaleX);
-      },
+      onPanResponderGrant: (evt, gestureState) => {},
       onPanResponderMove: (evt, gestureState) => {
-        this.scaleX.setValue(this.getRatio(gestureState.dx));
+        this.xWidth.setValue(this.getRatio(gestureState.dx) * width);
+        this.xWidth2.setValue((1 - this.getRatio(gestureState.dx)) * width);
       },
-      onPanResponderRelease: (evt, gestureState) => {
-        this.scaleX.flattenOffset();
-      },
+      onPanResponderRelease: (evt, gestureState) => {},
       onPanResponderTerminationRequest: (evt, gestureState) => true,
     });
   }
@@ -50,16 +48,19 @@ class Swipeout extends React.Component {
         style={{
           width: width,
           position: 'absolute',
-          backgroundColor: 'red',
           height: 100,
           top: height / 2,
           flexDirection: 'row',
-          justifyContent: 'flex-start',
         }}>
         <Animated.View
-          style={[viewStyle, {width: width, backgroundColor: 'green'}]}
+          style={[{width: this.xWidth, backgroundColor: 'green'}]}
           {...this._panResponder.panHandlers}>
           {this.props.children}
+        </Animated.View>
+        <Animated.View style={[{width: this.xWidth2, backgroundColor: 'red'}]}>
+          <TouchableOpacity style={{flex: 1}}>
+            <Text style={{color: 'white'}}>Delete</Text>
+          </TouchableOpacity>
         </Animated.View>
       </View>
     );
