@@ -1,11 +1,17 @@
 import React from 'react';
-import {View, Text, StyleSheet, Animated, Dimensions} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Animated,
+  Dimensions,
+  Modal,
+} from 'react-native';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import GroceryForm from './forms/groceryForm';
 import textStyles from '../styles/textStyles';
 import PropTypes from 'prop-types';
-import {validate, thisExpression} from '@babel/types';
 
 const {height, width} = Dimensions.get('window');
 const {Value} = Animated;
@@ -13,9 +19,10 @@ const {Value} = Animated;
 export default class AddGroceryFooter extends React.Component {
   constructor(props) {
     super(props);
-
     this.addIconX = new Value(0);
     this.addIconY = new Value(0);
+    this.addIconPadding = new Value(0);
+    this.formOpacity = new Value(0);
   }
   state = {
     addItemOpen: this.props.addItemOpen,
@@ -27,24 +34,29 @@ export default class AddGroceryFooter extends React.Component {
         toValue: -height / 2.5,
         duration: 300,
       }),
-      Animated.timing(this.addIconX, {
-        toValue: width / 4,
-        duration: 200,
+      Animated.timing(this.addIconPadding, {
+        toValue: width / 2,
+        duration: 100,
+      }),
+      Animated.timing(this.formOpacity, {
+        toValue: 1,
+        duration: 100,
       }),
     ]).start();
   };
 
   closeAddIcon = () => {
     Animated.sequence([
-      Animated.timing(this.addIconX, {
+      Animated.timing(this.addIconPadding, {
         toValue: 0,
-        duration: 200,
+        duration: 100,
       }),
       Animated.timing(this.addIconY, {
         toValue: 0,
-        duration: 300,
+        duration: 200,
       }),
     ]).start();
+    this.formOpacity.setValue(0);
   };
 
   render() {
@@ -68,47 +80,58 @@ export default class AddGroceryFooter extends React.Component {
             />
           </View>
         )}
+
         <Animated.View
           style={[
             styles.addIcon,
             {
+              paddingLeft: this.addIconPadding,
               transform: [
                 {translateX: this.addIconX},
                 {translateY: this.addIconY},
+              ],
+            },
+          ]}>
+          <Animated.View
+            style={{
+              transform: [
                 {
-                  rotate: this.addIconX.interpolate({
-                    inputRange: [0, width / 4],
+                  rotate: this.addIconPadding.interpolate({
+                    inputRange: [0, width / 2],
                     outputRange: ['0deg', '45deg'],
                   }),
                 },
               ],
-            },
-          ]}>
-          <Icon
-            size={80}
-            name={'add'}
-            color={'white'}
-            onPress={() => {
-              this.props.showAddGrocery();
-              if (!this.props.addItemOpen) {
-                this.openAddIcon();
-              } else {
-                this.closeAddIcon();
-              }
-            }}
-          />
-        </Animated.View>
-        {this.props.addItemOpen && (
-          <Animated.View>
-            <GroceryForm
-              closeGroceryForm={() => {
+            }}>
+            <Icon
+              size={80}
+              name={'add'}
+              color={'white'}
+              onPress={() => {
                 this.props.showAddGrocery();
-                this.closeAddIcon();
+                if (!this.props.addItemOpen) {
+                  this.openAddIcon();
+                } else {
+                  this.closeAddIcon();
+                }
               }}
-              addGrocery={this.props.addGrocery}
             />
           </Animated.View>
-        )}
+          {this.props.addItemOpen && (
+            <Animated.View style={[styles.form, {opacity: this.formOpacity}]}>
+              <GroceryForm
+                placeholderColor="white"
+                textColor="white"
+                fontWeight="bold"
+                closeGroceryForm={() => {
+                  this.props.showAddGrocery();
+                  this.closeAddIcon();
+                }}
+                addGrocery={this.props.addGrocery}
+              />
+            </Animated.View>
+          )}
+        </Animated.View>
       </View>
     );
   }
@@ -131,10 +154,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: '10%',
   },
+  sideIconStyle: {
+    shadowColor: 'black',
+    shadowOffset: {width: 0, height: 0},
+    shadowRadius: 2,
+    shadowOpacity: 1,
+  },
   addIcon: {
-    //flexDirection: 'row',
     position: 'absolute',
     borderRadius: 50,
+    justifyContent: 'center',
     top: '-50%',
     alignSelf: 'center',
     backgroundColor: '#06BA63',
@@ -143,12 +172,9 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     shadowOpacity: 1,
   },
-
-  sideIconStyle: {
-    shadowColor: 'black',
-    shadowOffset: {width: 0, height: 0},
-    shadowRadius: 2,
-    shadowOpacity: 1,
+  form: {
+    position: 'absolute',
+    left: '30%',
   },
 });
 

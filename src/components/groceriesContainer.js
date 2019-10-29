@@ -26,27 +26,6 @@ import {
   updateGroceryItem,
 } from '../api/groceryListsAPI';
 
-const immutableMove = (arr, from, to) => {
-  return arr.reduce((prev, current, idx, self) => {
-    if (from === to) {
-      prev.push(current);
-    }
-    if (idx === from) {
-      return prev;
-    }
-    if (from < to) {
-      prev.push(current);
-    }
-    if (idx === to) {
-      prev.push(self[from]);
-    }
-    if (from > to) {
-      prev.push(current);
-    }
-    return prev;
-  }, []);
-};
-
 class GroceriesContainer extends React.Component {
   state = {
     groceries: [],
@@ -151,7 +130,6 @@ class GroceriesContainer extends React.Component {
     let groceriesCopy = [...this.state.groceries];
 
     if (grocery.details) {
-      console.log('hej');
       groceriesCopy[index].details = false;
     } else {
       groceriesCopy.map(item => {
@@ -189,7 +167,9 @@ class GroceriesContainer extends React.Component {
         style={{flex: 1, opacity: this.state.draggingIdx === index ? 0 : 1}}
         fontSize={50}
         onPress={() => {
-          this.removeGrocery(item.id);
+          if (!this.state.addItemOpen) {
+            this.removeGrocery(item.id);
+          }
         }}
         underlayColor={'transparent'}>
         <View style={styles.container2}>
@@ -213,7 +193,9 @@ class GroceriesContainer extends React.Component {
             name={!item.details ? 'expand-more' : 'expand-less'}
             color={'black'}
             onPress={() => {
-              this.showGroceryForm(item, index);
+              if (!this.state.addItemOpen) {
+                this.showGroceryForm(item, index);
+              }
             }}
           />
         </View>

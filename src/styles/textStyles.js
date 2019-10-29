@@ -9,7 +9,6 @@ const textStyles = StyleSheet.create({
   textInputActive: {
     fontSize: 20,
     fontFamily: 'Avenir Next',
-    color: 'black',
   },
   badge: {
     fontSize: 20,

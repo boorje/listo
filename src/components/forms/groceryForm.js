@@ -38,7 +38,13 @@ export default class GroceryForm extends React.Component {
     return (
       <View>
         <TextInput
-          style={textStyles.textInputActive}
+          style={[
+            textStyles.textInputActive,
+            {
+              color: this.props.textColor || 'black',
+              fontWeight: this.props.fontWeight || 'normal',
+            },
+          ]}
           ref={input => {
             this.firstTextInput = input;
           }}
@@ -46,7 +52,7 @@ export default class GroceryForm extends React.Component {
             this.setState({isFocused: '1'});
           }}
           placeholder={'Lägg till vara...'}
-          placeholderTextColor={'gray'}
+          placeholderTextColor={this.props.placeholderColor || 'gray'}
           borderColor={'black'}
           returnKeyType="done"
           autoCorrect={false}
@@ -66,7 +72,13 @@ export default class GroceryForm extends React.Component {
             flexDirection: 'row',
           }}>
           <TextInput
-            style={textStyles.textInputActive}
+            style={[
+              textStyles.textInputActive,
+              {
+                color: this.props.textColor || 'black',
+                fontWeight: this.props.fontWeight || 'normal',
+              },
+            ]}
             ref={input => {
               this.secondTextInput = input;
             }}
@@ -74,7 +86,7 @@ export default class GroceryForm extends React.Component {
               this.setState({isFocused: '2'});
             }}
             placeholder="Antal..."
-            placeholderTextColor="gray"
+            placeholderTextColor={this.props.placeholderColor || 'gray'}
             borderColor="black"
             keyboardType="numeric"
             returnKeyType="done"
@@ -91,7 +103,13 @@ export default class GroceryForm extends React.Component {
 
           <View style={{marginLeft: '10%'}}>
             <TextInput
-              style={textStyles.textInputActive}
+              style={[
+                textStyles.textInputActive,
+                {
+                  color: this.props.textColor || 'black',
+                  fontWeight: this.props.fontWeight || 'normal',
+                },
+              ]}
               ref={input => {
                 this.thirdTextInput = input;
               }}
@@ -163,16 +181,15 @@ export default class GroceryForm extends React.Component {
 
 const styles = StyleSheet.create({
   InputAccessoryView: {
-    height: 40,
+    height: 50,
   },
   icons: {
-    height: 40,
+    height: 50,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: '#F1F1F1',
-    paddingRight: '3%',
-    paddingLeft: '3%',
+    paddingHorizontal: '5%',
   },
   navigators: {
     flexDirection: 'row',
