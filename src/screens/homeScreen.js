@@ -168,19 +168,6 @@ export default class HomeScreen extends React.Component {
             }
           />
         </SafeAreaView>
-        <View
-          onLayout={event => {
-            var {width} = event.nativeEvent.layout;
-            this.setState({viewWidth: width});
-          }}
-          style={{
-            position: 'absolute',
-            height: 300,
-            top: 500,
-            width: '100%',
-          }}>
-          <Swipeout viewWidth={this.state.viewWidth} />
-        </View>
         <IoniconsIcon
           size={80}
           style={styles.icon}
@@ -198,5 +185,5 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#E3E3E3',
   },
-  icon: {position: 'absolute', bottom: '10%', right: '15%', opacity: 0.8},
+  icon: {position: 'absolute', bottom: '10%', right: '15%', opacity: 1},
 });
