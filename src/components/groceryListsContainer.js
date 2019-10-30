@@ -1,54 +1,61 @@
 import React from 'react';
-import {StyleSheet, Text, TouchableHighlight, View} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  TouchableHighlight,
+  View,
+  PanResponder,
+  Animated,
+  Dimensions,
+} from 'react-native';
 import PropTypes from 'prop-types';
-import Swipeout from 'react-native-swipeout';
+import Swipeout from '../components/swipeout';
 import textStyles from '../styles/textStyles';
 import {KeyboardAwareFlatList} from 'react-native-keyboard-aware-scroll-view';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 
-const GroceryListItem = props => {
-  return (
-    <TouchableHighlight
-      style={GroceryListItemStyles.container}
-      underlayColor="transparent"
-      fontSize={50}
-      onPress={() => props.goToGroceryList(props.item)}>
-      <View style={GroceryListItemStyles.container2}>
-        <Text style={textStyles.default}>{props.item.title}</Text>
-        <View style={GroceryListItemStyles.badge}>
-          {/* // TODO: add dynamic item count */}
-          <Text style={textStyles.badge}>{props.numberOfItems}</Text>
-        </View>
-      </View>
-    </TouchableHighlight>
-  );
-};
+class GroceryListItem extends React.Component {
+  state = {
+    viewWidth: 0,
+    viewHeight: 0,
+  };
+  render() {
+    return (
+      <TouchableHighlight
+        onLayout={event => {
+          var {height, width} = event.nativeEvent.layout;
+          this.setState({viewWidth: width, viewHeight: height});
+        }}
+        style={[GroceryListItemStyles.container]}
+        underlayColor="transparent"
+        fontSize={50}
+        onPress={() => this.props.goToGroceryList(this.props.item)}>
+        <Swipeout
+          viewWidth={this.state.viewWidth}
+          onPress={() => this.props.goToGroceryList(this.props.item)}
+          delete={() => this.props.removeGroceryList()}>
+          <View style={GroceryListItemStyles.container2}>
+            <Text style={textStyles.default}>{this.props.item.title}</Text>
+            <View style={GroceryListItemStyles.badge}>
+              {/* // TODO: add dynamic item count */}
+              <Text style={textStyles.badge}>{this.props.numberOfItems}</Text>
+            </View>
+          </View>
+        </Swipeout>
+      </TouchableHighlight>
+    );
+  }
+}
 
 export default class GroceryListsContainer extends React.Component {
-  swipeSettings = {
-    autoClose: true,
-    sensitivity: 50,
-    buttonWidth: 100,
-  };
   renderList({list}) {
     return (
-      <Swipeout
-        style={GroceryListItemStyles.swipeout}
-        {...this.swipeSettings}
-        right={[
-          {
-            text: 'Remove', // TODO: Check if owner of list
-            type: 'delete',
-            onPress: () => {
-              this.props.removeGroceryList({list});
-            },
-          },
-        ]}>
-        <GroceryListItem
-          item={list}
-          goToGroceryList={this.props.goToGroceryList}
-          numberOfItems={this.props.numberOfItems}
-        />
-      </Swipeout>
+      <GroceryListItem
+        item={list}
+        goToGroceryList={this.props.goToGroceryList}
+        numberOfItems={this.props.numberOfItems}
+        removeGroceryList={() => this.props.removeGroceryList({list})}
+      />
     );
   }
 
@@ -69,9 +76,9 @@ const GroceryListItemStyles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
-    padding: '3%',
     width: '97%',
     marginLeft: '3%',
+    marginBottom: '3%',
     alignSelf: 'center',
     borderTopLeftRadius: 15,
     borderBottomLeftRadius: 15,
@@ -80,6 +87,7 @@ const GroceryListItemStyles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    paddingHorizontal: '3%',
   },
   swipeout: {
     backgroundColor: 'transparent',

@@ -1,11 +1,18 @@
 import React from 'react';
-import {ActionSheetIOS, SafeAreaView, StyleSheet, View} from 'react-native';
+import {
+  ActionSheetIOS,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 // components
 import GroceryListsContainer from '../components/groceryListsContainer';
 import AddGroceryListModal from '../components/modals/AddGroceryListModal';
 import Message from '../components/message';
 import HomeScreenBackground from '../components/homeScreenBackground';
+import Swipeout from '../components/swipeout';
 // api
 import {
   createGroceryList,
@@ -15,11 +22,17 @@ import {
 import {getUser, createUser} from '../api/authAPI';
 
 export default class HomeScreen extends React.Component {
+  constructor(props) {
+    super(props);
+    this.screenWidth = null;
+    this.ref = React.createRef();
+  }
   state = {
     modalOpen: false,
     groceryLists: [],
     user: {},
     apiError: '',
+    viewWidth: 0,
   };
 
   componentDidMount = async () => {
@@ -172,5 +185,5 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#E3E3E3',
   },
-  icon: {position: 'absolute', bottom: '10%', right: '15%', opacity: 0.8},
+  icon: {position: 'absolute', bottom: '10%', right: '15%', opacity: 1},
 });
