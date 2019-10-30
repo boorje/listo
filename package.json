@@ -12,6 +12,7 @@
   "dependencies": {
     "amazon-cognito-identity-js": "^3.0.15",
     "aws-amplify": "^1.1.40",
+    "chart.js": "^2.9.1",
     "formik": "^1.5.8",
     "prop-types": "^15.7.2",
     "react": "16.9.0",

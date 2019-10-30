@@ -22,11 +22,17 @@ import {
 import {getUser, createUser} from '../api/authAPI';
 
 export default class HomeScreen extends React.Component {
+  constructor(props) {
+    super(props);
+    this.screenWidth = null;
+    this.ref = React.createRef();
+  }
   state = {
     modalOpen: false,
     groceryLists: [],
     user: {},
     apiError: '',
+    viewWidth: 0,
   };
 
   componentDidMount = async () => {
@@ -162,10 +168,19 @@ export default class HomeScreen extends React.Component {
             }
           />
         </SafeAreaView>
-
-        <Swipeout>
-          <Text style={{color: 'white'}}>Hejhejhe</Text>
-        </Swipeout>
+        <View
+          onLayout={event => {
+            var {width} = event.nativeEvent.layout;
+            this.setState({viewWidth: width});
+          }}
+          style={{
+            position: 'absolute',
+            height: 300,
+            top: 500,
+            width: '100%',
+          }}>
+          <Swipeout viewWidth={this.state.viewWidth} />
+        </View>
         <IoniconsIcon
           size={80}
           style={styles.icon}
