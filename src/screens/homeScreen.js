@@ -66,7 +66,6 @@ export default class HomeScreen extends React.Component {
         this.props.navigation.setParams({userEmail: user.email});
       }
     } catch (error) {
-      console.log(error);
       if (error.errors) {
         if (error.errors[0].message === 'Network Error') {
           throw 'Network error. Please check your connection.';
