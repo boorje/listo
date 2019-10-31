@@ -19,8 +19,6 @@ class OverlayModal extends React.Component {
     this._panResponder = PanResponder.create({
       onStartShouldSetPanResponder: (evt, gestureState) => true,
       onStartShouldSetPanResponderCapture: (evt, gestureState) => true,
-      onMoveShouldSetPanResponder: (evt, gestureState) => true,
-      onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
 
       onPanResponderGrant: (evt, gestureState) => {
         if (this.state.fullyOpen) {
@@ -83,10 +81,23 @@ class OverlayModal extends React.Component {
     fullyOpen: false,
   };
 
+  expandModal = () => {
+    Animated.timing(this.state.pan, {
+      toValue: {x: 0, y: (-screenHeight * 0.65) / 2},
+      duration: 300,
+    }).start();
+    if (!this.state.fullyOpen) {
+      this.setState({fullyOpen: true});
+    }
+  };
+
   render() {
     const {pan} = this.state;
     const [translateX, translateY] = [0, pan.y];
     const viewStyle = {transform: [{translateX}, {translateY}]};
+    if (this.props.expandModal) {
+      this.expandModal();
+    }
     // TODO: Close modal when clicking outside modal.
     return (
       <Modal animationType="slide" transparent={true} visible={true}>

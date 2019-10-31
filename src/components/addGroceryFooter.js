@@ -62,7 +62,8 @@ export default class AddGroceryFooter extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        {!this.props.addItemOpen && (
+        {/* {!this.props.addItemOpen && (
+          // TODO: Add when applicable
           <View style={styles.sideIconsView}>
             <IoniconsIcon
               style={styles.sideIconStyle}
@@ -79,8 +80,7 @@ export default class AddGroceryFooter extends React.Component {
               onPress={() => {}}
             />
           </View>
-        )}
-
+        )} */}
         <Animated.View
           style={[
             styles.addIcon,

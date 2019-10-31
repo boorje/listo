@@ -1,17 +1,21 @@
 import React from 'react';
 import {
-  Button,
   FlatList,
   Text,
-  TextInput,
+  TouchableWithoutFeedback,
   TouchableHighlight,
   View,
+  StyleSheet,
 } from 'react-native';
 import * as yup from 'yup';
 import PropTypes from 'prop-types';
+import {KeyboardAwareFlatList} from 'react-native-keyboard-aware-scroll-view';
 // components
 import OverlayModal from '../../components/modals/overlayModal';
 import Message from '../../components/message';
+import AddUser from '../../components/addUser.js';
+import Icon from 'react-native-vector-icons/Ionicons';
+import Swipeout from '../../components/swipeout';
 // api
 import {
   createEditor,
@@ -19,6 +23,7 @@ import {
   getEditors,
 } from '../../api/groceryListsAPI';
 import {getUserByEmail} from '../../api/authAPI';
+import textStyles from '../../styles/textStyles';
 
 /**
  * TODO:
@@ -30,9 +35,10 @@ export default class ListSettingsModal extends React.Component {
     groceryList: this.props.groceryList || {},
     user: this.props.user || {},
     editors: [],
-    emailInput: '',
     apiError: '',
     loggedInUserIsListOwner: false,
+    fullyOpen: false,
+    scrollEnabled: true,
   };
 
   componentDidMount = async () => {
@@ -94,15 +100,15 @@ export default class ListSettingsModal extends React.Component {
   };
 
   // add editor to the list
-  addEditor = async () => {
+  addEditor = async emailInput => {
     try {
       // TODO: check if logged in user is owner of list
       if (!this.state.loggedInUserIsListOwner) {
         throw 'Only the owner of the list can perform add users';
       } else {
         // check for valid user input
-        // const enteredEmail = this.state.emailInput;
-        const enteredEmail = 'adam@olivegren.se';
+        const enteredEmail = emailInput;
+        //const enteredEmail = 'adam@olivegren.se';
         await this.validateEmail(enteredEmail);
 
         // check if the email already exists in the list
@@ -166,61 +172,125 @@ export default class ListSettingsModal extends React.Component {
     }
   };
 
-  render() {
-    const {apiError, editors, emailInput, loggedInUserIsListOwner} = this.state;
+  FlatListItemSeparator = () => {
+    return <View style={styles.separator} />;
+  };
 
+  addUserTextInput = () => {
+    return (
+      this.state.loggedInUserIsListOwner && (
+        <View style={styles.textInput}>
+          <AddUser
+            expandModal={() => this.setState({fullyOpen: true})}
+            addEditor={input => {
+              this.addEditor(input);
+              this.setState({fullyOpen: false});
+            }}
+          />
+        </View>
+      )
+    );
+  };
+
+  renderList({item}) {
+    return (
+      <UserItem
+        item={item}
+        disableScroll={() => {
+          this.setState({
+            scrollEnabled: false,
+          });
+        }}
+        enableScroll={() => {
+          this.setState({
+            scrollEnabled: true,
+          });
+        }}
+        deleteEditor={() => this.deleteEditor(item.id)}
+        loggedInUserIsListOwner={this.state.loggedInUserIsListOwner}
+      />
+    );
+  }
+
+  render() {
+    const {apiError, editors} = this.state;
     return (
       <OverlayModal
+        expandModal={this.state.fullyOpen}
         closeModal={this.props.closeModal}
-        modalTitle="Inställningar"
+        modalTitle="Listmedlemmar"
         textInputActive={this.state.textInputActive}>
-        <View>
-          {apiError.length > 0 && <Message message={apiError} />}
-          <Text>List members</Text>
-          {editors.length > 0 && (
-            <FlatList
-              data={editors}
-              renderItem={({item}) => (
-                <TouchableHighlight
-                  onPress={() => this.deleteEditor(item.id)}
-                  style={{
-                    alignItems: 'center',
-                    borderWidth: 1,
-                    borderColor: 'blue',
-                    padding: 20,
-                  }}
-                  disabled={item.listOwner || !loggedInUserIsListOwner}>
-                  <Text>
-                    {item.email} {item.listOwner ? '(owner)' : null}
-                  </Text>
-                </TouchableHighlight>
-              )}
-              keyExtractor={item => item.id}
-            />
-          )}
-          {loggedInUserIsListOwner && (
-            <React.Fragment>
-              <TextInput
-                style={{
-                  margin: 20,
-                  height: 40,
-                  borderColor: 'gray',
-                  borderWidth: 1,
-                }}
-                onChangeText={text => this.setState({emailInput: text})}
-                value={emailInput}
-                autoCapitalize="none"
-                autoCorrect={false}
-                placeholder="enter email of user to share with"
-              />
-              <Button title="share" onPress={() => this.addEditor()} />
-            </React.Fragment>
-          )}
-        </View>
+        {apiError.length > 0 && <Message message={apiError} />}
+        {editors.length > 0 && (
+          <KeyboardAwareFlatList
+            scrollEnabled={this.state.scrollEnabled}
+            data={editors}
+            renderItem={({item}) => {
+              return this.renderList({item});
+            }}
+            ItemSeparatorComponent={this.FlatListItemSeparator}
+            keyExtractor={item => item.id}
+            ListFooterComponent={this.addUserTextInput}
+          />
+        )}
       </OverlayModal>
     );
   }
 }
+
+class UserItem extends React.Component {
+  state = {
+    viewWidth: 0,
+    viewHeight: 0,
+  };
+  render() {
+    console.log(this.props.item);
+    return (
+      <View
+        onLayout={event => {
+          var {height, width} = event.nativeEvent.layout;
+          this.setState({viewWidth: width, viewHeight: height});
+        }}
+        style={styles.item}>
+        <Swipeout
+          disableScroll={() => this.props.disableScroll()}
+          enableScroll={() => this.props.enableScroll()}
+          swipeoutEnabled={this.props.item.listOwner ? false : true}
+          viewWidth={this.state.viewWidth}
+          delete={() => this.props.deleteEditor(this.props.item.id)}>
+          <TouchableWithoutFeedback>
+            <View style={styles.textAndIcon}>
+              <Text style={textStyles.default}>{this.props.item.email}</Text>
+              {this.props.item.listOwner && (
+                <Icon size={30} name={'ios-key'} color={'black'} />
+              )}
+            </View>
+          </TouchableWithoutFeedback>
+        </Swipeout>
+      </View>
+    );
+  }
+}
+
+const styles = StyleSheet.create({
+  item: {},
+  textAndIcon: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: '5%',
+  },
+  textInput: {
+    alignItems: 'center',
+    marginTop: '10%',
+  },
+  separator: {
+    height: 0.5,
+    width: '97%',
+    marginLeft: '3%',
+    backgroundColor: '#607D8B',
+  },
+});
 
 ListSettingsModal.propTypes = {
   closeModal: PropTypes.func.isRequired,

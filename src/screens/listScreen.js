@@ -158,7 +158,7 @@ export default class ListScreen extends React.Component {
           rightIcon2Press={() => this.openListSettings()}
           headerTitle={groceryList.title}
           leftIcon={'ios-arrow-round-back'}
-          rightIcon1={'md-hourglass'}
+          //rightIcon1={'md-hourglass'}
           rightIcon2={'md-person-add'}
           background={BACKGROUND_URL}
         />
