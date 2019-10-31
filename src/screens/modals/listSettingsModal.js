@@ -260,7 +260,9 @@ class UserItem extends React.Component {
           delete={() => this.props.deleteEditor(this.props.item.id)}>
           <TouchableWithoutFeedback>
             <View style={styles.textAndIcon}>
-              <Text style={textStyles.default}>{this.props.item.email}</Text>
+              <Text style={[textStyles.default, {fontSize: 15}]}>
+                {this.props.item.email}
+              </Text>
               {this.props.item.listOwner && (
                 <Icon size={30} name={'ios-key'} color={'black'} />
               )}
