@@ -143,13 +143,15 @@ export default class ListSettingsModal extends React.Component {
   };
 
   // delete editor from the list
-  // TODO: Add so only owner of the list can delete users
-  // TODO: Validate that list owner is not deleted
+  // TODO: API - Add so only owner of the list can delete users
+  // TODO: API - Validate that list owner is not deleted
   // TODO: What happens if i delete myself? -> has to be list owner to delete
   deleteEditor = async userId => {
     try {
       if (!this.state.loggedInUserIsListOwner) {
         throw 'Only the owner of the list can remove users.';
+      } else if (userId === this.state.user.id) {
+        throw 'The owner cannot be deleted';
       }
       const {editors, groceryList} = this.state;
       const res = await deleteEditor({
@@ -188,8 +190,7 @@ export default class ListSettingsModal extends React.Component {
                     borderWidth: 1,
                     borderColor: 'blue',
                     padding: 20,
-                  }}
-                  disabled={item.listOwner || !loggedInUserIsListOwner}>
+                  }}>
                   <Text>
                     {item.email} {item.listOwner ? '(owner)' : null}
                   </Text>
