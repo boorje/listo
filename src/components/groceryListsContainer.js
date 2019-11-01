@@ -103,7 +103,7 @@ const GroceryListItemStyles = StyleSheet.create({
     shadowColor: 'black',
     shadowOffset: {width: 0, height: 0},
     shadowRadius: 2,
-    shadowOpacity: 0.2,
+    shadowOpacity: 0.5,
   },
   container2: {
     flexDirection: 'row',
