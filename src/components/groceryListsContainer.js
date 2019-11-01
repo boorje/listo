@@ -71,6 +71,7 @@ export default class GroceryListsContainer extends React.Component {
   render() {
     return (
       <KeyboardAwareFlatList
+        style={{paddingTop: '3%'}}
         data={this.props.groceryLists}
         renderItem={({item}) => {
           return this.renderList(item);
