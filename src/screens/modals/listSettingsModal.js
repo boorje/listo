@@ -260,7 +260,6 @@ class UserItem extends React.Component {
     viewHeight: 0,
   };
   render() {
-    console.log(this.props.item);
     return (
       <View
         onLayout={event => {
