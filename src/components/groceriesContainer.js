@@ -126,6 +126,8 @@ class GroceriesContainer extends React.Component {
       <View style={{flex: 1}}>
         <View style={{flex: 8}}>
           <KeyboardAwareFlatList
+            ref="flatList"
+            onContentSizeChange={() => this.refs.flatList.scrollToEnd()}
             scrollEnabled={true}
             data={this.props.groceries}
             renderItem={({item}) => this.renderItem(item)}
