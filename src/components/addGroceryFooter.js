@@ -141,7 +141,7 @@ export default class AddGroceryFooter extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#E3E3E3',
+    backgroundColor: 'white',
     justifyContent: 'center',
     shadowColor: 'black',
     shadowOffset: {width: 0, height: 0},
