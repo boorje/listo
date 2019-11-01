@@ -198,6 +198,7 @@ export default class ListSettingsModal extends React.Component {
     return (
       <UserItem
         item={item}
+        user={this.state.user}
         disableScroll={() => {
           this.setState({
             scrollEnabled: false,
@@ -255,6 +256,7 @@ class UserItem extends React.Component {
         }}
         style={styles.item}>
         <Swipeout
+          user={this.props.user}
           disableScroll={() => this.props.disableScroll()}
           enableScroll={() => this.props.enableScroll()}
           swipeoutEnabled={this.props.item.listOwner ? false : true}

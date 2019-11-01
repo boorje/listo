@@ -1,14 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import {
-  StyleSheet,
-  Modal,
-  PanResponder,
-  View,
-  Text,
-  Dimensions,
-  Animated,
-} from 'react-native';
+import {StyleSheet, PanResponder, View, Animated} from 'react-native';
 import PropTypes from 'prop-types';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -81,6 +73,8 @@ class Swipeout extends React.Component {
       this.props.list.owner === this.props.user.id
         ? null
         : this.setSwipeIcon('ios-exit');
+    } else if (this.props.user) {
+      this.setSwipeIcon('ios-close');
     }
   };
 
