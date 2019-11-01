@@ -88,6 +88,7 @@ class GroceriesContainer extends React.Component {
                 closeGroceryForm={() => this.showGroceryForm(grocery)}
                 addGrocery={this.props.updateGrocery}
                 item={grocery}
+                shouldCloseOnSubmit={true}
               />
             ) : (
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
