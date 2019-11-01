@@ -83,8 +83,6 @@ export default class GroceryListsContainer extends React.Component {
             onRefresh={() => this.props.onRefresh()}
           />
         }
-        // refreshing={this.state.refreshing}
-        // onRefresh={this.handleRefresh}
       />
     );
   }
