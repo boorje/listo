@@ -170,6 +170,7 @@ export default class ListScreen extends React.Component {
           updateGrocery={this.updateGrocery}
           removeGrocery={this.removeGrocery}
           navigation={this.props.navigation}
+          onRefresh={() => this.fetchListItems(groceryList.id)}
         />
       </View>
     );
