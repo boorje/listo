@@ -221,7 +221,7 @@ PODS:
   - RNAWSCognito (3.0.15):
     - JKBigInteger2 (= 0.0.5)
     - React
-  - RNGestureHandler (1.4.1):
+  - RNGestureHandler (1.5.0):
     - React
   - RNSVG (9.13.3):
     - React
@@ -356,7 +356,7 @@ SPEC CHECKSUMS:
   React-RCTVibration: fb54c732fd20405a76598e431aa2f8c2bf527de9
   ReactCommon: 5848032ed2f274fcb40f6b9ec24067787c42d479
   RNAWSCognito: b0b908817ce6547cdddaa7842bc166b4c5e7c128
-  RNGestureHandler: 4cb47a93019c1a201df2644413a0a1569a51c8aa
+  RNGestureHandler: a4ddde1ffc6e590c8127b8b7eabfdade45475c74
   RNSVG: f6177f8d7c095fada7cfee2e4bb7388ba426064c
   RNVectorIcons: 0bb4def82230be1333ddaeee9fcba45f0b288ed4
   Yoga: 14927e37bd25376d216b150ab2a561773d57911f
