@@ -127,6 +127,7 @@ export default class AddGroceryFooter extends React.Component {
                   this.props.showAddGrocery();
                   this.closeAddIcon();
                 }}
+                shouldCloseOnSubmit={false}
                 addGrocery={this.props.addGrocery}
               />
             </Animated.View>

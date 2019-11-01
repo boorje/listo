@@ -29,7 +29,10 @@ export default class GroceryForm extends React.Component {
   handleSubmitEditing = () => {
     const {content, quantity, unit, id} = this.state;
     this.props.addGrocery({content, quantity, unit, id});
-    this.props.closeGroceryForm();
+    this.setState({content: '', quantity: '', unit: ''});
+    if (this.props.shouldCloseOnSubmit) {
+      this.props.closeGroceryForm();
+    }
   };
 
   render() {
@@ -56,10 +59,14 @@ export default class GroceryForm extends React.Component {
           borderColor={'black'}
           returnKeyType="done"
           autoCorrect={false}
+          blurOnSubmit={this.props.shouldCloseOnSubmit}
           enablesReturnKeyAutomatically={true}
           autoFocus={true}
           autoCapitalize="none"
-          onSubmitEditing={() => this.handleSubmitEditing()}
+          onSubmitEditing={() => {
+            this.handleSubmitEditing();
+            this.firstTextInput.focus();
+          }}
           inputAccessoryViewID={inputID}
           onChangeText={text => {
             this.setState({content: text});
@@ -91,9 +98,13 @@ export default class GroceryForm extends React.Component {
             keyboardType="numeric"
             returnKeyType="done"
             autoCorrect={false}
+            blurOnSubmit={this.props.shouldCloseOnSubmit}
             enablesReturnKeyAutomatically={true}
             autoFocus={false}
-            onSubmitEditing={() => this.handleSubmitEditing()}
+            onSubmitEditing={() => {
+              this.handleSubmitEditing();
+              this.firstTextInput.focus();
+            }}
             inputAccessoryViewID={inputID}
             onChangeText={text => {
               this.setState({quantity: text});
@@ -121,10 +132,14 @@ export default class GroceryForm extends React.Component {
               borderColor={'black'}
               returnKeyType="done"
               autoCorrect={false}
+              blurOnSubmit={this.props.shouldCloseOnSubmit}
               enablesReturnKeyAutomatically={true}
               autoFocus={false}
               autoCapitalize="none"
-              onSubmitEditing={() => this.handleSubmitEditing()}
+              onSubmitEditing={() => {
+                this.handleSubmitEditing();
+                this.firstTextInput.focus();
+              }}
               inputAccessoryViewID={inputID}
               onChangeText={text => {
                 this.setState({unit: text});

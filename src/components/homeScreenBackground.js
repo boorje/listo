@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, Text, View, Image} from 'react-native';
+import {StyleSheet, Text, View, Image, ImageBackground} from 'react-native';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 import textStyles from '../styles/textStyles';
 
@@ -8,25 +8,23 @@ const BACKGROUND_URL =
 
 const HomeScreenBackground = props => (
   <View style={styles.container}>
-    <Image
-      style={{flex: 1, opacity: 0.6, top: 0}}
-      source={{
-        uri: BACKGROUND_URL,
-      }}
-    />
-    <View style={styles.headline}>
-      <Text style={textStyles.myLists}>Mina</Text>
-      <Text style={textStyles.myLists}>Listor</Text>
-    </View>
-    <View style={styles.iconView}>
-      <IoniconsIcon
-        style={styles.icon}
-        size={40}
-        color={'white'}
-        name="ios-cog"
-        onPress={() => props.openSettings()}
-      />
-    </View>
+    <ImageBackground
+      style={{opacity: 0.6, top: 0, width: '100%', height: '100%'}}
+      source={require('../assets/winestand.jpg')}>
+      <View style={styles.headline}>
+        <Text style={textStyles.myLists}>Mina</Text>
+        <Text style={textStyles.myLists}>Listor</Text>
+      </View>
+      <View style={styles.iconView}>
+        <IoniconsIcon
+          style={styles.icon}
+          size={40}
+          color={'white'}
+          name="ios-cog"
+          onPress={() => props.openSettings()}
+        />
+      </View>
+    </ImageBackground>
   </View>
 );
 
