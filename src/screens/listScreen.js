@@ -6,6 +6,7 @@ import Message from '../components/message';
 import ScreenHeader from '../components/screenHeader';
 import PreviousGroceriesModal from './modals/previousGroceriesModal';
 import ListSettingsModal from './modals/listSettingsModal';
+import animations from '../styles/animations';
 
 // api
 import {
@@ -69,7 +70,7 @@ export default class ListScreen extends React.Component {
         this.state.groceryList.id,
       );
       const {content, quantity, unit} = grocery;
-      LayoutAnimation.spring();
+      LayoutAnimation.configureNext(animations.default);
       this.setState({
         groceries: [
           ...this.state.groceries,
@@ -96,6 +97,7 @@ export default class ListScreen extends React.Component {
       const stateCopy = this.state.groceries.filter(
         grocery => grocery.id !== deletedGrocery.id,
       );
+      LayoutAnimation.configureNext(animations.default);
       this.setState({groceries: stateCopy});
     } catch (error) {
       this.setState({apiError: error});

@@ -2,7 +2,7 @@ import {LayoutAnimation} from 'react-native';
 
 const animations = {
   default: {
-    duration: 500,
+    duration: 300,
     create: {
       type: LayoutAnimation.Types.spring,
       property: LayoutAnimation.Properties.scaleXY,
