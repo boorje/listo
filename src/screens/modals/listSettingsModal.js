@@ -39,6 +39,7 @@ export default class ListSettingsModal extends React.Component {
     loggedInUserIsListOwner: false,
     fullyOpen: false,
     scrollEnabled: true,
+    messageOpen: false,
   };
 
   componentDidMount = async () => {
@@ -51,6 +52,7 @@ export default class ListSettingsModal extends React.Component {
       this.setState({
         apiError: error ? error : 'Could not fetch editors. Please try again.',
       });
+      this.setState({messageOpen: true});
     }
   };
 
@@ -143,8 +145,8 @@ export default class ListSettingsModal extends React.Component {
         }));
       }
     } catch (error) {
-      console.log(error);
       this.setState({apiError: error});
+      this.setState({messageOpen: true});
     }
   };
 
@@ -171,6 +173,7 @@ export default class ListSettingsModal extends React.Component {
       this.setState({editors: newEditors});
     } catch (error) {
       this.setState({apiError: error ? error : 'Could not remove the user.'});
+      this.setState({messageOpen: true});
     }
   };
 
@@ -214,16 +217,26 @@ export default class ListSettingsModal extends React.Component {
       />
     );
   }
+  toggleMessage = () => {
+    this.setState(prevstate => ({
+      messageOpen: prevstate.messageOpen ? false : true,
+    }));
+  };
 
   render() {
-    const {apiError, editors} = this.state;
+    const {apiError, editors, messageOpen} = this.state;
     return (
       <OverlayModal
         expandModal={this.state.fullyOpen}
         closeModal={this.props.closeModal}
         modalTitle="Listmedlemmar"
         textInputActive={this.state.textInputActive}>
-        {apiError.length > 0 && <Message message={apiError} />}
+        {apiError.length > 0 && messageOpen && (
+          <Message
+            messageOpen={() => this.toggleMessage()}
+            message={apiError}
+          />
+        )}
         {editors.length > 0 && (
           <KeyboardAwareFlatList
             scrollEnabled={this.state.scrollEnabled}

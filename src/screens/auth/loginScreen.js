@@ -113,7 +113,7 @@ class LoginScreen extends React.Component {
               height={height * 1.1}
               clipPath="url(#clip)"
               preserveAspectRatio="xMidYMid slice"
-              href={require('../../assets/groceries2.jpg')}
+              href={require('../../assets/groceries.jpeg')}
             />
           </Svg>
         </Animated.View>
