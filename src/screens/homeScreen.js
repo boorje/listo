@@ -12,7 +12,7 @@ import GroceryListsContainer from '../components/groceryListsContainer';
 import AddGroceryListModal from '../components/modals/AddGroceryListModal';
 import Message from '../components/message';
 import HomeScreenBackground from '../components/homeScreenBackground';
-import Swipeout from '../components/swipeout';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 // api
 import {
   createGroceryList,
@@ -160,6 +160,7 @@ export default class HomeScreen extends React.Component {
         {apiError.length > 0 && <Message message={apiError} />}
         <SafeAreaView style={{flex: 5, marginTop: '3%'}}>
           <GroceryListsContainer
+            user={user}
             groceryLists={groceryLists}
             removeGroceryList={this.removeGroceryList}
             goToGroceryList={groceryList =>
@@ -167,13 +168,14 @@ export default class HomeScreen extends React.Component {
             }
           />
         </SafeAreaView>
-        <IoniconsIcon
-          size={80}
-          style={styles.icon}
-          color={'#06BA63'}
-          name="ios-add-circle"
-          onPress={() => this.toggleModal()}
-        />
+        <View style={styles.addIcon}>
+          <Icon
+            size={80}
+            name={'add'}
+            color={'white'}
+            onPress={() => this.toggleModal()}
+          />
+        </View>
       </View>
     );
   }
@@ -184,5 +186,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#E3E3E3',
   },
-  icon: {position: 'absolute', bottom: '10%', right: '15%', opacity: 1},
+  addIcon: {
+    position: 'absolute',
+    borderRadius: 50,
+    bottom: '10%',
+    right: '15%',
+    backgroundColor: '#06BA63',
+    shadowColor: 'black',
+    shadowOffset: {width: 0, height: 0},
+    shadowRadius: 2,
+    shadowOpacity: 1,
+  },
 });

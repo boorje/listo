@@ -1,48 +1,50 @@
 import React from 'react';
-import {
-  StyleSheet,
-  Text,
-  TouchableHighlight,
-  View,
-  PanResponder,
-  Animated,
-  Dimensions,
-} from 'react-native';
+import {StyleSheet, Text, View, TouchableWithoutFeedback} from 'react-native';
 import PropTypes from 'prop-types';
 import Swipeout from '../components/swipeout';
 import textStyles from '../styles/textStyles';
 import {KeyboardAwareFlatList} from 'react-native-keyboard-aware-scroll-view';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 class GroceryListItem extends React.Component {
   state = {
     viewWidth: 0,
     viewHeight: 0,
   };
+
   render() {
     return (
-      <TouchableHighlight
+      <View
         onLayout={event => {
           var {height, width} = event.nativeEvent.layout;
           this.setState({viewWidth: width, viewHeight: height});
         }}
         style={[GroceryListItemStyles.container]}
         underlayColor="transparent"
-        fontSize={50}
-        onPress={() => this.props.goToGroceryList(this.props.item)}>
+        fontSize={50}>
         <Swipeout
+          list={this.props.item}
+          user={this.props.user}
+          swipeoutEnabled={true}
+          disableScroll={() => {}}
+          enableScroll={() => {}}
           viewWidth={this.state.viewWidth}
-          onPress={() => this.props.goToGroceryList(this.props.item)}
           delete={() => this.props.removeGroceryList()}>
-          <View style={GroceryListItemStyles.container2}>
-            <Text style={textStyles.default}>{this.props.item.title}</Text>
-            <View style={GroceryListItemStyles.badge}>
-              {/* // TODO: add dynamic item count */}
-              <Text style={textStyles.badge}>{this.props.numberOfItems}</Text>
+          <TouchableWithoutFeedback
+            onPress={() => this.props.goToGroceryList(this.props.item)}>
+            <View style={GroceryListItemStyles.container2}>
+              <Text style={textStyles.default}>{this.props.item.title}</Text>
+              {/* {this.props.isShared && (
+                <Icon size={30} name={'people'} color={'black'} />
+              )} */}
+              <View style={GroceryListItemStyles.badge}>
+                {/* // TODO: add dynamic item count */}
+                <Text style={textStyles.badge}>{this.props.numberOfItems}</Text>
+              </View>
             </View>
-          </View>
+          </TouchableWithoutFeedback>
         </Swipeout>
-      </TouchableHighlight>
+      </View>
     );
   }
 }
@@ -51,6 +53,8 @@ export default class GroceryListsContainer extends React.Component {
   renderList({list}) {
     return (
       <GroceryListItem
+        user={this.props.user}
+        isShared={list.owner === this.props.user.id ? true : false} // TODO: When possible, adjust
         item={list}
         goToGroceryList={this.props.goToGroceryList}
         numberOfItems={this.props.numberOfItems}
@@ -82,6 +86,10 @@ const GroceryListItemStyles = StyleSheet.create({
     alignSelf: 'center',
     borderTopLeftRadius: 15,
     borderBottomLeftRadius: 15,
+    shadowColor: 'black',
+    shadowOffset: {width: 0, height: 0},
+    shadowRadius: 2,
+    shadowOpacity: 0.2,
   },
   container2: {
     flexDirection: 'row',

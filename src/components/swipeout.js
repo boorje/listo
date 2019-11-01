@@ -8,10 +8,10 @@ import {
   Text,
   Dimensions,
   Animated,
-  TouchableHighlight,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const {Value} = Animated;
 
@@ -21,11 +21,15 @@ class Swipeout extends React.Component {
     this.xWidth = new Value(this.state.viewWidth);
     this.xWidth2 = new Value(0);
     this._panResponder = PanResponder.create({
-      onStartShouldSetPanResponder: (evt, gestureState) => true,
-      onMoveShouldSetPanResponder: (evt, gestureState) => true,
+      onMoveShouldSetPanResponder: (evt, gestureState) => {
+        return (
+          this.state.swipeoutEnabled &&
+          Math.abs(gestureState.dx) > Math.abs(gestureState.dy)
+        );
+      },
 
-      onPanResponderGrant: (evt, gestureState) => {},
       onPanResponderMove: (evt, gestureState) => {
+        this.props.disableScroll();
         this.setState({swipeActive: true});
         if (
           gestureState.dx < 0 &&
@@ -44,12 +48,10 @@ class Swipeout extends React.Component {
         }
       },
       onPanResponderRelease: (evt, gestureState) => {
-        if (Math.abs(gestureState.dx) === 0) {
-          this.props.onPress();
-        }
         if (this.state.trashActive) {
           this.props.delete();
         }
+        this.props.disableScroll();
         Animated.parallel([
           Animated.timing(this.xWidth, {
             toValue: this.state.viewWidth,
@@ -60,6 +62,7 @@ class Swipeout extends React.Component {
             duration: 300,
           }),
         ]).start();
+        this.props.enableScroll();
       },
     });
   }
@@ -68,8 +71,21 @@ class Swipeout extends React.Component {
     viewWidth: 0,
     viewHeight: 0,
     initialWidth: 0,
-    setResponder: false,
     swipeActive: false,
+    swipeIcon: 'ios-trash',
+    swipeoutEnabled: this.props.swipeoutEnabled,
+  };
+
+  componentDidMount = () => {
+    if (this.props.list && this.props.user) {
+      this.props.list.owner === this.props.user.id
+        ? null
+        : this.setSwipeIcon('ios-exit');
+    }
+  };
+
+  setSwipeIcon = icon => {
+    this.setState({swipeIcon: icon});
   };
 
   static getDerivedStateFromProps(props, state) {
@@ -84,6 +100,7 @@ class Swipeout extends React.Component {
       };
     }
   }
+
   getRatio = dx => {
     return 1 - Math.abs(dx / this.state.viewWidth);
   };
@@ -92,15 +109,14 @@ class Swipeout extends React.Component {
     const {trashActive} = this.state;
 
     return (
-      <View
-        style={[styles.container, {height: this.state.viewHeight, zIndex: -1}]}>
+      <View style={[styles.container]}>
         <Animated.View
           style={[
             {
               width: this.state.swipeActive
                 ? this.xWidth
                 : this.state.viewWidth,
-              paddingVertical: '2%',
+              paddingVertical: '3%',
             },
           ]}
           {...this._panResponder.panHandlers}>
@@ -118,7 +134,7 @@ class Swipeout extends React.Component {
             style={styles.iconStyle}
             size={40}
             color={'white'}
-            name={'ios-trash'}
+            name={this.state.swipeIcon}
           />
         </Animated.View>
       </View>
@@ -138,6 +154,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: '2%',
+  },
+  iconStyle: {
+    //position: 'absolute',
   },
 });
 

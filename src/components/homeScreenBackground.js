@@ -7,7 +7,7 @@ const BACKGROUND_URL =
   'https://images.unsplash.com/photo-1516594798947-e65505dbb29d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80';
 
 const HomeScreenBackground = props => (
-  <View style={{flex: 3}}>
+  <View style={styles.container}>
     <Image
       style={{flex: 1, opacity: 0.6, top: 0}}
       source={{
@@ -33,6 +33,13 @@ const HomeScreenBackground = props => (
 export default HomeScreenBackground;
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 3,
+    shadowColor: 'black',
+    shadowOffset: {width: 0, height: 1},
+    shadowRadius: 2,
+    shadowOpacity: 0.2,
+  },
   headline: {
     position: 'absolute',
     bottom: '10%',
