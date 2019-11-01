@@ -109,7 +109,7 @@ const GroceryListItemStyles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: '3%',
+    paddingHorizontal: '5%',
   },
   swipeout: {
     backgroundColor: 'transparent',

@@ -84,7 +84,7 @@ class GroceriesContainer extends React.Component {
         }}
         underlayColor={'transparent'}>
         <View style={styles.container2}>
-          <View style={{flex: 1}}>
+          <View style={{flex: 1, paddingLeft: '5%'}}>
             {grocery.details ? (
               <GroceryForm
                 closeGroceryForm={() => this.showGroceryForm(grocery)}
@@ -93,7 +93,7 @@ class GroceriesContainer extends React.Component {
                 shouldCloseOnSubmit={true}
               />
             ) : (
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <View style={styles.textInfo}>
                 <Text style={textStyles.default}>{grocery.content}</Text>
                 <Text style={textStyles.groceryDetails}>
                   {grocery.quantity}
@@ -170,10 +170,10 @@ const styles = StyleSheet.create({
     paddingRight: '10%',
   },
   separator: {
-    height: 0.5,
+    height: 2,
     width: '97%',
     marginLeft: '3%',
-    backgroundColor: '#607D8B',
+    backgroundColor: '#E3E3E3',
   },
   container1: {
     flex: 1,
@@ -182,10 +182,17 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
+    backgroundColor: 'white',
+    borderTopLeftRadius: 15,
+    borderBottomLeftRadius: 15,
     alignItems: 'center',
-    paddingLeft: '3%',
+    marginLeft: '3%',
     paddingRight: '3%',
     paddingBottom: '3%',
+  },
+  textInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   footer: {
     paddingBottom: 0,
