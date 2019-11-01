@@ -1,5 +1,11 @@
 import React from 'react';
-import {StyleSheet, Text, View, TouchableWithoutFeedback} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableWithoutFeedback,
+  RefreshControl,
+} from 'react-native';
 import PropTypes from 'prop-types';
 import Swipeout from '../components/swipeout';
 import textStyles from '../styles/textStyles';
@@ -37,10 +43,6 @@ class GroceryListItem extends React.Component {
               {/* {this.props.isShared && (
                 <Icon size={30} name={'people'} color={'black'} />
               )} */}
-              <View style={GroceryListItemStyles.badge}>
-                {/* // TODO: add dynamic item count */}
-                <Text style={textStyles.badge}>{this.props.numberOfItems}</Text>
-              </View>
             </View>
           </TouchableWithoutFeedback>
         </Swipeout>
@@ -50,6 +52,9 @@ class GroceryListItem extends React.Component {
 }
 
 export default class GroceryListsContainer extends React.Component {
+  state = {
+    refreshing: false,
+  };
   renderList({list}) {
     return (
       <GroceryListItem
@@ -71,6 +76,15 @@ export default class GroceryListsContainer extends React.Component {
           return this.renderList(item);
         }}
         keyExtractor={({list}) => list.id}
+        refreshControl={
+          <RefreshControl
+            refreshing={this.state.refreshing}
+            tintColor={'#06BA63'}
+            onRefresh={() => this.props.onRefresh()}
+          />
+        }
+        // refreshing={this.state.refreshing}
+        // onRefresh={this.handleRefresh}
       />
     );
   }
