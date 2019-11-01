@@ -7,6 +7,7 @@ import {
   LayoutAnimation,
   Animated,
   RefreshControl,
+  Dimensions,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -18,12 +19,20 @@ import GroceryForm from './forms/groceryForm';
 import textStyles from '../styles/textStyles';
 import animations from '../styles/animations';
 
+const {Value} = Animated;
+const {height, width} = Dimensions.get('window');
+
 class GroceriesContainer extends React.Component {
+  constructor(props) {
+    super(props);
+    this.itemX = new Value(1);
+    this.itemHeight = new Value(45);
+  }
   state = {
     groceries: this.props.groceries,
-    adjustFooter: false,
     addItemOpen: false,
     refreshing: false,
+    removeId: '',
   };
 
   // ? enough comparison
@@ -37,9 +46,6 @@ class GroceriesContainer extends React.Component {
   // ! When updating item. Can not open details before reload.
   // ! Sets the details = true correctly. Probably not re-rendering in renderItem()
   showGroceryForm = grocery => {
-    if (this.state.addItemOpen) {
-      this.setState({adjustFooter: false, addItemOpen: false});
-    }
     const copy = this.state.groceries.map(item => {
       if (grocery.details || item.id !== grocery.id) {
         item.details = false;
@@ -62,13 +68,6 @@ class GroceriesContainer extends React.Component {
       LayoutAnimation.configureNext(animations.default);
       this.setState({addItemOpen: false});
     }
-    this.adjustFooter();
-  };
-
-  adjustFooter = () => {
-    // Move to method above?
-    LayoutAnimation.configureNext(animations.default);
-    this.setState({adjustFooter: !this.state.adjustFooter ? true : false});
   };
 
   renderItem(grocery) {
@@ -83,7 +82,14 @@ class GroceriesContainer extends React.Component {
           this.props.removeGrocery(grocery.id);
         }}
         underlayColor={'transparent'}>
-        <View style={styles.container2}>
+        <Animated.View
+          style={[
+            styles.container2,
+            {
+              opacity: this.state.removeId === grocery.id ? this.itemX : 1,
+              height: this.state.removeId === grocery.id ? this.itemHeight : 45,
+            },
+          ]}>
           <View style={{flex: 1, paddingLeft: '5%'}}>
             {grocery.details ? (
               <GroceryForm
@@ -114,7 +120,7 @@ class GroceriesContainer extends React.Component {
               }}
             />
           </Animated.View>
-        </View>
+        </Animated.View>
       </TouchableHighlight>
     );
   }
