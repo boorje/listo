@@ -6,6 +6,7 @@ import {
   TouchableHighlight,
   LayoutAnimation,
   Animated,
+  RefreshControl,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -22,6 +23,7 @@ class GroceriesContainer extends React.Component {
     groceries: this.props.groceries,
     adjustFooter: false,
     addItemOpen: false,
+    refreshing: false,
   };
 
   // ? enough comparison
@@ -129,6 +131,13 @@ class GroceriesContainer extends React.Component {
             ref="flatList"
             onContentSizeChange={() => this.refs.flatList.scrollToEnd()}
             scrollEnabled={true}
+            refreshControl={
+              <RefreshControl
+                refreshing={this.state.refreshing}
+                tintColor={'#06BA63'}
+                onRefresh={() => this.props.onRefresh()}
+              />
+            }
             data={this.props.groceries}
             renderItem={({item}) => this.renderItem(item)}
             keyExtractor={item => item.id}

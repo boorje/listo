@@ -163,6 +163,7 @@ export default class HomeScreen extends React.Component {
             user={user}
             groceryLists={groceryLists}
             removeGroceryList={this.removeGroceryList}
+            onRefresh={() => this.fetchUserLists()}
             goToGroceryList={groceryList =>
               this.props.navigation.navigate('List', {groceryList, user})
             }
