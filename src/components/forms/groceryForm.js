@@ -205,6 +205,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     backgroundColor: 'white',
     paddingHorizontal: '5%',
+    shadowColor: 'black',
+    shadowOffset: {width: 0, height: 0},
+    shadowOpacity: 0.2,
   },
   navigators: {
     flexDirection: 'row',

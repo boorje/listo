@@ -52,6 +52,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primaryColor,
     height: '20%',
     justifyContent: 'center',
+    shadowColor: 'black',
+    shadowOffset: {width: 0, height: 0},
+    shadowOpacity: 0.5,
   },
   container2: {
     flexDirection: 'row',
