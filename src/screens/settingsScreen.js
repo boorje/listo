@@ -65,7 +65,7 @@ class SettingsScreen extends React.Component {
         </View>
 
         <View style={styles.logoutButton}>
-          <PrimaryButton title="Logga ut" onPress={() => this._logout()} />
+          <PrimaryButton title="Sign out" onPress={() => this._logout()} />
         </View>
       </View>
     );
