@@ -8,6 +8,7 @@ import PreviousGroceriesModal from './modals/previousGroceriesModal';
 import ListSettingsModal from './modals/listSettingsModal';
 import animations from '../styles/animations';
 import * as colors from '../styles/colors';
+import AddGroceryFooter from '../components/addGroceryFooter';
 
 // api
 import {
@@ -20,12 +21,34 @@ import {
 export default class ListScreen extends React.Component {
   state = {
     groceryList: {},
-    groceries: [],
+    groceries: [
+      {id: 1, content: 'cola', quantity: '3', unit: 'dl'},
+      {id: 2, content: 'cola', quantity: '3', unit: 'dl'},
+      {id: 3, content: 'cola', quantity: '3', unit: 'dl'},
+      {id: 4, content: 'cola', quantity: '3', unit: 'dl'},
+      {id: 5, content: 'cola', quantity: '3', unit: 'dl'},
+      {id: 6, content: 'cola', quantity: '3', unit: 'dl'},
+      {id: 7, content: 'cola', quantity: '3', unit: 'dl'},
+      {id: 8, content: 'cola', quantity: '3', unit: 'dl'},
+      {id: 9, content: 'cola', quantity: '3', unit: 'dl'},
+      {id: 10, content: 'cola', quantity: '3', unit: 'dl'},
+      {id: 11, content: 'cola', quantity: '3', unit: 'dl'},
+      {id: 12, content: 'cola', quantity: '3', unit: 'dl'},
+      {id: 13, content: 'cola', quantity: '3', unit: 'dl'},
+      {id: 14, content: 'cola', quantity: '3', unit: 'dl'},
+      {id: 15, content: 'cola', quantity: '3', unit: 'dl'},
+      {id: 16, content: 'cola', quantity: '3', unit: 'dl'},
+      {id: 17, content: 'cola', quantity: '3', unit: 'dl'},
+      {id: 18, content: 'cola', quantity: '3', unit: 'dl'},
+      {id: 19, content: 'cola', quantity: '3', unit: 'dl'},
+      {id: 20, content: 'cola', quantity: '3', unit: 'dl'},
+    ],
     user: {},
     apiError: '',
     listSettingsOpen: false,
     historyOpen: false,
     previousGroceries: [],
+    addItemOpen: false,
   };
 
   componentDidMount = async () => {
@@ -117,7 +140,15 @@ export default class ListScreen extends React.Component {
       this.setState({apiError: error});
     }
   };
-
+  showAddGrocery = () => {
+    if (this.state.addItemOpen === false) {
+      LayoutAnimation.configureNext(animations.default);
+      this.setState({addItemOpen: true});
+    } else {
+      LayoutAnimation.configureNext(animations.default);
+      this.setState({addItemOpen: false});
+    }
+  };
   openListSettings = () => {
     this.setState({
       listSettingsOpen: this.state.listSettingsOpen ? false : true,
@@ -161,15 +192,24 @@ export default class ListScreen extends React.Component {
           //rightIcon1={'md-hourglass'}
           rightIcon2={'md-person-add'}
         />
-
-        <GroceriesContainer
-          groceries={groceries}
-          addGrocery={this.addGrocery}
-          updateGrocery={this.updateGrocery}
-          removeGrocery={this.removeGrocery}
-          navigation={this.props.navigation}
-          onRefresh={() => this.fetchListItems(groceryList.id)}
-        />
+        <View style={{flex: 11}}>
+          <GroceriesContainer
+            groceries={groceries}
+            addGrocery={this.addGrocery}
+            updateGrocery={this.updateGrocery}
+            removeGrocery={this.removeGrocery}
+            navigation={this.props.navigation}
+            addItemOpen={this.state.addItemOpen}
+            onRefresh={() => this.fetchListItems(groceryList.id)}
+          />
+        </View>
+        <View style={styles.footer}>
+          <AddGroceryFooter
+            addGrocery={this.addGrocery}
+            addItemOpen={this.state.addItemOpen}
+            showAddGrocery={this.showAddGrocery}
+          />
+        </View>
       </View>
     );
   }
@@ -178,6 +218,11 @@ export default class ListScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: colors.secondaryColor,
+  },
+  footer: {
+    bottom: 0,
+    flex: 2,
+    justifyContent: 'center',
   },
 });
