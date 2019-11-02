@@ -1,17 +1,10 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Animated,
-  Dimensions,
-  Modal,
-} from 'react-native';
-import IoniconsIcon from 'react-native-vector-icons/Ionicons';
+import {View, StyleSheet, Animated, Dimensions} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import GroceryForm from './forms/groceryForm';
 import textStyles from '../styles/textStyles';
 import PropTypes from 'prop-types';
+import * as colors from '../styles/colors';
 
 const {height, width} = Dimensions.get('window');
 const {Value} = Animated;
@@ -167,10 +160,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     top: '-50%',
     alignSelf: 'center',
-    backgroundColor: '#06BA63',
+    backgroundColor: colors.primaryColor,
     shadowColor: 'black',
     shadowOffset: {width: 0, height: 0},
-    shadowRadius: 2,
     shadowOpacity: 1,
   },
   form: {

@@ -45,7 +45,7 @@ const ForgotPasswordForm = props => {
                 placeholder="E-mail"
                 placeholderTextColor="white"
                 autoCapitalize="none"
-                autoFocus={true}
+                autoFocus={false}
                 style={styles.textInput}
               />
             </View>

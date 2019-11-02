@@ -7,7 +7,7 @@ import * as colors from '../../styles/colors';
 // -- Components --
 import SignupForm from '../../components/forms/signupForm';
 import Message from '../../components/message';
-import PrimaryButton from '../../components/buttons/primaryButton';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 // -- Helpers --
 import validateValues from '../../helpers/validateFormValues';
@@ -56,14 +56,16 @@ class SignupScreen extends React.Component {
     const {loading, signupError} = this.state;
     return (
       <View style={styles.container}>
-        <View style={styles.form}>
-          {signupError.length > 0 && <Message message={signupError} />}
+        {signupError.length > 0 && <Message message={signupError} />}
+        <KeyboardAwareScrollView
+          scrollEnabled={false}
+          contentContainerStyle={{flex: 1, justifyContent: 'center'}}>
           <SignupForm
             handleSubmit={this.handleSubmit}
             loading={loading}
             goBack={() => this.props.navigation.navigate('Login')}
           />
-        </View>
+        </KeyboardAwareScrollView>
       </View>
     );
   }
@@ -77,5 +79,4 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: colors.primaryColor,
   },
-  background: {flex: 1, opacity: 0.67},
 });

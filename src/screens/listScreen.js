@@ -7,6 +7,7 @@ import ScreenHeader from '../components/screenHeader';
 import PreviousGroceriesModal from './modals/previousGroceriesModal';
 import ListSettingsModal from './modals/listSettingsModal';
 import animations from '../styles/animations';
+import * as colors from '../styles/colors';
 
 // api
 import {
@@ -15,9 +16,6 @@ import {
   deleteGroceryItem,
   updateGroceryItem,
 } from '../api/groceryListsAPI';
-
-const BACKGROUND_URL =
-  'https://images.unsplash.com/photo-1456324504439-367cee3b3c32?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80';
 
 export default class ListScreen extends React.Component {
   state = {
@@ -162,10 +160,8 @@ export default class ListScreen extends React.Component {
           leftIcon={'ios-arrow-round-back'}
           //rightIcon1={'md-hourglass'}
           rightIcon2={'md-person-add'}
-          background={BACKGROUND_URL}
         />
 
-        <View style={styles.separator} />
         <GroceriesContainer
           groceries={groceries}
           addGrocery={this.addGrocery}
@@ -182,12 +178,6 @@ export default class ListScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#E3E3E3',
-  },
-  separator: {
-    height: 1,
-    backgroundColor: '#808080',
-    opacity: 0.5,
-    marginBottom: '2%',
+    backgroundColor: 'white',
   },
 });

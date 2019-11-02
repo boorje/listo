@@ -18,6 +18,7 @@ import GroceryForm from './forms/groceryForm';
 // styles
 import textStyles from '../styles/textStyles';
 import animations from '../styles/animations';
+import * as colors from '../styles/colors';
 
 const {Value} = Animated;
 const {height, width} = Dimensions.get('window');
@@ -174,19 +175,15 @@ const styles = StyleSheet.create({
     paddingRight: '10%',
   },
   separator: {
-    height: 2,
+    height: 3,
     width: '97%',
     marginLeft: '3%',
-    backgroundColor: '#E3E3E3',
-  },
-  container1: {
-    flex: 1,
   },
   container2: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    backgroundColor: 'white',
+    backgroundColor: colors.secondaryColor,
     borderTopLeftRadius: 15,
     borderBottomLeftRadius: 15,
     alignItems: 'center',
