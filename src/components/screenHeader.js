@@ -3,15 +3,10 @@ import {StyleSheet, Image, View, Text} from 'react-native';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 import textStyles from '../styles/textStyles';
 import PropTypes from 'prop-types';
+import * as colors from '../styles/colors';
 
 const ScreenHeader = props => (
   <View style={styles.container}>
-    <Image
-      style={styles.image}
-      source={{
-        uri: props.background,
-      }}
-    />
     <View style={styles.container2}>
       <View style={{flex: 1}}>
         <IoniconsIcon
@@ -54,12 +49,14 @@ export default ScreenHeader;
 const styles = StyleSheet.create({
   container: {
     top: 0,
+    backgroundColor: colors.primaryColor,
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
     height: '15%',
     justifyContent: 'flex-end',
+    marginBottom: '2%',
   },
-  image: {flex: 1, opacity: 0.6, top: 0},
   container2: {
-    width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -69,9 +66,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
   iconStyle: {
-    textShadowColor: 'rgba(0, 0, 0, 0.75)',
-    textShadowOffset: {width: 3, height: 1},
-    textShadowRadius: 10,
     paddingRight: '10%',
   },
   rightIcons: {

@@ -51,6 +51,7 @@ const ResetPasswordForm = props => {
                   placeholder="Din verifieringskod"
                   placeholderTextColor="white"
                   keyboardType="number-pad"
+                  autoFocus={false}
                   style={styles.textInput}
                 />
               </View>

@@ -2,6 +2,7 @@ import React from 'react';
 import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 import PropTypes from 'prop-types';
 import textStyles from '../../styles/textStyles';
+import * as colors from '../../styles/colors';
 
 const PrimaryButton = props => {
   const {disabled, title, onPress} = props;
@@ -27,7 +28,7 @@ const styles = StyleSheet.create({
   containerStyle: {margin: 20, height: 50},
   button: {
     height: 59,
-    backgroundColor: 'white',
+    backgroundColor: colors.primaryColor,
     borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',

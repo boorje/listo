@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 import Swipeout from '../components/swipeout';
 import textStyles from '../styles/textStyles';
 import {KeyboardAwareFlatList} from 'react-native-keyboard-aware-scroll-view';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import * as colors from '../styles/colors';
 
 class GroceryListItem extends React.Component {
   state = {
@@ -80,7 +80,7 @@ export default class GroceryListsContainer extends React.Component {
         refreshControl={
           <RefreshControl
             refreshing={this.state.refreshing}
-            tintColor={'#06BA63'}
+            tintColor={colors.primaryColor}
             onRefresh={() => this.props.onRefresh()}
           />
         }
@@ -92,7 +92,7 @@ export default class GroceryListsContainer extends React.Component {
 const GroceryListItemStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: colors.secondaryColor,
     width: '97%',
     marginLeft: '3%',
     marginBottom: '3%',
@@ -100,8 +100,8 @@ const GroceryListItemStyles = StyleSheet.create({
     borderTopLeftRadius: 15,
     borderBottomLeftRadius: 15,
     shadowColor: 'black',
-    shadowOffset: {width: 0, height: 0},
-    shadowRadius: 2,
+    shadowOffset: {width: 0, height: 0.5},
+    shadowRadius: 1,
     shadowOpacity: 0.5,
   },
   container2: {

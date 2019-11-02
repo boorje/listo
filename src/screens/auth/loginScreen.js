@@ -1,18 +1,17 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import {StyleSheet, Text, View, Dimensions, Animated} from 'react-native';
+import {StyleSheet, ScrollView, View, Dimensions, Animated} from 'react-native';
 import {Auth} from 'aws-amplify';
 
 // -- Components --
 import LoginForm from '../../components/forms/loginForm';
-import PrimaryButton from '../../components/buttons/primaryButton';
 import Message from '../../components/message';
 import * as colors from '../../styles/colors';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 // -- Helpers --
 import validateValues from '../../helpers/validateFormValues';
 import {addUserToDB} from '../../helpers/addUserToDB';
-import {TouchableOpacity} from 'react-native-gesture-handler';
 
 const {height, width} = Dimensions.get('window');
 const {Value} = Animated;
@@ -97,15 +96,19 @@ class LoginScreen extends React.Component {
       <View style={styles.container}>
         {signinError.length > 0 && <Message message={signinError} />}
 
-        <LoginForm
-          focus={this.state.textInputFocus}
-          handleSubmit={this.handleLogin}
-          loading={loading}
-          forgotPassword={() =>
-            this.props.navigation.navigate('ForgotPassword')
-          }
-          register={() => this.props.navigation.navigate('Signup')}
-        />
+        <KeyboardAwareScrollView
+          scrollEnabled={false}
+          contentContainerStyle={{flex: 1, justifyContent: 'center'}}>
+          <LoginForm
+            focus={this.state.textInputFocus}
+            handleSubmit={this.handleLogin}
+            loading={loading}
+            forgotPassword={() =>
+              this.props.navigation.navigate('ForgotPassword')
+            }
+            register={() => this.props.navigation.navigate('Signup')}
+          />
+        </KeyboardAwareScrollView>
       </View>
     );
   }

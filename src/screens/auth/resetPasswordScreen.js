@@ -7,9 +7,7 @@ import textStyles from '../../styles/textStyles';
 import ResetPasswordForm from '../../components/forms/resetPasswordForm';
 import Message from '../../components/message';
 import * as colors from '../../styles/colors';
-
-const BACKGROUND_URL =
-  'https://images.unsplash.com/photo-1516594798947-e65505dbb29d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 class ResetPasswordScreen extends React.Component {
   state = {
@@ -77,10 +75,14 @@ class ResetPasswordScreen extends React.Component {
         {resetPasswordError.length > 0 && (
           <Message message={resetPasswordError} />
         )}
-        <ResetPasswordForm
-          handleSubmit={this.resetPassword}
-          loading={loading}
-        />
+        <KeyboardAwareScrollView
+          scrollEnabled={false}
+          contentContainerStyle={{flex: 1, justifyContent: 'center'}}>
+          <ResetPasswordForm
+            handleSubmit={this.resetPassword}
+            loading={loading}
+          />
+        </KeyboardAwareScrollView>
       </View>
     );
   }
