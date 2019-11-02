@@ -17,13 +17,19 @@ const PrimaryButton = props => {
       disabled={disabled ? disabled : false}
       style={[
         styles.button,
-        {backgroundColor: disabled ? '#aaa' : colors.submitColor},
+        {
+          backgroundColor: disabled ? '#aaa' : colors.submitColor,
+        },
       ]}
-      activeOpacity={0.8}>
+      //activeOpacity={0.8}
+    >
       {loading ? (
         <ActivityIndicator size="small" color="#fff" />
       ) : (
-        <Text style={textStyles.button}>{title}</Text>
+        <Text
+          style={[textStyles.button, {color: disabled ? 'white' : 'black'}]}>
+          {title}
+        </Text>
       )}
     </TouchableOpacity>
   );
@@ -45,11 +51,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 10,
-    marginBottom: 10,
-    shadowColor: 'black',
-    shadowOffset: {width: 0, height: 0},
-    shadowRadius: 2,
-    shadowOpacity: 0.4,
   },
   text: {
     color: '#fff',

@@ -47,26 +47,18 @@ const textStyles = StyleSheet.create({
   button: {
     fontSize: 20,
     fontFamily: 'Avenir Next',
-    color: 'white',
+    color: 'black',
   },
   loginHeadline: {
-    fontSize: 40,
+    fontSize: 20,
+    alignSelf: 'center',
     fontFamily: 'Avenir Next',
     color: 'white',
     fontWeight: 'bold',
-    textShadowColor: 'rgba(0, 0, 0, 0.75)',
-    textShadowOffset: {width: -1, height: 1},
-    textShadowRadius: 10,
   },
   smallText: {
     fontSize: 15,
     fontFamily: 'Avenir Next',
-    fontWeight: 'bold',
-    alignSelf: 'center',
-    padding: 10,
-    textShadowColor: 'rgba(0, 0, 0, 0.75)',
-    textShadowOffset: {width: 1, height: 0},
-    textShadowRadius: 5,
   },
 });
 

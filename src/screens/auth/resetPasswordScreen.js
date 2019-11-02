@@ -4,8 +4,9 @@ import {Auth} from 'aws-amplify';
 import textStyles from '../../styles/textStyles';
 
 // -- Components --
-import CodeForm from '../../components/forms/resetPasswordForm';
+import ResetPasswordForm from '../../components/forms/resetPasswordForm';
 import Message from '../../components/message';
+import * as colors from '../../styles/colors';
 
 const BACKGROUND_URL =
   'https://images.unsplash.com/photo-1516594798947-e65505dbb29d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80';
@@ -73,23 +74,13 @@ class ResetPasswordScreen extends React.Component {
     const {loading, resetPasswordError} = this.state;
     return (
       <View style={styles.container}>
-        <Image
-          style={styles.background}
-          source={{
-            uri: BACKGROUND_URL,
-          }}
+        {resetPasswordError.length > 0 && (
+          <Message message={resetPasswordError} />
+        )}
+        <ResetPasswordForm
+          handleSubmit={this.resetPassword}
+          loading={loading}
         />
-        <View style={styles.form}>
-          <Text style={textStyles.loginHeadline}>Fyll i informationen</Text>
-          {resetPasswordError.length > 0 && (
-            <Message message={resetPasswordError} />
-          )}
-          <CodeForm
-            handleSubmit={this.resetPassword}
-            loading={loading}
-            submitTitle="CREATE PASSWORD"
-          />
-        </View>
       </View>
     );
   }
@@ -98,17 +89,9 @@ class ResetPasswordScreen extends React.Component {
 export default ResetPasswordScreen;
 
 const styles = StyleSheet.create({
-  container: {flex: 1, justifyContent: 'center'},
-  background: {flex: 1, opacity: 0.67},
-  form: {
-    width: '70%',
-    position: 'absolute',
-    alignSelf: 'center',
-  },
-  textInfo: {
-    textAlign: 'center',
-  },
-  email: {
-    fontWeight: 'bold',
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: colors.primaryColor,
   },
 });

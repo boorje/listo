@@ -4,6 +4,7 @@ import {
   SafeAreaView,
   StyleSheet,
   Text,
+  LayoutAnimation,
   View,
 } from 'react-native';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
@@ -13,6 +14,7 @@ import AddGroceryListModal from '../components/modals/AddGroceryListModal';
 import Message from '../components/message';
 import HomeScreenBackground from '../components/homeScreenBackground';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import animations from '../styles/animations';
 // api
 import {
   createGroceryList,
@@ -122,6 +124,7 @@ export default class HomeScreen extends React.Component {
             const groceryListsCopy = this.state.groceryLists.filter(
               groceryList => groceryList.list.id !== list.id,
             );
+            LayoutAnimation.configureNext(animations.default);
             this.setState({groceryLists: groceryListsCopy});
           }
         },

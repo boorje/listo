@@ -1,16 +1,16 @@
 import React from 'react';
-import {Text, TextInput, View} from 'react-native';
+import {Text, TextInput, StyleSheet, View} from 'react-native';
 import PropTypes from 'prop-types';
 import {Formik} from 'formik';
 import * as yup from 'yup';
-
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import SubmitButton from '../buttons/submitButton';
 
 import formStyles from '../../styles/formStyles';
 import textStyles from '../../styles/textStyles';
 
 const LoginForm = props => (
-  <View>
+  <View style={styles.container}>
     <Formik
       initialValues={{email: '', password: ''}}
       initialStatus={{hidePassword: true}}
@@ -37,60 +37,93 @@ const LoginForm = props => (
         handleSubmit,
       }) => (
         <React.Fragment>
-          <TextInput
-            value={values.email}
-            onChangeText={handleChange('email')}
-            onBlur={() => setFieldTouched('email')}
-            placeholder="E-mail"
-            placeholderTextColor="black"
-            selectionColor="#37AE15"
-            autoCapitalize="none"
-            autoFocus={true}
-            style={formStyles.formTextInput}
-          />
-
-          {touched.email && errors.email && (
-            <Text style={formStyles.inputError}>{errors.email}</Text>
-          )}
-          <TextInput
-            value={values.password}
-            onChangeText={handleChange('password')}
-            placeholder="Password"
-            placeholderTextColor="black"
-            selectionColor="#37AE15"
-            onBlur={() => setFieldTouched('password')}
-            secureTextEntry={status.hidePassword}
-            style={formStyles.formTextInput}
-          />
-          {touched.password && errors.password && (
-            <Text style={formStyles.inputError}>{errors.password}</Text>
-          )}
-          <View style={formStyles.forgotPassword}>
+          <View style={styles.loginForm}>
+            <View style={styles.textBox}>
+              <Icon
+                size={20}
+                name={'mail'}
+                color={'white'}
+                style={styles.icon}
+              />
+              <TextInput
+                value={values.email}
+                onChangeText={handleChange('email')}
+                onBlur={() => setFieldTouched('email')}
+                placeholder="E-mail"
+                placeholderTextColor="white"
+                autoCapitalize="none"
+                autoFocus={true}
+                style={styles.textInput}
+              />
+            </View>
+            <View style={styles.inputErrorView}>
+              <Text
+                style={[
+                  formStyles.inputError,
+                  {opacity: touched.email && errors.email ? 1 : 0},
+                ]}>
+                {errors.email}
+              </Text>
+            </View>
+            <View style={styles.textBox}>
+              <Icon
+                size={20}
+                name={'lock'}
+                color={'white'}
+                style={styles.icon}
+              />
+              <TextInput
+                value={values.password}
+                onChangeText={handleChange('password')}
+                placeholder="Password"
+                placeholderTextColor="white"
+                onBlur={() => setFieldTouched('password')}
+                secureTextEntry={status.hidePassword}
+                style={styles.textInput}
+              />
+            </View>
+            <View style={styles.inputErrorView}>
+              <Text
+                style={[
+                  formStyles.inputError,
+                  {opacity: touched.password && errors.password ? 1 : 0},
+                ]}>
+                {errors.password}
+              </Text>
+            </View>
+          </View>
+          <View style={styles.forgotPassword}>
             <Text
-              onPress={() => {
-                const prevState = status.hidePassword;
-                if (prevState) {
-                  setStatus({hidePassword: false});
-                } else {
-                  setStatus({hidePassword: true});
-                }
-              }}
-              style={[
-                {
-                  color: status.hidePassword ? '#fff' : '#aaa',
-                },
-                textStyles.smallText,
-              ]}>
-              Visa lösenord
+              onPress={() => props.forgotPassword()}
+              style={[textStyles.smallText, {color: 'white'}]}>
+              Forgot password?
             </Text>
           </View>
-          <SubmitButton
-            title="Logga in"
-            disabled={!isValid}
-            onPress={handleSubmit}
-            type="submit"
-            loading={props.loading}
-          />
+
+          <View style={styles.button}>
+            <SubmitButton
+              title="Sign in"
+              disabled={!isValid}
+              onPress={handleSubmit}
+              type="submit"
+              loading={props.loading}
+            />
+          </View>
+          <View style={{flexDirection: 'row', marginTop: '2%'}}>
+            <Text
+              onPress={() => props.register()}
+              style={[textStyles.smallText, {color: 'white'}]}>
+              New to Listo?
+            </Text>
+            <Text
+              onPress={() => props.register()}
+              style={[
+                textStyles.smallText,
+                {color: 'white', marginLeft: '1%', fontWeight: 'bold'},
+              ]}>
+              Create an account
+            </Text>
+          </View>
         </React.Fragment>
       )}
     </Formik>
@@ -99,6 +132,44 @@ const LoginForm = props => (
 
 export default LoginForm;
 
+const styles = StyleSheet.create({
+  container: {
+    alignItems: 'center',
+  },
+  loginForm: {width: '100%', alignItems: 'center'},
+  textBox: {
+    width: '80%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 30,
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    borderRadius: 10,
+  },
+  textInput: {
+    flex: 1,
+    fontFamily: 'Avenir Next',
+    color: 'white',
+    padding: 15,
+    paddingLeft: '12%',
+  },
+  icon: {
+    position: 'absolute',
+    left: '2%',
+  },
+  inputErrorView: {marginTop: '2%', paddingLeft: '10%'},
+  inputError: {
+    fontSize: 11,
+    color: 'red',
+    fontFamily: 'Avenir Next',
+  },
+  forgotPassword: {
+    marginTop: '5%',
+  },
+  button: {
+    width: '70%',
+    marginTop: '5%',
+  },
+});
 LoginForm.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,

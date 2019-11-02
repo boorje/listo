@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
   handleContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    height: '3%',
+    height: '5%',
   },
   dragHandle: {
     height: 4,
