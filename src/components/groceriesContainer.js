@@ -26,7 +26,6 @@ class GroceriesContainer extends React.Component {
   constructor(props) {
     super(props);
     this.itemX = new Value(1);
-    this.itemHeight = new Value(45);
   }
   state = {
     groceries: this.props.groceries,
@@ -87,7 +86,6 @@ class GroceriesContainer extends React.Component {
             styles.container2,
             {
               opacity: this.state.removeId === grocery.id ? this.itemX : 1,
-              height: this.state.removeId === grocery.id ? this.itemHeight : 45,
             },
           ]}>
           <View style={{flex: 1, paddingLeft: '5%'}}>

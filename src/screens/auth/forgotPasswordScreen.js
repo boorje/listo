@@ -2,6 +2,7 @@ import React from 'react';
 import {StyleSheet, Text, View, Image} from 'react-native';
 import {Auth} from 'aws-amplify';
 import textStyles from '../../styles/textStyles';
+import * as colors from '../../styles/colors';
 
 // -- Components --
 import ForgotPasswordForm from '../../components/forms/forgotPasswordForm';
@@ -56,20 +57,12 @@ class VerifyScreen extends React.Component {
     const {loading, sendEmailError} = this.state;
     return (
       <View style={styles.container}>
-        <Image
-          style={styles.background}
-          source={{
-            uri: BACKGROUND_URL,
-          }}
+        <Text style={textStyles.loginHeadline}>Enter your e-mail</Text>
+        {sendEmailError.length > 0 && <Message message={sendEmailError} />}
+        <ForgotPasswordForm
+          handleSubmit={this.sendResetEmail}
+          loading={loading}
         />
-        <View style={styles.form}>
-          <Text style={textStyles.loginHeadline}>Fyll i e-mail</Text>
-          {sendEmailError.length > 0 && <Message message={sendEmailError} />}
-          <ForgotPasswordForm
-            handleSubmit={this.sendResetEmail}
-            loading={loading}
-          />
-        </View>
       </View>
     );
   }
@@ -78,17 +71,9 @@ class VerifyScreen extends React.Component {
 export default VerifyScreen;
 
 const styles = StyleSheet.create({
-  container: {flex: 1, justifyContent: 'center'},
-  background: {flex: 1, opacity: 0.67},
-  form: {
-    width: '70%',
-    position: 'absolute',
-    alignSelf: 'center',
-  },
-  textInfo: {
-    textAlign: 'center',
-  },
-  email: {
-    fontWeight: 'bold',
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: colors.primaryColor,
   },
 });

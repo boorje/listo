@@ -2,14 +2,12 @@
 import React from 'react';
 import {StyleSheet, Text, View, Dimensions, Animated} from 'react-native';
 import {Auth} from 'aws-amplify';
-import textStyles from '../../styles/textStyles';
-import Svg, {Image, ClipPath, Circle} from 'react-native-svg';
 
 // -- Components --
 import LoginForm from '../../components/forms/loginForm';
 import PrimaryButton from '../../components/buttons/primaryButton';
 import Message from '../../components/message';
-import Icon from 'react-native-vector-icons/SimpleLineIcons';
+import * as colors from '../../styles/colors';
 
 // -- Helpers --
 import validateValues from '../../helpers/validateFormValues';
@@ -99,85 +97,15 @@ class LoginScreen extends React.Component {
       <View style={styles.container}>
         {signinError.length > 0 && <Message message={signinError} />}
 
-        <Animated.View
-          style={{
-            ...StyleSheet.absoluteFill,
-            transform: [{translateY: this.backgroundY}],
-          }}>
-          <Svg height={height * 1.1} width={width}>
-            <ClipPath id="clip">
-              <Circle r={height * 1.1} cx={width / 2} />
-            </ClipPath>
-            <Image
-              width={width}
-              height={height * 1.1}
-              clipPath="url(#clip)"
-              preserveAspectRatio="xMidYMid slice"
-              href={require('../../assets/groceries.jpeg')}
-            />
-          </Svg>
-        </Animated.View>
-
-        <Animated.View
-          style={[
-            styles.buttons,
-            {
-              opacity: this.backgroundY.interpolate({
-                inputRange: [-width / 2, 0],
-                outputRange: [0, 1],
-              }),
-            },
-          ]}>
-          <PrimaryButton title="Logga in" onPress={() => this.openLogin()} />
-          <PrimaryButton
-            title="Registrera dig"
-            onPress={() => this.props.navigation.navigate('Signup')}
-          />
-        </Animated.View>
-
-        <Animated.View
-          style={{
-            zIndex: this.backgroundY.interpolate({
-              inputRange: [-width / 2, 0],
-              outputRange: [1, -1],
-            }),
-            opacity: this.loginFormOpacity,
-            height: height / 1.4,
-            ...StyleSheet.absoluteFill,
-            top: null,
-            alignItems: 'center',
-          }}>
-          <Animated.View style={styles.closeButton}>
-            <TouchableOpacity
-              style={styles.closeButtonTouch}
-              onPress={() => this.closeLogin()}>
-              <Animated.Text
-                style={{
-                  fontSize: 15,
-                  transform: [
-                    {
-                      rotate: this.loginFormOpacity.interpolate({
-                        inputRange: [0, 1],
-                        outputRange: ['0deg', '360deg'],
-                      }),
-                    },
-                  ],
-                }}>
-                X
-              </Animated.Text>
-            </TouchableOpacity>
-          </Animated.View>
-
-          {this.state.formOpen && (
-            <View style={{width: '70%'}}>
-              <LoginForm
-                focus={this.state.textInputFocus}
-                handleSubmit={this.handleLogin}
-                loading={loading}
-              />
-            </View>
-          )}
-        </Animated.View>
+        <LoginForm
+          focus={this.state.textInputFocus}
+          handleSubmit={this.handleLogin}
+          loading={loading}
+          forgotPassword={() =>
+            this.props.navigation.navigate('ForgotPassword')
+          }
+          register={() => this.props.navigation.navigate('Signup')}
+        />
       </View>
     );
   }
@@ -188,45 +116,7 @@ export default LoginScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-  },
-  closeButton: {
-    borderRadius: 50,
-    height: 40,
-    width: 40,
     justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'white',
-    position: 'absolute',
-    top: -40,
-    shadowColor: 'black',
-    shadowOffset: {width: 0, height: 0},
-    shadowRadius: 2,
-    shadowOpacity: 0.4,
+    backgroundColor: colors.primaryColor,
   },
-  closeButtonTouch: {
-    borderRadius: 50,
-    height: 40,
-    width: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  buttons: {
-    height: height / 4,
-    width: '70%',
-    justifyContent: 'space-evenly',
-    paddingVertical: 10,
-    marginBottom: '10%',
-  },
-  divider: {marginBottom: 20, borderWidth: 1, borderColor: '#ddd'},
 });
-
-{
-  /* <Text
-            onPress={() => this.props.navigation.navigate('ForgotPassword')}
-            style={[textStyles.smallText, {color: 'white'}]}>
-            Glömt lösenord?
-          </Text>
-          <View style={styles.divider} /> */
-}

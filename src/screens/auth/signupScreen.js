@@ -2,6 +2,7 @@ import React from 'react';
 import {StyleSheet, View, Image, Text} from 'react-native';
 import {Auth} from 'aws-amplify';
 import textStyles from '../../styles/textStyles';
+import * as colors from '../../styles/colors';
 
 // -- Components --
 import SignupForm from '../../components/forms/signupForm';
@@ -55,19 +56,12 @@ class SignupScreen extends React.Component {
     const {loading, signupError} = this.state;
     return (
       <View style={styles.container}>
-        <Image
-          style={styles.background}
-          source={{
-            uri: BACKGROUND_URL,
-          }}
-        />
         <View style={styles.form}>
-          <Text style={textStyles.loginHeadline}>Fyll i formuläret</Text>
           {signupError.length > 0 && <Message message={signupError} />}
-          <SignupForm handleSubmit={this.handleSubmit} loading={loading} />
-          <PrimaryButton
-            title="Avbryt"
-            onPress={() => this.props.navigation.navigate('Login')}
+          <SignupForm
+            handleSubmit={this.handleSubmit}
+            loading={loading}
+            goBack={() => this.props.navigation.navigate('Login')}
           />
         </View>
       </View>
@@ -78,7 +72,10 @@ class SignupScreen extends React.Component {
 export default SignupScreen;
 
 const styles = StyleSheet.create({
-  container: {flex: 1, justifyContent: 'center'},
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: colors.primaryColor,
+  },
   background: {flex: 1, opacity: 0.67},
-  form: {width: '70%', position: 'absolute', alignSelf: 'center'},
 });

@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     paddingLeft: '15%',
   },
-  textInput: {color: 'white', fontWeight: 'bold'},
+  textInput: {color: 'white'},
 });
 
 AddUser.propTypes = {};

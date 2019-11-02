@@ -9,8 +9,7 @@ const PrimaryButton = props => {
     <TouchableOpacity
       onPress={() => onPress()}
       disabled={disabled ? disabled : false}
-      style={styles.button}
-      activeOpacity={0.8}>
+      style={styles.button}>
       <Text style={textStyles.button}>{title}</Text>
     </TouchableOpacity>
   );
@@ -28,13 +27,9 @@ const styles = StyleSheet.create({
   containerStyle: {margin: 20, height: 50},
   button: {
     height: 59,
-    backgroundColor: '#06BA63',
+    backgroundColor: 'white',
     borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: 'black',
-    shadowOffset: {width: 0, height: 0},
-    shadowRadius: 2,
-    shadowOpacity: 0.4,
   },
 });
