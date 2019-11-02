@@ -167,7 +167,7 @@ export default class GroceryForm extends React.Component {
                 }}
               />
               <IoniconsIcon
-                style={{paddingLeft: '7%'}}
+                style={{paddingLeft: '8%'}}
                 size={30}
                 name={'ios-arrow-forward'}
                 onPress={() => {
@@ -203,8 +203,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#F1F1F1',
+    backgroundColor: 'white',
     paddingHorizontal: '5%',
+    shadowColor: 'black',
+    shadowOffset: {width: 0, height: 0},
+    shadowOpacity: 0.2,
   },
   navigators: {
     flexDirection: 'row',

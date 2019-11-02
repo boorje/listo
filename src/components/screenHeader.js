@@ -50,11 +50,11 @@ const styles = StyleSheet.create({
   container: {
     top: 0,
     backgroundColor: colors.primaryColor,
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
-    height: '15%',
-    justifyContent: 'flex-end',
-    marginBottom: '2%',
+    height: '20%',
+    justifyContent: 'center',
+    shadowColor: 'black',
+    shadowOffset: {width: 0, height: 0},
+    shadowOpacity: 0.5,
   },
   container2: {
     flexDirection: 'row',
@@ -76,7 +76,6 @@ const styles = StyleSheet.create({
 });
 
 ScreenHeader.propTypes = {
-  background: PropTypes.string.isRequired,
   leftIconPress: PropTypes.func.isRequired,
   leftIcon: PropTypes.string.isRequired,
 };
