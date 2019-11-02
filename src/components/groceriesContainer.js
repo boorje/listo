@@ -156,10 +156,12 @@ const styles = StyleSheet.create({
     height: '110%',
     backgroundColor: 'white',
     paddingTop: '3%',
-
     width: '95%',
     alignSelf: 'flex-end',
     borderTopLeftRadius: 30,
+    shadowColor: 'black',
+    shadowOffset: {width: 0, height: 0},
+    shadowOpacity: 0.2,
   },
   container2: {
     flex: 1,
