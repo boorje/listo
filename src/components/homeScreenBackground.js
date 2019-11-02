@@ -1,52 +1,57 @@
 import React from 'react';
 import {StyleSheet, Text, View, Image, ImageBackground} from 'react-native';
-import IoniconsIcon from 'react-native-vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import textStyles from '../styles/textStyles';
+import * as colors from '../styles/colors';
 
-const BACKGROUND_URL =
-  'https://images.unsplash.com/photo-1516594798947-e65505dbb29d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80';
-
-const HomeScreenBackground = props => (
-  <View style={styles.container}>
-    <ImageBackground
-      style={{opacity: 0.6, top: 0, width: '100%', height: '100%'}}
-      source={require('../assets/winestand.jpg')}>
-      <View style={styles.headline}>
-        <Text style={textStyles.myLists}>Mina</Text>
-        <Text style={textStyles.myLists}>Listor</Text>
-      </View>
-      <View style={styles.iconView}>
-        <IoniconsIcon
-          style={styles.icon}
-          size={40}
+const HomeScreenBackground = props => {
+  return (
+    <View style={styles.container}>
+      <View style={styles.top}>
+        <Text style={[textStyles.smallText, {color: 'white', fontSize: 20}]}>
+          Hello!
+        </Text>
+        <Icon
+          size={30}
+          name={'settings'}
           color={'white'}
-          name="ios-cog"
+          style={styles.icon}
           onPress={() => props.openSettings()}
         />
       </View>
-    </ImageBackground>
-  </View>
-);
+      <View style={styles.myLists}>
+        <Text style={textStyles.myLists}>My lists</Text>
+      </View>
+    </View>
+  );
+};
 
 export default HomeScreenBackground;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 3,
+    flex: 2,
+    alignItems: 'center',
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+    backgroundColor: colors.primaryColor,
     shadowColor: 'black',
     shadowOffset: {width: 0, height: 1},
     shadowRadius: 2,
-    shadowOpacity: 0.2,
+    shadowOpacity: 0.5,
   },
-  headline: {
+  top: {
+    flex: 1,
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     position: 'absolute',
-    bottom: '10%',
-    marginLeft: '8%',
+    paddingHorizontal: '5%',
+    top: '25%',
   },
-  iconView: {position: 'absolute', bottom: '10%', right: '8%'},
-  icon: {
-    textShadowColor: 'rgba(0, 0, 0, 0.75)',
-    textShadowOffset: {width: 3, height: 1},
-    textShadowRadius: 10,
+  myLists: {
+    position: 'absolute',
+    bottom: '15%',
   },
 });

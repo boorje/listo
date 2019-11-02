@@ -54,7 +54,7 @@ export default class GroceryForm extends React.Component {
           onFocus={() => {
             this.setState({isFocused: '1'});
           }}
-          placeholder={'Lägg till vara...'}
+          placeholder={'Add grocery...'}
           placeholderTextColor={this.props.placeholderColor || 'gray'}
           borderColor={'black'}
           returnKeyType="done"
@@ -92,7 +92,7 @@ export default class GroceryForm extends React.Component {
             onFocus={() => {
               this.setState({isFocused: '2'});
             }}
-            placeholder="Antal..."
+            placeholder="Quantity..."
             placeholderTextColor={this.props.placeholderColor || 'gray'}
             borderColor="black"
             keyboardType="numeric"
@@ -127,7 +127,7 @@ export default class GroceryForm extends React.Component {
               onFocus={() => {
                 this.setState({isFocused: '3'});
               }}
-              placeholder={'Enhet...'}
+              placeholder={'Unit...'}
               placeholderTextColor={this.props.placeholderColor || 'gray'}
               borderColor={'black'}
               returnKeyType="done"

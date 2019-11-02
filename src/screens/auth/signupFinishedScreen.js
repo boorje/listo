@@ -2,6 +2,7 @@ import React from 'react';
 import {StyleSheet, Text, View, Image, Animated} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import textStyles from '../../styles/textStyles';
+import * as colors from '../../styles/colors';
 
 // -- Components --
 import PrimaryButton from '../../components/buttons/primaryButton';
@@ -26,30 +27,17 @@ class SignedupFinishedScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Image
-          style={styles.background}
-          source={{
-            uri: BACKGROUND_URL,
-          }}
-        />
         <View style={styles.successBox}>
           <Text style={textStyles.loginHeadline}>Registreringen lyckades</Text>
 
-          <Icon
-            style={{
-              alignSelf: 'center',
-            }}
-            size={140}
-            name="check-circle"
-            color="#37AE15"
-          />
-
-          <PrimaryButton
-            title="Kom igång"
-            onPress={() =>
-              this.props.navigation.navigate('Home', {user: this.state.user})
-            }
-          />
+          <View style={styles.button}>
+            <PrimaryButton
+              title="Let's get started!"
+              onPress={() =>
+                this.props.navigation.navigate('Home', {user: this.state.user})
+              }
+            />
+          </View>
         </View>
       </View>
     );
@@ -59,14 +47,14 @@ class SignedupFinishedScreen extends React.Component {
 export default SignedupFinishedScreen;
 
 const styles = StyleSheet.create({
-  container: {flex: 1, justifyContent: 'center'},
-  background: {flex: 1, opacity: 0.67},
-
-  successBox: {
-    width: '70%',
-    height: '40%',
-    position: 'absolute',
-    justifyContent: 'space-between',
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: colors.primaryColor,
+  },
+  button: {
     alignSelf: 'center',
+    paddingTop: '10%',
+    width: '70%',
   },
 });

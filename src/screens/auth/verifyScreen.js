@@ -5,9 +5,12 @@ import {Auth} from 'aws-amplify';
 // -- Components --
 import CodeForm from '../../components/forms/codeForm';
 import Message from '../../components/message';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 // -- API --
 import {createUser} from '../../api/authAPI';
+import textStyles from '../../styles/textStyles';
+import * as colors from '../../styles/colors';
 
 class VerifyScreen extends React.Component {
   state = {
@@ -79,11 +82,13 @@ class VerifyScreen extends React.Component {
         {verificationError.length > 0 && (
           <Message message={verificationError} />
         )}
+
         <CodeForm
           handleSubmit={this.confirmSignup}
           loading={loading}
           submitTitle="VERIFY CODE"
         />
+
         {user.username && (
           <Text style={styles.textInfo}>
             A verification code has been sent to{' '}
@@ -98,7 +103,10 @@ class VerifyScreen extends React.Component {
 export default VerifyScreen;
 
 const styles = StyleSheet.create({
-  container: {margin: 30},
+  container: {
+    flex: 1,
+    backgroundColor: colors.primaryColor,
+  },
   textInfo: {
     textAlign: 'center',
   },
