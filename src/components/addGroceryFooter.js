@@ -134,12 +134,12 @@ export default class AddGroceryFooter extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    bottom: 0,
     backgroundColor: 'white',
-    justifyContent: 'center',
     shadowColor: 'black',
     shadowOffset: {width: 0, height: 0},
     shadowRadius: 2,
-    shadowOpacity: 1,
+    shadowOpacity: 0.5,
   },
   sideIconsView: {
     flex: 1,
@@ -148,22 +148,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: '10%',
   },
-  sideIconStyle: {
-    shadowColor: 'black',
-    shadowOffset: {width: 0, height: 0},
-    shadowRadius: 2,
-    shadowOpacity: 1,
-  },
+
   addIcon: {
     position: 'absolute',
     borderRadius: 50,
     justifyContent: 'center',
-    top: '-50%',
+    top: '-40%',
     alignSelf: 'center',
     backgroundColor: colors.primaryColor,
     shadowColor: 'black',
     shadowOffset: {width: 0, height: 0},
-    shadowOpacity: 1,
+    shadowOpacity: 0.5,
   },
   form: {
     position: 'absolute',

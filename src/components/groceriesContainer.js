@@ -30,7 +30,6 @@ class GroceriesContainer extends React.Component {
   }
   state = {
     groceries: this.props.groceries,
-    addItemOpen: false,
     refreshing: false,
     removeId: '',
   };
@@ -60,16 +59,6 @@ class GroceriesContainer extends React.Component {
     });
   };
 
-  showAddGrocery = () => {
-    if (this.state.addItemOpen === false) {
-      LayoutAnimation.configureNext(animations.default);
-      this.setState({addItemOpen: true});
-    } else {
-      LayoutAnimation.configureNext(animations.default);
-      this.setState({addItemOpen: false});
-    }
-  };
-
   renderItem(grocery) {
     return (
       <TouchableHighlight
@@ -79,7 +68,9 @@ class GroceriesContainer extends React.Component {
         style={{flex: 1}}
         fontSize={50}
         onPress={() => {
-          this.props.removeGrocery(grocery.id);
+          if (!this.props.addItemOpen) {
+            this.props.removeGrocery(grocery.id);
+          }
         }}
         underlayColor={'transparent'}>
         <Animated.View
@@ -113,7 +104,7 @@ class GroceriesContainer extends React.Component {
               name={!grocery.details ? 'expand-more' : 'expand-less'}
               color={'black'}
               onPress={() => {
-                if (!this.state.addItemOpen) {
+                if (!this.props.addItemOpen) {
                   this.showGroceryForm(grocery);
                 }
               }}
@@ -131,15 +122,16 @@ class GroceriesContainer extends React.Component {
   render() {
     return (
       <View style={{flex: 1}}>
-        <View style={{flex: 8}}>
+        <View style={styles.groceries}>
           <KeyboardAwareFlatList
-            ref="flatList"
-            onContentSizeChange={() => this.refs.flatList.scrollToEnd()}
+            //ref="flatList" //! USE TO ADJUST LIST WHEN ADDING ITEMS. BEHAVIOR IS NOT OPTIMAL.
+            //onContentSizeChange={() => this.refs.flatList.scrollToEnd()}
+            contentContainerStyle={{marginBottom: 10}}
             scrollEnabled={true}
             refreshControl={
               <RefreshControl
                 refreshing={this.state.refreshing}
-                tintColor={'#06BA63'}
+                tintColor={colors.primaryColor}
                 onRefresh={() => this.props.onRefresh()}
               />
             }
@@ -150,13 +142,6 @@ class GroceriesContainer extends React.Component {
             keyboardShouldPersistTaps="always"
           />
         </View>
-        <View style={[styles.footer, {justifyContent: 'center', flex: 1}]}>
-          <AddGroceryFooter
-            addGrocery={this.props.addGrocery}
-            addItemOpen={this.state.addItemOpen}
-            showAddGrocery={this.showAddGrocery}
-          />
-        </View>
       </View>
     );
   }
@@ -165,19 +150,16 @@ class GroceriesContainer extends React.Component {
 export default GroceriesContainer;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingLeft: '10%',
-    paddingRight: '10%',
-  },
-  separator: {
-    height: 3,
-    width: '97%',
-    marginLeft: '3%',
+  groceries: {
+    position: 'absolute',
+    top: '-9%',
+    height: '110%',
+    backgroundColor: 'white',
+    paddingTop: '3%',
+
+    width: '95%',
+    alignSelf: 'flex-end',
+    borderTopLeftRadius: 30,
   },
   container2: {
     flex: 1,
@@ -190,13 +172,16 @@ const styles = StyleSheet.create({
     marginLeft: '3%',
     paddingRight: '3%',
     paddingBottom: '3%',
+    marginRight: -1,
+  },
+  separator: {
+    height: 3,
+    width: '97%',
+    marginLeft: '3%',
   },
   textInfo: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  footer: {
-    paddingBottom: 0,
   },
 });
 
