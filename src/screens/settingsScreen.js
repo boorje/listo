@@ -6,6 +6,8 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import textStyles from '../styles/textStyles';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 import PrimaryButton from '../components/buttons/primaryButton';
+import * as colors from '../styles/colors';
+
 const {height, width} = Dimensions.get('window');
 class SettingsScreen extends React.Component {
   state = {
@@ -54,12 +56,12 @@ class SettingsScreen extends React.Component {
           <Rect
             width={width}
             height={height * 1.1}
-            fill={'#06BA63'}
+            fill={colors.primaryColor}
             clipPath="url(#clip)"
           />
         </Svg>
         <View style={styles.profileIcon}>
-          <Icon size={120} name={'person'} color={'#06BA63'} />
+          <Icon size={120} name={'person'} color={colors.primaryColor} />
         </View>
 
         <View style={styles.logoutButton}>
@@ -74,7 +76,6 @@ export default SettingsScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-
     shadowColor: 'black',
     shadowOffset: {width: 0, height: 0.5},
     shadowRadius: 2,
