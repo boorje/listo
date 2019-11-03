@@ -5,6 +5,7 @@ import {Auth} from 'aws-amplify';
 // -- Components --
 import CodeForm from '../../components/forms/codeForm';
 import Message from '../../components/message';
+import Logo from '../../components/logo';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 // -- API --
@@ -91,7 +92,7 @@ class VerifyScreen extends React.Component {
             message={verificationError}
           />
         )}
-
+        <Logo />
         <CodeForm
           handleSubmit={this.confirmSignup}
           loading={loading}

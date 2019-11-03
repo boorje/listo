@@ -21,6 +21,7 @@ import {
 export default class ListScreen extends React.Component {
   state = {
     groceryList: {},
+    //groceries: [],
     groceries: [
       {id: 1, content: 'bärs', quantity: 3, unit: 'flak'},
       {id: 2, content: 'bärs', quantity: 3, unit: 'flak'},
