@@ -82,12 +82,14 @@ class GroceriesContainer extends React.Component {
           ]}>
           <View style={{flex: 1, paddingLeft: '5%'}}>
             {grocery.details ? (
-              <GroceryForm
-                closeGroceryForm={() => this.showGroceryForm(grocery)}
-                addGrocery={this.props.updateGrocery}
-                item={grocery}
-                shouldCloseOnSubmit={true}
-              />
+              <View>
+                <GroceryForm
+                  closeGroceryForm={() => this.showGroceryForm(grocery)}
+                  addGrocery={this.props.updateGrocery}
+                  item={grocery}
+                  shouldCloseOnSubmit={true}
+                />
+              </View>
             ) : (
               <View style={styles.textInfo}>
                 <Text style={textStyles.default}>{grocery.content}</Text>
