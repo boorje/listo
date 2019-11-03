@@ -22,12 +22,24 @@ export default class ListScreen extends React.Component {
   state = {
     groceryList: {},
     groceries: [],
+    // groceries: [ //! MOCK DATA
+    //   {id: 1, content: 'bärs', quantity: 3, unit: 'flak'},
+    //   {id: 2, content: 'bärs', quantity: 3, unit: 'flak'},
+    //   {id: 3, content: 'bärs', quantity: 3, unit: 'flak'},
+    //   {id: 4, content: 'bärs', quantity: 3, unit: 'flak'},
+    //   {id: 5, content: 'bärs', quantity: 3, unit: 'flak'},
+    //   {id: 6, content: 'bärs', quantity: 3, unit: 'flak'},
+    //   {id: 7, content: 'bärs', quantity: 3, unit: 'flak'},
+    //   {id: 8, content: 'bärs', quantity: 3, unit: 'flak'},
+    //   {id: 9, content: 'bärs', quantity: 3, unit: 'flak'},
+    // ],
     user: {},
     apiError: '',
     listSettingsOpen: false,
     historyOpen: false,
     previousGroceries: [],
     addItemOpen: false,
+    messageOpen: false,
   };
 
   componentDidMount = async () => {
@@ -46,6 +58,7 @@ export default class ListScreen extends React.Component {
           ? error
           : 'Could not fetch list items. Please try again. ',
       });
+      this.setState({messageOpen: true});
     }
   };
 
@@ -85,6 +98,7 @@ export default class ListScreen extends React.Component {
       });
     } catch (error) {
       this.setState({apiError: error});
+      this.setState({messageOpen: true});
     }
   };
 
@@ -101,6 +115,7 @@ export default class ListScreen extends React.Component {
       this.setState({groceries: stateCopy});
     } catch (error) {
       this.setState({apiError: error});
+      this.setState({messageOpen: true});
     }
   };
 
@@ -117,6 +132,7 @@ export default class ListScreen extends React.Component {
       this.setState({groceries: stateCopy});
     } catch (error) {
       this.setState({apiError: error});
+      this.setState({messageOpen: true});
     }
   };
   showAddGrocery = () => {
@@ -137,6 +153,11 @@ export default class ListScreen extends React.Component {
   openGroceryHistory = () => {
     this.setState({historyOpen: this.state.historyOpen ? false : true});
   };
+  toggleMessage = () => {
+    this.setState(prevstate => ({
+      messageOpen: prevstate.messageOpen ? false : true,
+    }));
+  };
 
   render() {
     const {
@@ -146,6 +167,7 @@ export default class ListScreen extends React.Component {
       historyOpen,
       listSettingsOpen,
       user,
+      messageOpen,
     } = this.state;
     return (
       <View style={styles.container}>
@@ -161,7 +183,12 @@ export default class ListScreen extends React.Component {
             closeModal={() => this.openListSettings()}
           />
         )}
-        {apiError.length > 0 && <Message message={apiError} />}
+        {apiError.length > 0 && messageOpen && (
+          <Message
+            messageOpen={() => this.toggleMessage()}
+            message={apiError}
+          />
+        )}
         <ScreenHeader
           leftIconPress={() => this.props.navigation.goBack()}
           rightIcon1Press={() => this.openGroceryHistory()}

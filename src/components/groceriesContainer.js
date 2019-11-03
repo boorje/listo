@@ -13,8 +13,8 @@ import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {KeyboardAwareFlatList} from 'react-native-keyboard-aware-scroll-view';
 // components
-import AddGroceryFooter from '../components/addGroceryFooter';
 import GroceryForm from './forms/groceryForm';
+import EmptyListInfo from './emptyListInfo';
 // styles
 import textStyles from '../styles/textStyles';
 import animations from '../styles/animations';
@@ -82,12 +82,14 @@ class GroceriesContainer extends React.Component {
           ]}>
           <View style={{flex: 1, paddingLeft: '5%'}}>
             {grocery.details ? (
-              <GroceryForm
-                closeGroceryForm={() => this.showGroceryForm(grocery)}
-                addGrocery={this.props.updateGrocery}
-                item={grocery}
-                shouldCloseOnSubmit={true}
-              />
+              <View>
+                <GroceryForm
+                  closeGroceryForm={() => this.showGroceryForm(grocery)}
+                  addGrocery={this.props.updateGrocery}
+                  item={grocery}
+                  shouldCloseOnSubmit={true}
+                />
+              </View>
             ) : (
               <View style={styles.textInfo}>
                 <Text style={textStyles.default}>{grocery.content}</Text>
@@ -123,6 +125,8 @@ class GroceriesContainer extends React.Component {
     return (
       <View style={{flex: 1}}>
         <View style={styles.groceries}>
+          {this.state.groceries.length === 0 && <EmptyListInfo />}
+
           <KeyboardAwareFlatList
             //ref="flatList" //! USE TO ADJUST LIST WHEN ADDING ITEMS. BEHAVIOR IS NOT OPTIMAL.
             //onContentSizeChange={() => this.refs.flatList.scrollToEnd()}
@@ -168,8 +172,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     backgroundColor: colors.secondaryColor,
-    borderTopLeftRadius: 15,
-    borderBottomLeftRadius: 15,
+    borderTopLeftRadius: 10,
+    borderBottomLeftRadius: 10,
     alignItems: 'center',
     marginLeft: '3%',
     paddingRight: '3%',

@@ -5,6 +5,7 @@ import {Auth} from 'aws-amplify';
 // -- Components --
 import CodeForm from '../../components/forms/codeForm';
 import Message from '../../components/message';
+import Logo from '../../components/logo';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 // -- API --
@@ -18,6 +19,7 @@ class VerifyScreen extends React.Component {
     user: this.props.navigation.getParam('user', null),
     loading: false,
     cognitoUser: {},
+    messageOpen: false,
   };
 
   _validateCode = code => {
@@ -74,15 +76,23 @@ class VerifyScreen extends React.Component {
       this.props.navigation.navigate('Login');
     }
   };
+  toggleMessage = () => {
+    this.setState(prevstate => ({
+      messageOpen: prevstate.messageOpen ? false : true,
+    }));
+  };
 
   render() {
-    const {loading, verificationError, user} = this.state;
+    const {loading, verificationError, user, messageOpen} = this.state;
     return (
       <View style={styles.container}>
-        {verificationError.length > 0 && (
-          <Message message={verificationError} />
+        {verificationError.length > 0 && messageOpen && (
+          <Message
+            messageOpen={() => this.toggleMessage()}
+            message={verificationError}
+          />
         )}
-
+        <Logo />
         <CodeForm
           handleSubmit={this.confirmSignup}
           loading={loading}

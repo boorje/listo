@@ -48,9 +48,10 @@ const SignupForm = props => (
               <TextInput
                 value={values.email}
                 onChangeText={handleChange('email')}
-                onBlur={() => setFieldTouched('email')}
+                onSubmitEditing={() => setFieldTouched('email')}
                 placeholder="E-mail"
                 placeholderTextColor="white"
+                returnKeyType="done"
                 autoCapitalize="none"
                 autoFocus={false}
                 style={styles.textInput}
@@ -77,7 +78,8 @@ const SignupForm = props => (
                 onChangeText={handleChange('password')}
                 placeholder="Password"
                 placeholderTextColor="white"
-                onBlur={() => setFieldTouched('password')}
+                returnKeyType="done"
+                onSubmitEditing={() => setFieldTouched('password')}
                 secureTextEntry={status.hidePassword}
                 style={styles.textInput}
               />
@@ -95,7 +97,7 @@ const SignupForm = props => (
 
           <View style={styles.button}>
             <SubmitButton
-              title="Sign in"
+              title="Create account"
               disabled={!isValid}
               onPress={handleSubmit}
               type="submit"

@@ -8,17 +8,16 @@ import * as colors from '../../styles/colors';
 import SignupForm from '../../components/forms/signupForm';
 import Message from '../../components/message';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import Logo from '../../components/logo';
 
 // -- Helpers --
 import validateValues from '../../helpers/validateFormValues';
-
-const BACKGROUND_URL =
-  'https://images.unsplash.com/photo-1516594798947-e65505dbb29d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80';
 
 class SignupScreen extends React.Component {
   state = {
     signupError: '',
     loading: false,
+    messageOpen: false,
   };
 
   handleSubmit = async values => {
@@ -49,17 +48,31 @@ class SignupScreen extends React.Component {
             signupError: 'Something went wrong. Please try again.',
           });
       }
+      this.setState({messageOpen: true});
     }
   };
-
+  toggleMessage = () => {
+    this.setState(prevstate => ({
+      messageOpen: prevstate.messageOpen ? false : true,
+    }));
+  };
   render() {
-    const {loading, signupError} = this.state;
+    const {loading, signupError, messageOpen} = this.state;
     return (
       <View style={styles.container}>
-        {signupError.length > 0 && <Message message={signupError} />}
+        {signupError.length > 0 && messageOpen && (
+          <Message
+            messageOpen={() => this.toggleMessage()}
+            message={signupError}
+          />
+        )}
+        <Logo />
         <KeyboardAwareScrollView
           scrollEnabled={false}
-          contentContainerStyle={{flex: 1, justifyContent: 'center'}}>
+          contentContainerStyle={{
+            flex: 1,
+            justifyContent: 'center',
+          }}>
           <SignupForm
             handleSubmit={this.handleSubmit}
             loading={loading}
