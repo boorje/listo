@@ -16,23 +16,11 @@ import * as queries from './graphql/queries';
  * @returns {Object} object of created grocery list
  * TODO: Add a resolver which adds the editor.
  */
-export const createGroceryList = async input => {
+export const createGroceryList = async title => {
   const {data} = await API.graphql(
-    graphqlOperation(mutations.createGroceryList, {input}),
+    graphqlOperation(mutations.createGroceryListAndEditor, title),
   );
-  // TODO: Add a pipeline resolver which adds this.
-  // What happens if the list is created but not added to the list editor?
-  const {id, owner} = data.createGroceryList;
-  const createEditorInput = {
-    editorListId: id,
-    editorUserId: owner,
-  };
-  await API.graphql(
-    graphqlOperation(mutations.createOwnerEditor, {
-      input: createEditorInput,
-    }),
-  );
-  return data.createGroceryList;
+  return data.createGroceryListAndEditor;
 };
 
 /**

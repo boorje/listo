@@ -82,9 +82,10 @@ export default class HomeScreen extends React.Component {
       res.isOwner = true;
       this.setState({groceryLists: [...this.state.groceryLists, {list: res}]});
     } catch (error) {
-      this.setState({
-        apiError: `Kunde inte skapa listan "${title}". Försök igen.`,
-      });
+      console.log(error);
+      // this.setState({
+      //   apiError: `Kunde inte skapa listan "${title}". Försök igen.`,
+      // });
     }
   };
 

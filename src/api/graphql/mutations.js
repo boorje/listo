@@ -15,13 +15,13 @@ export const createUser = `mutation createUser($input: CreateUserInput!) {
  * Grocery List
  */
 
-export const createGroceryList = `mutation createGroceryList($input: CreateGroceryListInput!) {
-  createGroceryList(input: $input) {
+export const createGroceryListAndEditor = `mutation createGroceryListAndEditor($title: String!) {
+  createGroceryListAndEditor(title: $title) {
     id
+    title
     owner
-    title 
   }
- }`;
+}`;
 
 export const deleteGroceryList = `mutation deleteGroceryList($input: DeleteGroceryListInput!) {
   deleteGroceryList(input: $input) {
