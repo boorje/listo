@@ -7,7 +7,7 @@ const {height, width} = Dimensions.get('window');
 
 const EmptyListInfo = props => (
   <View style={styles.container}>
-    <Text style={styles.emoji}>🥺</Text>
+    <Text style={styles.emoji}>{props.emoji}</Text>
     <Text style={styles.textStyle}>
       Oops! It seems like your list is empty.
     </Text>

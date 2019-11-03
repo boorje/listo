@@ -1,5 +1,5 @@
 import React from 'react';
-import {LayoutAnimation, StyleSheet, View} from 'react-native';
+import {LayoutAnimation, StyleSheet, View, Modal} from 'react-native';
 // components
 import GroceriesContainer from '../components/groceriesContainer';
 import Message from '../components/message';
@@ -17,6 +17,10 @@ import {
   deleteGroceryItem,
   updateGroceryItem,
 } from '../api/groceryListsAPI';
+import {
+  TouchableHighlight,
+  TouchableOpacity,
+} from 'react-native-gesture-handler';
 
 export default class ListScreen extends React.Component {
   state = {
