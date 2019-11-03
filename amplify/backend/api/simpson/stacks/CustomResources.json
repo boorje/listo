@@ -126,7 +126,7 @@
         "FieldName": "createGroceryListAndEditor",
         "RequestMappingTemplateS3Location": {
           "Fn::Sub": [
-            "s3://${S3DeploymentBucket}/${S3DeploymentRootKey}/resolvers/before.vtl",
+            "s3://${S3DeploymentBucket}/${S3DeploymentRootKey}/resolvers/CreateGroceryListAndEditorFunction-before.vtl",
             {
               "S3DeploymentBucket": {
                 "Ref": "S3DeploymentBucket"
@@ -139,7 +139,7 @@
         },
         "ResponseMappingTemplateS3Location": {
           "Fn::Sub": [
-            "s3://${S3DeploymentBucket}/${S3DeploymentRootKey}/resolvers/after.vtl",
+            "s3://${S3DeploymentBucket}/${S3DeploymentRootKey}/resolvers/CreateGroceryListAndEditorFunction-after.vtl",
             {
               "S3DeploymentBucket": {
                 "Ref": "S3DeploymentBucket"
