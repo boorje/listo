@@ -6,6 +6,7 @@ import {
   View,
   Text,
   Dimensions,
+  TouchableOpacity,
   Animated,
 } from 'react-native';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
@@ -131,7 +132,9 @@ export default OverlayModal;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    //flex: 1,
+    zIndex: 1,
+    height: '100%',
     top: '50%',
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,

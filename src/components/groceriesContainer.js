@@ -125,7 +125,9 @@ class GroceriesContainer extends React.Component {
     return (
       <View style={{flex: 1}}>
         <View style={styles.groceries}>
-          {this.state.groceries.length === 0 && <EmptyListInfo />}
+          {this.state.groceries.length === 0 && (
+            <EmptyListInfo emoji={this.props.addItemOpen ? '😃' : '🥺'} />
+          )}
 
           <KeyboardAwareFlatList
             //ref="flatList" //! USE TO ADJUST LIST WHEN ADDING ITEMS. BEHAVIOR IS NOT OPTIMAL.
