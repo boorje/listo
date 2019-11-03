@@ -9,7 +9,7 @@ const HomeScreenBackground = props => {
     <View style={styles.container}>
       <View style={styles.top}>
         <Text style={[textStyles.smallText, {color: 'white', fontSize: 20}]}>
-          Hello!
+          Hello! 👋🏼
         </Text>
         <Icon
           size={30}

@@ -26,7 +26,8 @@ export default class ListScreen extends React.Component {
   state = {
     groceryList: {},
     groceries: [],
-    // groceries: [ //! MOCK DATA
+    // groceries: [
+    //   //! MOCK DATA
     //   {id: 1, content: 'bärs', quantity: 3, unit: 'flak'},
     //   {id: 2, content: 'bärs', quantity: 3, unit: 'flak'},
     //   {id: 3, content: 'bärs', quantity: 3, unit: 'flak'},
