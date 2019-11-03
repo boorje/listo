@@ -26,6 +26,7 @@ class LoginScreen extends React.Component {
     signinError: '',
     loading: false,
     formOpen: false,
+    openMessage: false,
   };
 
   handleLogin = async values => {
@@ -60,6 +61,7 @@ class LoginScreen extends React.Component {
             signinError: 'Could not login. Please try again.',
           });
       }
+      this.setState({messageOpen: true});
     }
   };
 
@@ -89,13 +91,22 @@ class LoginScreen extends React.Component {
       }),
     ]).start();
   };
+  toggleMessage = () => {
+    this.setState(prevstate => ({
+      messageOpen: prevstate.messageOpen ? false : true,
+    }));
+  };
 
   render() {
-    const {loading, signinError} = this.state;
+    const {loading, signinError, messageOpen} = this.state;
     return (
       <View style={styles.container}>
-        {signinError.length > 0 && <Message message={signinError} />}
-
+        {signinError.length > 0 && messageOpen && (
+          <Message
+            messageOpen={() => this.toggleMessage()}
+            message={signinError}
+          />
+        )}
         <KeyboardAwareScrollView
           scrollEnabled={false}
           contentContainerStyle={{flex: 1, justifyContent: 'center'}}>

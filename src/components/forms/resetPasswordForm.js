@@ -47,8 +47,9 @@ const ResetPasswordForm = props => {
                 <TextInput
                   value={values.code}
                   onChangeText={handleChange('code')}
-                  onBlur={() => setFieldTouched('code')}
+                  onSubmitEditing={() => setFieldTouched('code')}
                   placeholder="Din verifieringskod"
+                  returnKeyType="done"
                   placeholderTextColor="white"
                   keyboardType="number-pad"
                   autoFocus={false}
@@ -76,7 +77,8 @@ const ResetPasswordForm = props => {
                   onChangeText={handleChange('new_password')}
                   placeholder="Nytt lösenord"
                   placeholderTextColor="white"
-                  onBlur={() => setFieldTouched('new_password')}
+                  returnKeyType="done"
+                  onSubmitEditing={() => setFieldTouched('new_password')}
                   secureTextEntry={true}
                   style={styles.textInput}
                 />

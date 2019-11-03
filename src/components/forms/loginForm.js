@@ -48,8 +48,9 @@ const LoginForm = props => (
               <TextInput
                 value={values.email}
                 onChangeText={handleChange('email')}
-                onBlur={() => setFieldTouched('email')}
+                onSubmitEditing={() => setFieldTouched('email')}
                 placeholder="E-mail"
+                returnKeyType="done"
                 placeholderTextColor="white"
                 autoCapitalize="none"
                 autoFocus={false}
@@ -78,8 +79,10 @@ const LoginForm = props => (
                 placeholder="Password"
                 placeholderTextColor="white"
                 returnKeyType="done"
-                onSubmitEditing={handleSubmit}
-                onBlur={() => setFieldTouched('password')}
+                onSubmitEditing={() => {
+                  setFieldTouched('password');
+                  handleSubmit;
+                }}
                 secureTextEntry={status.hidePassword}
                 style={styles.textInput}
               />

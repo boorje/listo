@@ -27,7 +27,7 @@ IoniconsIcon.loadFont();
 
 const MainStack = createStackNavigator(
   {
-    Home: ListScreen,
+    Home: HomeScreen,
     List: ListScreen,
     Settings: SettingsScreen,
   },
