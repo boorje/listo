@@ -77,6 +77,8 @@ const LoginForm = props => (
                 onChangeText={handleChange('password')}
                 placeholder="Password"
                 placeholderTextColor="white"
+                returnKeyType="done"
+                onSubmitEditing={handleSubmit}
                 onBlur={() => setFieldTouched('password')}
                 secureTextEntry={status.hidePassword}
                 style={styles.textInput}

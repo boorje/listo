@@ -4,6 +4,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  TouchableHighlight,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import * as colors from '../../styles/colors';
@@ -12,17 +13,16 @@ import textStyles from '../../styles/textStyles';
 const PrimaryButton = props => {
   const {disabled, title, onPress, loading} = props;
   return (
-    <TouchableOpacity
+    <TouchableHighlight
       onPress={() => onPress()}
       disabled={disabled ? disabled : false}
+      underlayColor="white"
       style={[
         styles.button,
         {
           backgroundColor: disabled ? '#aaa' : colors.submitColor,
         },
-      ]}
-      //activeOpacity={0.8}
-    >
+      ]}>
       {loading ? (
         <ActivityIndicator size="small" color="#fff" />
       ) : (
@@ -31,7 +31,7 @@ const PrimaryButton = props => {
           {title}
         </Text>
       )}
-    </TouchableOpacity>
+    </TouchableHighlight>
   );
 };
 

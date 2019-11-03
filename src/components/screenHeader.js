@@ -1,9 +1,11 @@
 import React from 'react';
-import {StyleSheet, Image, View, Text} from 'react-native';
+import {StyleSheet, Dimensions, View, Text} from 'react-native';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 import textStyles from '../styles/textStyles';
 import PropTypes from 'prop-types';
 import * as colors from '../styles/colors';
+
+const {height, width} = Dimensions.get('window');
 
 const ScreenHeader = props => (
   <View style={styles.container}>
@@ -17,8 +19,8 @@ const ScreenHeader = props => (
           onPress={() => props.leftIconPress()}
         />
       </View>
-      <View style={{flex: 1, alignItems: 'center'}}>
-        <Text style={textStyles.listTitle}>{props.headerTitle}</Text>
+      <View style={styles.headerTitle}>
+        <Text style={[textStyles.listTitle]}>{props.headerTitle}</Text>
       </View>
       <View style={styles.rightIcons}>
         {props.rightIcon1 && (
@@ -60,10 +62,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingLeft: '5%',
-    paddingRight: '3%',
+    paddingHorizontal: '4%',
     paddingBottom: '3%',
     position: 'absolute',
+  },
+  headerTitle: {
+    flex: 5,
+    alignItems: 'center',
   },
   iconStyle: {
     paddingRight: '10%',

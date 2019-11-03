@@ -36,6 +36,7 @@ export default class HomeScreen extends React.Component {
     user: {},
     apiError: '',
     viewWidth: 0,
+    messageOpen: false,
   };
 
   componentDidMount = async () => {
@@ -45,6 +46,7 @@ export default class HomeScreen extends React.Component {
       this.setState({
         apiError: error ? error : 'Could not fetch lists. Please try again.',
       });
+      this.setState({messageOpen: true});
     }
   };
 
@@ -88,6 +90,7 @@ export default class HomeScreen extends React.Component {
       this.setState({
         apiError: `Kunde inte skapa listan "${title}". Försök igen.`,
       });
+      this.setState({messageOpen: true});
     }
   };
 
@@ -132,6 +135,7 @@ export default class HomeScreen extends React.Component {
       );
     } catch (error) {
       this.setState({apiError: error});
+      this.setState({messageOpen: true});
     }
   };
 
@@ -144,9 +148,14 @@ export default class HomeScreen extends React.Component {
       modalOpen: prevstate.modalOpen ? false : true,
     }));
   };
+  toggleMessage = () => {
+    this.setState(prevstate => ({
+      messageOpen: prevstate.messageOpen ? false : true,
+    }));
+  };
 
   render() {
-    const {apiError, groceryLists, modalOpen, user} = this.state;
+    const {apiError, groceryLists, modalOpen, user, messageOpen} = this.state;
     return (
       <View style={styles.container}>
         {modalOpen && (
@@ -161,7 +170,12 @@ export default class HomeScreen extends React.Component {
             this.props.navigation.navigate('Settings', {user})
           }
         />
-        {apiError.length > 0 && <Message message={apiError} />}
+        {apiError.length > 0 && messageOpen && (
+          <Message
+            messageOpen={() => this.toggleMessage()}
+            message={apiError}
+          />
+        )}
         <SafeAreaView style={{flex: 5, marginTop: '3%'}}>
           <GroceryListsContainer
             user={user}

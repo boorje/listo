@@ -23,7 +23,7 @@ const textStyles = StyleSheet.create({
     lineHeight: 45,
   },
   listTitle: {
-    fontSize: 30,
+    fontSize: 25,
     fontFamily: 'Avenir Next',
     color: 'white',
   },

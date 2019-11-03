@@ -115,7 +115,6 @@ export default class AddGroceryFooter extends React.Component {
               <GroceryForm
                 placeholderColor="white"
                 textColor="white"
-                //fontWeight="bold"
                 closeGroceryForm={() => {
                   this.props.showAddGrocery();
                   this.closeAddIcon();
