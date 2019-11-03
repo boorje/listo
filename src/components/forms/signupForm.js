@@ -97,7 +97,7 @@ const SignupForm = props => (
 
           <View style={styles.button}>
             <SubmitButton
-              title="Sign in"
+              title="Create account"
               disabled={!isValid}
               onPress={handleSubmit}
               type="submit"

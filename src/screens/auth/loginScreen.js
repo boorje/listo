@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import {StyleSheet, ScrollView, View, Dimensions, Animated} from 'react-native';
+import {StyleSheet, Image, View, Dimensions, Animated} from 'react-native';
 import {Auth} from 'aws-amplify';
 
 // -- Components --
@@ -8,6 +8,7 @@ import LoginForm from '../../components/forms/loginForm';
 import Message from '../../components/message';
 import * as colors from '../../styles/colors';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import Logo from '../../components/logo';
 
 // -- Helpers --
 import validateValues from '../../helpers/validateFormValues';
@@ -107,9 +108,13 @@ class LoginScreen extends React.Component {
             message={signinError}
           />
         )}
+        <Logo />
         <KeyboardAwareScrollView
           scrollEnabled={false}
-          contentContainerStyle={{flex: 1, justifyContent: 'center'}}>
+          contentContainerStyle={{
+            flex: 1,
+            justifyContent: 'center',
+          }}>
           <LoginForm
             focus={this.state.textInputFocus}
             handleSubmit={this.handleLogin}
@@ -130,7 +135,6 @@ export default LoginScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     backgroundColor: colors.primaryColor,
   },
 });

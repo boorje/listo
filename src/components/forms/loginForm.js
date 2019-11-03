@@ -80,8 +80,8 @@ const LoginForm = props => (
                 placeholderTextColor="white"
                 returnKeyType="done"
                 onSubmitEditing={() => {
-                  setFieldTouched('password');
                   handleSubmit;
+                  setFieldTouched('password');
                 }}
                 secureTextEntry={status.hidePassword}
                 style={styles.textInput}
@@ -140,6 +140,7 @@ export default LoginForm;
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
+    marginTop: '11%',
   },
   loginForm: {width: '100%', alignItems: 'center'},
   textBox: {

@@ -13,8 +13,8 @@ import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {KeyboardAwareFlatList} from 'react-native-keyboard-aware-scroll-view';
 // components
-import AddGroceryFooter from '../components/addGroceryFooter';
 import GroceryForm from './forms/groceryForm';
+import EmptyListInfo from './emptyListInfo';
 // styles
 import textStyles from '../styles/textStyles';
 import animations from '../styles/animations';
@@ -125,6 +125,8 @@ class GroceriesContainer extends React.Component {
     return (
       <View style={{flex: 1}}>
         <View style={styles.groceries}>
+          {this.state.groceries.length === 0 && <EmptyListInfo />}
+
           <KeyboardAwareFlatList
             //ref="flatList" //! USE TO ADJUST LIST WHEN ADDING ITEMS. BEHAVIOR IS NOT OPTIMAL.
             //onContentSizeChange={() => this.refs.flatList.scrollToEnd()}

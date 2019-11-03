@@ -7,9 +7,7 @@ import * as colors from '../../styles/colors';
 // -- Components --
 import ForgotPasswordForm from '../../components/forms/forgotPasswordForm';
 import Message from '../../components/message';
-
-const BACKGROUND_URL =
-  'https://images.unsplash.com/photo-1516594798947-e65505dbb29d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80';
+import Logo from '../../components/logo';
 
 class VerifyScreen extends React.Component {
   state = {
@@ -57,12 +55,15 @@ class VerifyScreen extends React.Component {
     const {loading, sendEmailError} = this.state;
     return (
       <View style={styles.container}>
-        <Text style={textStyles.loginHeadline}>Enter your e-mail</Text>
-        {sendEmailError.length > 0 && <Message message={sendEmailError} />}
-        <ForgotPasswordForm
-          handleSubmit={this.sendResetEmail}
-          loading={loading}
-        />
+        <Logo />
+        <View>
+          <Text style={textStyles.loginHeadline}>Enter your e-mail</Text>
+          {sendEmailError.length > 0 && <Message message={sendEmailError} />}
+          <ForgotPasswordForm
+            handleSubmit={this.sendResetEmail}
+            loading={loading}
+          />
+        </View>
       </View>
     );
   }

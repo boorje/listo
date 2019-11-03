@@ -8,6 +8,7 @@ import ResetPasswordForm from '../../components/forms/resetPasswordForm';
 import Message from '../../components/message';
 import * as colors from '../../styles/colors';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import Logo from '../../components/logo';
 
 class ResetPasswordScreen extends React.Component {
   state = {
@@ -75,6 +76,7 @@ class ResetPasswordScreen extends React.Component {
         {resetPasswordError.length > 0 && (
           <Message message={resetPasswordError} />
         )}
+        <Logo />
         <KeyboardAwareScrollView
           scrollEnabled={false}
           contentContainerStyle={{flex: 1, justifyContent: 'center'}}>
