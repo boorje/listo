@@ -34,7 +34,8 @@ const CodeForm = props => {
             <TextInput
               value={values.code}
               onChangeText={handleChange('code')}
-              onBlur={() => setFieldTouched('code')}
+              onSubmitEditing={() => setFieldTouched('code')}
+              returnKeyType="done"
               placeholder="Your verification code"
               keyboardType="number-pad"
               autoFocus={false}
