@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import {StyleSheet, ScrollView, View, Dimensions, Animated} from 'react-native';
+import {StyleSheet, Image, View, Dimensions, Animated} from 'react-native';
 import {Auth} from 'aws-amplify';
 
 // -- Components --
@@ -8,6 +8,7 @@ import LoginForm from '../../components/forms/loginForm';
 import Message from '../../components/message';
 import * as colors from '../../styles/colors';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import Logo from '../../components/logo';
 
 // -- Helpers --
 import validateValues from '../../helpers/validateFormValues';
@@ -26,6 +27,7 @@ class LoginScreen extends React.Component {
     signinError: '',
     loading: false,
     formOpen: false,
+    openMessage: false,
   };
 
   handleLogin = async values => {
@@ -60,6 +62,7 @@ class LoginScreen extends React.Component {
             signinError: 'Could not login. Please try again.',
           });
       }
+      this.setState({messageOpen: true});
     }
   };
 
@@ -89,16 +92,29 @@ class LoginScreen extends React.Component {
       }),
     ]).start();
   };
+  toggleMessage = () => {
+    this.setState(prevstate => ({
+      messageOpen: prevstate.messageOpen ? false : true,
+    }));
+  };
 
   render() {
-    const {loading, signinError} = this.state;
+    const {loading, signinError, messageOpen} = this.state;
     return (
       <View style={styles.container}>
-        {signinError.length > 0 && <Message message={signinError} />}
-
+        {signinError.length > 0 && messageOpen && (
+          <Message
+            messageOpen={() => this.toggleMessage()}
+            message={signinError}
+          />
+        )}
+        <Logo />
         <KeyboardAwareScrollView
           scrollEnabled={false}
-          contentContainerStyle={{flex: 1, justifyContent: 'center'}}>
+          contentContainerStyle={{
+            flex: 1,
+            justifyContent: 'center',
+          }}>
           <LoginForm
             focus={this.state.textInputFocus}
             handleSubmit={this.handleLogin}
@@ -119,7 +135,6 @@ export default LoginScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     backgroundColor: colors.primaryColor,
   },
 });

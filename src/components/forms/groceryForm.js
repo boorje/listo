@@ -5,11 +5,12 @@ import {
   TextInput,
   InputAccessoryView,
   Keyboard,
+  Dimensions,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 import textStyles from '../../styles/textStyles';
-
+const {height, width} = Dimensions.get('window');
 export default class GroceryForm extends React.Component {
   state = {
     content: '',
@@ -39,80 +40,83 @@ export default class GroceryForm extends React.Component {
     const inputID = 'inputID';
     const {content, quantity, unit, isFocused} = this.state;
     return (
-      <View>
-        <TextInput
-          style={[
-            textStyles.textInputActive,
-            {
-              color: this.props.textColor || 'black',
-              fontWeight: this.props.fontWeight || 'normal',
-            },
-          ]}
-          ref={input => {
-            this.firstTextInput = input;
-          }}
-          onFocus={() => {
-            this.setState({isFocused: '1'});
-          }}
-          placeholder={'Add grocery...'}
-          placeholderTextColor={this.props.placeholderColor || 'gray'}
-          borderColor={'black'}
-          returnKeyType="done"
-          autoCorrect={false}
-          blurOnSubmit={this.props.shouldCloseOnSubmit}
-          enablesReturnKeyAutomatically={true}
-          autoFocus={true}
-          autoCapitalize="none"
-          onSubmitEditing={() => {
-            this.handleSubmitEditing();
-            this.firstTextInput.focus();
-          }}
-          inputAccessoryViewID={inputID}
-          onChangeText={text => {
-            this.setState({content: text});
-          }}
-          value={content}
-        />
-
-        <View
-          style={{
-            flexDirection: 'row',
-          }}>
+      <View style={{flex: 1}}>
+        <View>
           <TextInput
             style={[
               textStyles.textInputActive,
               {
+                width: width * 0.4,
                 color: this.props.textColor || 'black',
                 fontWeight: this.props.fontWeight || 'normal',
               },
             ]}
             ref={input => {
-              this.secondTextInput = input;
+              this.firstTextInput = input;
             }}
             onFocus={() => {
-              this.setState({isFocused: '2'});
+              this.setState({isFocused: '1'});
             }}
-            placeholder="Quantity..."
+            placeholder={'Add grocery...'}
             placeholderTextColor={this.props.placeholderColor || 'gray'}
-            borderColor="black"
-            keyboardType="numeric"
+            borderColor={'black'}
             returnKeyType="done"
             autoCorrect={false}
             blurOnSubmit={this.props.shouldCloseOnSubmit}
             enablesReturnKeyAutomatically={true}
-            autoFocus={false}
+            autoFocus={true}
+            autoCapitalize="none"
             onSubmitEditing={() => {
               this.handleSubmitEditing();
               this.firstTextInput.focus();
             }}
             inputAccessoryViewID={inputID}
             onChangeText={text => {
-              this.setState({quantity: text});
+              this.setState({content: text});
             }}
-            value={quantity}
+            value={content}
           />
-
-          <View style={{marginLeft: '10%'}}>
+        </View>
+        <View
+          style={{
+            flexDirection: 'row',
+          }}>
+          <View>
+            <TextInput
+              style={[
+                textStyles.textInputActive,
+                {
+                  color: this.props.textColor || 'black',
+                  fontWeight: this.props.fontWeight || 'normal',
+                },
+              ]}
+              ref={input => {
+                this.secondTextInput = input;
+              }}
+              onFocus={() => {
+                this.setState({isFocused: '2'});
+              }}
+              placeholder="Quantity..."
+              placeholderTextColor={this.props.placeholderColor || 'gray'}
+              borderColor="black"
+              keyboardType="numeric"
+              returnKeyType="done"
+              autoCorrect={false}
+              blurOnSubmit={this.props.shouldCloseOnSubmit}
+              enablesReturnKeyAutomatically={true}
+              autoFocus={false}
+              onSubmitEditing={() => {
+                this.handleSubmitEditing();
+                this.firstTextInput.focus();
+              }}
+              inputAccessoryViewID={inputID}
+              onChangeText={text => {
+                this.setState({quantity: text});
+              }}
+              value={quantity}
+            />
+          </View>
+          <View style={{marginLeft: '10%', paddingHorizontal: '10%'}}>
             <TextInput
               style={[
                 textStyles.textInputActive,

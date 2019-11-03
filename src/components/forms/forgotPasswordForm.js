@@ -41,7 +41,8 @@ const ForgotPasswordForm = props => {
               <TextInput
                 value={values.email}
                 onChangeText={handleChange('email')}
-                onBlur={() => setFieldTouched('email')}
+                onSubmitEditing={() => setFieldTouched('email')}
+                returnKeyType="done"
                 placeholder="E-mail"
                 placeholderTextColor="white"
                 autoCapitalize="none"
