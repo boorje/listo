@@ -6,8 +6,11 @@ import {
   Dimensions,
   FlatList,
   PanResponder,
+  SafeAreaView,
   Animated,
+  LayoutAnimation,
 } from 'react-native';
+import animations from '../styles/animations';
 
 const {Value} = Animated;
 const {height, width} = Dimensions.get('window');
@@ -19,13 +22,16 @@ class DraggableTest extends React.Component {
       onMoveShouldSetPanResponder: (evt, gestureState) => true,
 
       onPanResponderGrant: (evt, gestureState) => {
-        this.initialIndex = this.yToIndex(gestureState.y0);
         this.currentIdx = this.yToIndex(gestureState.y0);
-        this.setDraggingPos();
+        this.currentY = gestureState.y0;
+        this.draggingPos.setValue(
+          this.currentY - this.listOffset - this.rowHeight / 2,
+        ); // ! IMPROVE TO MORE SPECIFIC VALUE
+
         this.setState(
           {
             dragging: true,
-            draggingIndex: this.initialIndex,
+            draggingIndex: this.currentIdx,
           },
           () => this.animateList(),
         );
@@ -33,7 +39,7 @@ class DraggableTest extends React.Component {
       onPanResponderMove: (evt, gestureState) => {
         this.currentY = gestureState.moveY;
         this.draggingPos.setValue(
-          gestureState.dy + this.initialIndex * this.rowHeight,
+          this.currentY - this.listOffset - this.rowHeight / 2,
         );
       },
       onPanResponderRelease: (evt, gestureState) => {
@@ -42,14 +48,15 @@ class DraggableTest extends React.Component {
       onPanResponderTerminationRequest: (evt, gestureState) => true,
     });
 
-    this.initialIndex = -1;
-    this.listOffset = 0;
     this.currentY = 0;
     this.currentIdx = -1;
     this.rowHeight = 0;
     this.draggingPos = new Value(0);
-    this.flatlist = createRef();
+    this.flatList = createRef();
     this.scrollOffset = 0;
+    this.listOffset = 0;
+    this.flatlistTopOffset = 0;
+    this.flatListHeight = 0;
   }
 
   state = {
@@ -59,6 +66,28 @@ class DraggableTest extends React.Component {
       {title: '3'},
       {title: '4'},
       {title: '5'},
+      {title: '6'},
+      {title: '7'},
+      {title: '8'},
+      {title: '9'},
+      {title: '10'},
+      //   {title: '11'},
+      //   {title: '12'},
+      //   {title: '13'},
+      //   {title: '14'},
+      //   {title: '15'},
+      //   {title: '16'},
+      //   {title: '17'},
+      //   {title: '18'},
+      //   {title: '19'},
+      //   {title: '20'},
+      //   {title: '21'},
+      //   {title: '22'},
+      //   {title: '23'},
+      //   {title: '24'},
+      //   {title: '25'},
+      //   {title: '26'},
+      //   {title: '27'},
     ],
     dragging: false,
     draggingIndex: -1,
@@ -90,11 +119,21 @@ class DraggableTest extends React.Component {
       return;
     }
     requestAnimationFrame(() => {
-      // Check if we should reorder
+      if (this.currentY + 150 > this.flatListHeight) {
+        this.flatList.current.scrollToOffset({
+          offset: this.scrollOffset + 5,
+          animated: false,
+        });
+      } else if (this.currentY < 150) {
+        this.flatList.current.scrollToOffset({
+          offset: this.scrollOffset - 5,
+          animated: false,
+        });
+      }
 
       const newIdx = this.yToIndex(this.currentY);
       if (this.currentIdx !== newIdx) {
-        console.log(this.currentIdx);
+        LayoutAnimation.configureNext(animations.default);
         this.setState({
           data: this.immutableMove(this.state.data, this.currentIdx, newIdx),
           draggingIndex: newIdx,
@@ -106,17 +145,16 @@ class DraggableTest extends React.Component {
   };
 
   yToIndex = y => {
-    const res = Math.floor((y - this.listOffset) / this.rowHeight);
+    const res = Math.floor(
+      (y + this.scrollOffset - this.flatlistTopOffset - this.listOffset) /
+        this.rowHeight,
+    );
     if (res > this.state.data.length - 1) {
       return this.state.data.length - 1;
     } else if (res < 0) {
       return 0;
     }
     return Math.abs(res);
-  };
-
-  setDraggingPos = () => {
-    this.draggingPos.setValue(this.initialIndex * this.rowHeight + 3);
   };
 
   item({item, index}) {
@@ -149,7 +187,7 @@ class DraggableTest extends React.Component {
   render() {
     const {dragging, draggingIndex, data} = this.state;
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <View
           style={styles.flatlist}
           onLayout={e => {
@@ -167,12 +205,16 @@ class DraggableTest extends React.Component {
             onScroll={e => {
               this.scrollOffset = e.nativeEvent.contentOffset.y;
             }}
+            onLayout={e => {
+              this.flatlistTopOffset = e.nativeEvent.layout.y;
+              this.flatListHeight = e.nativeEvent.layout.height;
+            }}
             renderItem={({item, index}) => this.item({item, index})}
             keyExtractor={item => item.title}
             ItemSeparatorComponent={this.FlatListItemSeparator}
           />
         </View>
-      </View>
+      </SafeAreaView>
     );
   }
 }
@@ -187,9 +229,6 @@ const styles = StyleSheet.create({
   flatlist: {
     flex: 1,
     width: '100%',
-    top: height / 5,
-    borderWidth: 1,
-    borderColor: 'black',
   },
   separator: {
     height: 0,
@@ -199,8 +238,6 @@ const styles = StyleSheet.create({
   item: {
     flex: 1,
     height: 50,
-    borderWidth: 1,
-    borderColor: 'white',
     width: '100%',
     justifyContent: 'center',
   },
