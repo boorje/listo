@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {createRef} from 'react';
 import {
   StyleSheet,
   View,
@@ -8,6 +8,7 @@ import {
   Animated,
   RefreshControl,
   Dimensions,
+  PanResponder,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -21,17 +22,58 @@ import animations from '../styles/animations';
 import * as colors from '../styles/colors';
 
 const {Value} = Animated;
-const {height, width} = Dimensions.get('window');
 
 class GroceriesContainer extends React.Component {
   constructor(props) {
     super(props);
-    this.itemX = new Value(1);
+
+    this._panResponder = PanResponder.create({
+      onMoveShouldSetPanResponder: (evt, gestureState) => true,
+
+      onPanResponderGrant: (evt, gestureState) => {
+        console.log('HEJ');
+        this.currentIdx = this.yToIndex(gestureState.y0);
+        this.currentY = gestureState.y0;
+        this.draggingPos.setValue(
+          this.currentY - this.listOffset - this.rowHeight / 2,
+        ); // ! IMPROVE TO MORE SPECIFIC VALUE
+
+        this.setState(
+          {
+            dragging: true,
+            draggingIndex: this.currentIdx,
+          },
+          () => this.animateList(),
+        );
+      },
+      onPanResponderMove: (evt, gestureState) => {
+        this.currentY = gestureState.moveY;
+        this.draggingPos.setValue(
+          this.currentY - this.listOffset - this.rowHeight / 2,
+        );
+      },
+      onPanResponderRelease: (evt, gestureState) => {
+        this.setState({dragging: false});
+      },
+      onPanResponderTerminationRequest: (evt, gestureState) => true,
+    });
+
+    this.currentY = 0;
+    this.currentIdx = -1;
+    this.rowHeight = 0;
+    this.draggingPos = new Value(0);
+    this.flatList = createRef();
+    this.scrollOffset = 0;
+    this.listOffset = 0;
+    this.flatlistTopOffset = 0;
+    this.flatListHeight = 0;
   }
   state = {
     groceries: this.props.groceries,
     refreshing: false,
     removeId: '',
+    dragging: false,
+    draggingIndex: -1,
   };
 
   // ? enough comparison
@@ -41,6 +83,73 @@ class GroceriesContainer extends React.Component {
       this.setState({groceries: this.props.groceries});
     }
   }
+
+  immutableMove(arr, from, to) {
+    return arr.reduce((prev, current, idx, self) => {
+      if (from === to) {
+        prev.push(current);
+      }
+      if (idx === from) {
+        return prev;
+      }
+      if (from < to) {
+        prev.push(current);
+      }
+      if (idx === to) {
+        prev.push(self[from]);
+      }
+      if (from > to) {
+        prev.push(current);
+      }
+      return prev;
+    }, []);
+  }
+
+  animateList = () => {
+    if (!this.state.dragging) {
+      return;
+    }
+    requestAnimationFrame(() => {
+      if (this.currentY + 150 > this.flatListHeight) {
+        this.flatList.current.scrollToOffset({
+          offset: this.scrollOffset + 5,
+          animated: false,
+        });
+      } else if (this.currentY < 150) {
+        this.flatList.current.scrollToOffset({
+          offset: this.scrollOffset - 5,
+          animated: false,
+        });
+      }
+      const newIdx = this.yToIndex(this.currentY);
+      if (this.currentIdx !== newIdx) {
+        LayoutAnimation.configureNext(animations.default);
+        this.setState({
+          groceries: this.immutableMove(
+            this.state.groceries,
+            this.currentIdx,
+            newIdx,
+          ),
+          draggingIndex: newIdx,
+        });
+        this.currentIdx = newIdx;
+      }
+      this.animateList();
+    });
+  };
+
+  yToIndex = y => {
+    const res = Math.floor(
+      (y + this.scrollOffset - this.flatlistTopOffset - this.listOffset) /
+        this.rowHeight,
+    );
+    if (res > this.state.groceries.length - 1) {
+      return this.state.groceries.length - 1;
+    } else if (res < 0) {
+      return 0;
+    }
+    return Math.abs(res);
+  };
 
   // ! When updating item. Can not open details before reload.
   // ! Sets the details = true correctly. Probably not re-rendering in renderItem()
@@ -59,7 +168,7 @@ class GroceriesContainer extends React.Component {
     });
   };
 
-  renderItem(grocery) {
+  renderItem(grocery, index) {
     return (
       <TouchableHighlight
         onLayout={e => {
@@ -77,7 +186,10 @@ class GroceriesContainer extends React.Component {
           style={[
             styles.container2,
             {
-              opacity: this.state.removeId === grocery.id ? this.itemX : 1,
+              opacity:
+                this.state.draggingIndex === index && this.state.dragging
+                  ? 0
+                  : 1,
             },
           ]}>
           <View style={{flex: 1, paddingLeft: '5%'}}>
@@ -102,6 +214,7 @@ class GroceriesContainer extends React.Component {
           </View>
           <Animated.View>
             <Icon
+              {...this._panResponder.panHandlers}
               size={32}
               name={!grocery.details ? 'expand-more' : 'expand-less'}
               color={'black'}
@@ -122,18 +235,26 @@ class GroceriesContainer extends React.Component {
   };
 
   render() {
+    const {groceries, dragging, draggingIndex} = this.state;
     return (
       <View style={{flex: 1}}>
-        <View style={styles.groceries}>
+        <View
+          style={styles.groceries}
+          onLayout={e => {
+            this.listOffset = e.nativeEvent.layout.y;
+          }}>
           {this.state.groceries.length === 0 && (
             <EmptyListInfo emoji={this.props.addItemOpen ? '😃' : '🥺'} />
           )}
-
+          {dragging && (
+            <Animated.View style={[styles.dragItem, {top: this.draggingPos}]}>
+              {this.renderItem(groceries[draggingIndex])}
+            </Animated.View>
+          )}
           <KeyboardAwareFlatList
-            //ref="flatList" //! USE TO ADJUST LIST WHEN ADDING ITEMS. BEHAVIOR IS NOT OPTIMAL.
-            //onContentSizeChange={() => this.refs.flatList.scrollToEnd()}
+            ref={this.flatList}
             contentContainerStyle={{marginBottom: 10}}
-            scrollEnabled={true}
+            scrollEnabled={!dragging}
             refreshControl={
               <RefreshControl
                 refreshing={this.state.refreshing}
@@ -141,8 +262,15 @@ class GroceriesContainer extends React.Component {
                 onRefresh={() => this.props.onRefresh()}
               />
             }
+            onScroll={e => {
+              this.scrollOffset = e.nativeEvent.contentOffset.y;
+            }}
+            onLayout={e => {
+              this.flatlistTopOffset = e.nativeEvent.layout.y;
+              this.flatListHeight = e.nativeEvent.layout.height;
+            }}
             data={this.props.groceries}
-            renderItem={({item}) => this.renderItem(item)}
+            renderItem={({item, index}) => this.renderItem(item, index)}
             keyExtractor={item => item.id}
             ItemSeparatorComponent={this.FlatListItemSeparator}
             keyboardShouldPersistTaps="always"
@@ -190,6 +318,11 @@ const styles = StyleSheet.create({
   textInfo: {
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  dragItem: {
+    position: 'absolute',
+    zIndex: 2,
+    width: '100%',
   },
 });
 

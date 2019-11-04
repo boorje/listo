@@ -25,19 +25,19 @@ import {
 export default class ListScreen extends React.Component {
   state = {
     groceryList: {},
-    groceries: [],
-    // groceries: [
-    //   //! MOCK DATA
-    //   {id: 1, content: 'bärs', quantity: 3, unit: 'flak'},
-    //   {id: 2, content: 'bärs', quantity: 3, unit: 'flak'},
-    //   {id: 3, content: 'bärs', quantity: 3, unit: 'flak'},
-    //   {id: 4, content: 'bärs', quantity: 3, unit: 'flak'},
-    //   {id: 5, content: 'bärs', quantity: 3, unit: 'flak'},
-    //   {id: 6, content: 'bärs', quantity: 3, unit: 'flak'},
-    //   {id: 7, content: 'bärs', quantity: 3, unit: 'flak'},
-    //   {id: 8, content: 'bärs', quantity: 3, unit: 'flak'},
-    //   {id: 9, content: 'bärs', quantity: 3, unit: 'flak'},
-    // ],
+    //groceries: [],
+    groceries: [
+      //! MOCK DATA
+      {id: 1, content: 'bärs', quantity: 3, unit: 'flak'},
+      {id: 2, content: 'bärs', quantity: 3, unit: 'flak'},
+      {id: 3, content: 'bärs', quantity: 3, unit: 'flak'},
+      {id: 4, content: 'bärs', quantity: 3, unit: 'flak'},
+      {id: 5, content: 'bärs', quantity: 3, unit: 'flak'},
+      {id: 6, content: 'bärs', quantity: 3, unit: 'flak'},
+      {id: 7, content: 'bärs', quantity: 3, unit: 'flak'},
+      {id: 8, content: 'bärs', quantity: 3, unit: 'flak'},
+      {id: 9, content: 'bärs', quantity: 3, unit: 'flak'},
+    ],
     user: {},
     apiError: '',
     listSettingsOpen: false,

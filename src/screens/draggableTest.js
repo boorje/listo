@@ -13,7 +13,7 @@ import {
 import animations from '../styles/animations';
 
 const {Value} = Animated;
-const {height, width} = Dimensions.get('window');
+
 class DraggableTest extends React.Component {
   constructor(props) {
     super(props);
