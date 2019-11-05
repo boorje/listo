@@ -2,4 +2,5 @@
 #if($ctx.error)
     $util.error($ctx.error.message, $ctx.error.type)
 #end
-$util.toJson($ctx.result)
+## Return the response from the CreateList function
+$util.toJson($ctx.stash.res)

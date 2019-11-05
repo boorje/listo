@@ -8,5 +8,5 @@
     ## Set the error message
     $util.error($ctx.error.message, $ctx.error.type)
 #end
-
+$util.qr($ctx.stash.put("res", $ctx.result))
 $util.toJson($ctx.result)
