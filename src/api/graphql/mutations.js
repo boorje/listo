@@ -23,14 +23,14 @@ export const createGroceryListAndEditor = `mutation createGroceryListAndEditor($
   }
 }`;
 
-export const deleteGroceryList = `mutation deleteGroceryList($input: DeleteGroceryListInput!) {
-  deleteGroceryList(input: $input) {
+export const deleteGroceryListAndEditors = `mutation deleteGroceryListAndEditors($listId: ID!) {
+  deleteGroceryListAndEditors(listId: $listId) {
     id
   }
 }`;
 
-export const deleteGroceryListAndEditors = `mutation deleteGroceryListAndEditors($listId: ID!) {
-  deleteGroceryListAndEditors(listId: $listId) {
+export const deleteGroceryList = `mutation deleteGroceryList($input: DeleteGroceryListInput!) {
+  deleteGroceryList(input: $input) {
     id
   }
 }`;
