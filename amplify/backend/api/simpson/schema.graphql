@@ -22,7 +22,7 @@ type Editor
   ) {
   listId: ID! # Set with custom resolver
   userId: ID! # Set with custom resolver
-  id: String! # Set to listId-userEmail with custom resolver
+  id: String! # Set to listId-userEmail with custom resolver ? is this needed?
   list: GroceryList! @connection(name: "ListEditors")
   user: User! @connection(name: "UserEditors")
 }
@@ -54,4 +54,5 @@ type GroceryItem @model {
 # for the pipeline resolver
 type Mutation {
   createGroceryListAndEditor(title: String!): GroceryList
+  deleteGroceryListAndEditors(listId: ID!): GroceryList
 }
