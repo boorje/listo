@@ -1,0 +1,12 @@
+## Ensure that the resolver exists if it runs in to an error.
+#if($ctx.error)
+    $util.error($ctx.error.message, $ctx.error.type)
+#end
+
+## Ensure that the grocery list was created !== null
+#if($util.isNullOrBlank($ctx.result))
+    ## Set the error message
+    $util.error($ctx.error.message, $ctx.error.type)
+#end
+
+$util.toJson($ctx.result)

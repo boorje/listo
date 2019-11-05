@@ -10,11 +10,10 @@ import * as queries from './graphql/queries';
  */
 
 /**
- * Creates a new grocery list and returns it.
+ * PIPELINE RESOLVER - Creates a grocery list and adds the signed in owner as editor.
  * @param {object} input - the input to create a new grocery list
  * @param {string} input.title - the list of the title
  * @returns {Object} object of created grocery list
- * TODO: Add a resolver which adds the editor.
  */
 export const createGroceryList = async title => {
   const {data} = await API.graphql(
@@ -44,7 +43,6 @@ export const deleteGroceryListAndEditors = async listId => {
   const {data} = await API.graphql(
     graphqlOperation(mutations.deleteGroceryListAndEditors, {listId}),
   );
-  console.log(data);
   return data.deleteGroceryListAndEditors;
 };
 
@@ -71,15 +69,15 @@ export const createEditor = async input => {
 };
 
 /**
- * Deletes the editor between user and list
+ * Deletes the editor of the list
  * @param {Object} input
  *  @returns {Object} object of deleted editor
  */
-export const deleteEditor = async input => {
+export const deleteListEditor = async input => {
   const {data} = await API.graphql(
-    graphqlOperation(mutations.deleteEditor, {input}),
+    graphqlOperation(mutations.deleteListEditor, {input}),
   );
-  return data.deleteEditor;
+  return data.deleteListEditor;
 };
 
 /**

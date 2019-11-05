@@ -57,8 +57,8 @@ export const createOwnerEditor = `mutation createEditor($input: CreateEditorInpu
   }
  }`;
 
-export const deleteEditor = `mutation deleteEditor($input: DeleteEditorInput!) {
-  deleteEditor(input: $input) {
+export const deleteListEditor = `mutation deleteListEditor($input: DeleteListEditorInput!) {
+  deleteListEditor(input: $input) {
     id
   }
 }`;

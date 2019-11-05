@@ -55,4 +55,10 @@ type GroceryItem @model {
 type Mutation {
   createGroceryListAndEditor(title: String!): GroceryList
   deleteGroceryListAndEditors(listId: ID!): GroceryList
+  deleteListEditor(input: DeleteListEditorInput!): Editor
+}
+
+input DeleteListEditorInput {
+  listId: ID!
+  userId: ID!
 }
