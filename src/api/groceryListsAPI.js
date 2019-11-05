@@ -18,7 +18,7 @@ import * as queries from './graphql/queries';
  */
 export const createGroceryList = async title => {
   const {data} = await API.graphql(
-    graphqlOperation(mutations.createGroceryListAndEditor, title),
+    graphqlOperation(mutations.createGroceryListAndEditor, {title}),
   );
   return data.createGroceryListAndEditor;
 };
@@ -42,7 +42,7 @@ export const deleteGroceryList = async id => {
  */
 export const deleteGroceryListAndEditors = async listId => {
   const {data} = await API.graphql(
-    graphqlOperation(mutations.deleteGroceryListAndEditors, listId),
+    graphqlOperation(mutations.deleteGroceryListAndEditors, {listId}),
   );
   console.log(data);
   return data.deleteGroceryListAndEditors;

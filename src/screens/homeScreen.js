@@ -78,7 +78,7 @@ export default class HomeScreen extends React.Component {
 
   addGroceryList = async title => {
     try {
-      const res = await createGroceryList({title});
+      const res = await createGroceryList(title);
       res.isOwner = true;
       this.setState({groceryLists: [...this.state.groceryLists, {list: res}]});
     } catch (error) {
@@ -92,7 +92,7 @@ export default class HomeScreen extends React.Component {
     try {
       return await deleteGroceryListAndEditors(listId);
     } catch (error) {
-      console.log(error);
+      this.setState({apiError: 'Could not delete the list.'});
     }
   };
 
