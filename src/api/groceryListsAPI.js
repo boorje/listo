@@ -47,6 +47,21 @@ export const deleteGroceryListAndEditors = async listId => {
 };
 
 /**
+ * Updates a grocery list and returns the id, new title and the owner of the list
+ * @param {String} id - of the list
+ * @param {String} title - the updated title
+ * @returns {Object} object of the updated grocery list
+ */
+export const updateGroceryList = async (id, title) => {
+  const {data} = await API.graphql(
+    graphqlOperation(mutations.updateGroceryList, {
+      input: {id, title},
+    }),
+  );
+  return data.updateGroceryList;
+};
+
+/**
  * Returns the email of editors for the list
  * @param {String} id list id
  * @returns {Object} object with editors

@@ -35,6 +35,14 @@ export const deleteGroceryList = `mutation deleteGroceryList($input: DeleteGroce
   }
 }`;
 
+export const updateGroceryList = `mutation updateGroceryList($input: UpdateGroceryListInput!) {
+  updateGroceryList(input: $input) {
+    id
+    title
+    owner
+  }
+}`;
+
 /**
  * Editor
  */
