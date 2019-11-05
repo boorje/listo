@@ -11,6 +11,7 @@ import animations from '../styles/animations';
 // api
 import {
   getGroceryList,
+  updateGroceryList,
   createGroceryItem,
   deleteGroceryItem,
   updateGroceryItem,
@@ -60,6 +61,18 @@ export default class ListScreen extends React.Component {
         }
       }
       throw 'Could not fetch lists. Please try again.';
+    }
+  };
+
+  // TODO: Add input to update the title
+  renameList = async newTitle => {
+    try {
+      const res = await updateGroceryList(this.state.groceryList.id, newTitle);
+      this.setState({groceryList: res});
+    } catch (error) {
+      this.setState({
+        apiError: 'Could not update the title. Please try again.',
+      });
     }
   };
 
@@ -157,7 +170,7 @@ export default class ListScreen extends React.Component {
         <ScreenHeader
           leftIconPress={() => this.props.navigation.goBack()}
           rightIcon1Press={() => this.openGroceryHistory()}
-          rightIcon2Press={() => this.openListSettings()}
+          rightIcon2Press={() => this.renameList('newTitle')}
           headerTitle={groceryList.title}
           leftIcon={'ios-arrow-round-back'}
           //rightIcon1={'md-hourglass'}

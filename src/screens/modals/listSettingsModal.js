@@ -272,8 +272,7 @@ class UserItem extends React.Component {
           swipeoutEnabled={this.props.item.listOwner ? false : true}
           viewWidth={this.state.viewWidth}
           delete={() => this.props.deleteEditor(this.props.item.id)}>
-          <TouchableWithoutFeedback
-            onPress={() => this.props.deleteEditor(this.props.item.id)}>
+          <TouchableWithoutFeedback>
             <View style={styles.textAndIcon}>
               <Text style={[textStyles.default, {fontSize: 15}]}>
                 {this.props.item.email}
