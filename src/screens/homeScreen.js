@@ -16,7 +16,6 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 // api
 import {
   createGroceryList,
-  deleteGroceryList,
   deleteGroceryListAndEditors,
   deleteEditor,
 } from '../api/groceryListsAPI';

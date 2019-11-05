@@ -19,7 +19,7 @@ import Swipeout from '../../components/swipeout';
 // api
 import {
   createEditor,
-  deleteEditor,
+  deleteListEditor,
   getEditors,
 } from '../../api/groceryListsAPI';
 import {getUserByEmail} from '../../api/authAPI';
@@ -104,7 +104,6 @@ export default class ListSettingsModal extends React.Component {
   // add editor to the list
   addEditor = async emailInput => {
     try {
-      // TODO: check if logged in user is owner of list
       if (!this.state.loggedInUserIsListOwner) {
         throw 'Only the owner of the list can perform add users';
       } else {
@@ -145,24 +144,23 @@ export default class ListSettingsModal extends React.Component {
         }));
       }
     } catch (error) {
+      console.log(error);
       this.setState({apiError: error});
       this.setState({messageOpen: true});
     }
   };
 
   // delete editor from the list
-  // TODO: API - Add so only owner of the list can delete users
-  // TODO: API - Validate that list owner is not deleted
-  // TODO: What happens if i delete myself? -> has to be list owner to delete
   deleteEditor = async userId => {
     try {
       if (!this.state.loggedInUserIsListOwner) {
         throw 'Only the owner of the list can remove users.';
       } else if (userId === this.state.user.id) {
+        // ! How is this checking if it's the list owner?
         throw 'The owner cannot be deleted';
       }
       const {editors, groceryList} = this.state;
-      const res = await deleteEditor({
+      const res = await deleteListEditor({
         listId: groceryList.id,
         userId,
       });
@@ -172,7 +170,7 @@ export default class ListSettingsModal extends React.Component {
       const newEditors = editors.filter(editor => editor.id !== userId);
       this.setState({editors: newEditors});
     } catch (error) {
-      this.setState({apiError: error ? error : 'Could not remove the user.'});
+      this.setState({apiError: 'Could not remove the user.'});
       this.setState({messageOpen: true});
     }
   };
@@ -274,7 +272,8 @@ class UserItem extends React.Component {
           swipeoutEnabled={this.props.item.listOwner ? false : true}
           viewWidth={this.state.viewWidth}
           delete={() => this.props.deleteEditor(this.props.item.id)}>
-          <TouchableWithoutFeedback>
+          <TouchableWithoutFeedback
+            onPress={() => this.props.deleteEditor(this.props.item.id)}>
             <View style={styles.textAndIcon}>
               <Text style={[textStyles.default, {fontSize: 15}]}>
                 {this.props.item.email}
