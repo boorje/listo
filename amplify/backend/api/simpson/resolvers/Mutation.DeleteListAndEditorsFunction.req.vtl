@@ -1,0 +1,20 @@
+## perform batch delete of the list
+#set($listId = $ctx.stash.listId)
+#set($editors = $ctx.stash.editors)
+
+#set($pks = [])
+#foreach($editor in ${editors})
+    #set($myMap = {})
+    $util.qr($myMap.put("listId", $editor.listId))
+    $util.qr($myMap.put("userId", $editor.userId))
+    $util.qr($pks.add($util.dynamodb.toMapValues($myMap)))
+#end
+
+{
+    "version" : "2018-05-29",
+    "operation" : "BatchDeleteItem",
+    "tables" : {
+        "GroceryList-uzrt3gmxc5c4rhsyrdkriizm24-dev": [$util.dynamodb.toMapValuesJson({"id": $listId})], 
+        #if(!$pks.isEmpty()) "Editor-uzrt3gmxc5c4rhsyrdkriizm24-dev": $util.toJson($pks) #end ## prevents crash if there's no editors
+    }
+}

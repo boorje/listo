@@ -17,6 +17,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import {
   createGroceryList,
   deleteGroceryList,
+  deleteGroceryListAndEditors,
   deleteEditor,
 } from '../api/groceryListsAPI';
 import {getUser, createUser} from '../api/authAPI';
@@ -75,17 +76,23 @@ export default class HomeScreen extends React.Component {
     }
   };
 
-  // TODO: Create a resolver which adds the user as a editor
   addGroceryList = async title => {
     try {
       const res = await createGroceryList({title});
       res.isOwner = true;
       this.setState({groceryLists: [...this.state.groceryLists, {list: res}]});
     } catch (error) {
+      this.setState({
+        apiError: `Kunde inte skapa listan "${title}". Försök igen.`,
+      });
+    }
+  };
+
+  deleteGroceryList = async listId => {
+    try {
+      return await deleteGroceryListAndEditors(listId);
+    } catch (error) {
       console.log(error);
-      // this.setState({
-      //   apiError: `Kunde inte skapa listan "${title}". Försök igen.`,
-      // });
     }
   };
 
@@ -108,13 +115,13 @@ export default class HomeScreen extends React.Component {
           if (buttonIndex === 1) {
             let res;
             if (isOwner) {
-              // TODO: Create a resolver which deletes all the editors of the list using the batch delete
-              res = await deleteGroceryList(list.id);
+              res = await this.deleteGroceryList(list.id);
+            } else {
+              res = await deleteEditor({
+                listId: list.id,
+                userId: this.state.user.id,
+              });
             }
-            res = await deleteEditor({
-              listId: list.id,
-              userId: this.state.user.id,
-            });
             if (!res || res === null) {
               throw isOwner
                 ? 'Could not delete the list. Please try again.'
@@ -128,6 +135,7 @@ export default class HomeScreen extends React.Component {
         },
       );
     } catch (error) {
+      console.log(error);
       this.setState({apiError: error});
     }
   };
