@@ -10,29 +10,16 @@ import * as queries from './graphql/queries';
  */
 
 /**
- * Creates a new grocery list and returns it.
+ * PIPELINE RESOLVER - Creates a grocery list and adds the signed in owner as editor.
  * @param {object} input - the input to create a new grocery list
  * @param {string} input.title - the list of the title
  * @returns {Object} object of created grocery list
- * TODO: Add a resolver which adds the editor.
  */
-export const createGroceryList = async input => {
+export const createGroceryList = async title => {
   const {data} = await API.graphql(
-    graphqlOperation(mutations.createGroceryList, {input}),
+    graphqlOperation(mutations.createGroceryListAndEditor, {title}),
   );
-  // TODO: Add a pipeline resolver which adds this.
-  // What happens if the list is created but not added to the list editor?
-  const {id, owner} = data.createGroceryList;
-  const createEditorInput = {
-    editorListId: id,
-    editorUserId: owner,
-  };
-  await API.graphql(
-    graphqlOperation(mutations.createOwnerEditor, {
-      input: createEditorInput,
-    }),
-  );
-  return data.createGroceryList;
+  return data.createGroceryListAndEditor;
 };
 
 /**
@@ -45,6 +32,33 @@ export const deleteGroceryList = async id => {
     graphqlOperation(mutations.deleteGroceryList, {input: {id}}),
   );
   return data.deleteGroceryList;
+};
+
+/**
+ * Deletes a grocery list and returns the id of the deleted item
+ * @param {String} id
+ * @returns {Object} object of deleted grocery list
+ */
+export const deleteGroceryListAndEditors = async listId => {
+  const {data} = await API.graphql(
+    graphqlOperation(mutations.deleteGroceryListAndEditors, {listId}),
+  );
+  return data.deleteGroceryListAndEditors;
+};
+
+/**
+ * Updates a grocery list and returns the id, new title and the owner of the list
+ * @param {String} id - of the list
+ * @param {String} title - the updated title
+ * @returns {Object} object of the updated grocery list
+ */
+export const updateGroceryList = async (id, title) => {
+  const {data} = await API.graphql(
+    graphqlOperation(mutations.updateGroceryList, {
+      input: {id, title},
+    }),
+  );
+  return data.updateGroceryList;
 };
 
 /**
@@ -70,15 +84,15 @@ export const createEditor = async input => {
 };
 
 /**
- * Deletes the editor between user and list
+ * Deletes the editor of the list
  * @param {Object} input
  *  @returns {Object} object of deleted editor
  */
-export const deleteEditor = async input => {
+export const deleteListEditor = async input => {
   const {data} = await API.graphql(
-    graphqlOperation(mutations.deleteEditor, {input}),
+    graphqlOperation(mutations.deleteListEditor, {input}),
   );
-  return data.deleteEditor;
+  return data.deleteListEditor;
 };
 
 /**

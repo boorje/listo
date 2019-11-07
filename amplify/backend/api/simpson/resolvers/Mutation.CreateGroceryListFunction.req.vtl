@@ -1,0 +1,23 @@
+## [Start] Prepare DynamoDB PutItem Request. **
+#set($list = {})
+$util.qr($list.put("title", $ctx.stash.title))
+$util.qr($list.put("owner", $ctx.stash.owner))
+$util.qr($list.put("createdAt", $util.defaultIfNull($input.createdAt, $util.time.nowISO8601())))
+$util.qr($list.put("updatedAt", $util.defaultIfNull($input.updatedat, $util.time.nowISO8601())))
+$util.qr($list.put("__typename", "GroceryList"))
+
+{
+  "version": "2017-02-28",
+  "operation": "PutItem",
+  "key": #if( $modelObjectKey ) $util.toJson($modelObjectKey) #else {
+  "id":   $util.dynamodb.toDynamoDBJson($util.defaultIfNullOrBlank($ctx.args.id, $util.autoId()))
+} #end,
+  "attributeValues": $util.dynamodb.toMapValuesJson($list),
+  "condition": {
+      "expression": "attribute_not_exists(#id)",
+      "expressionNames": {
+          "#id": "id"
+    }
+  }
+}
+## [End] Prepare DynamoDB PutItem Request. **

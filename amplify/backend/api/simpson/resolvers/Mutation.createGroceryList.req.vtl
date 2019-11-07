@@ -1,64 +1,42 @@
-## [Start] Determine request authentication mode **
-#if( $util.isNullOrEmpty($authMode) && !$util.isNull($ctx.identity) && !$util.isNull($ctx.identity.sub) && !$util.isNull($ctx.identity.issuer) && !$util.isNull($ctx.identity.username) && !$util.isNull($ctx.identity.claims) && !$util.isNull($ctx.identity.sourceIp) && !$util.isNull($ctx.identity.defaultAuthStrategy) )
-  #set( $authMode = "userPools" )
-#end
-## [End] Determine request authentication mode **
-## [Start] Check authMode and execute owner/group checks **
-#if( $authMode == "userPools" )
-  ## No Static Group Authorization Rules **
+#set($owner = $util.defaultIfNull($ctx.identity.claims.get("username"), $ctx.identity.claims.get("cognito:username")))
+## [Start] Prepare DynamoDB PutItem Request. **
+#set($list = {})
+#set($listId = $util.autoId()) ## generate a unique id for the list
+$util.qr($list.put("id", $listId))
+$util.qr($list.put("owner", $owner))
+$util.qr($list.put("title", $ctx.args.input.title))
+$util.qr($list.put("createdAt", $util.time.nowISO8601()))
+$util.qr($list.put("updatedAt", $util.time.nowISO8601()))
+$util.qr($list.put("__typename", "GroceryList"))
 
+#set($arr = [])
+$util.qr($arr.add($util.dynamodb.toMapValues($list)))
 
-  ## No Dynamic Group Authorization Rules **
-
-
-  ## [Start] Owner Authorization Checks **
-  #set( $isOwnerAuthorized = false )
-  ## Authorization rule: { allow: owner, ownerField: "owner", identityClaim: "cognito:username" } **
-  #set( $allowedOwners0 = $util.defaultIfNull($ctx.args.input.owner, null) )
-  #set( $identityValue = $util.defaultIfNull($ctx.identity.claims.get("username"), $util.defaultIfNull($ctx.identity.claims.get("cognito:username"), "___xamznone____")) )
-  #if( $util.isList($allowedOwners0) )
-    #foreach( $allowedOwner in $allowedOwners0 )
-      #if( $allowedOwner == $identityValue )
-        #set( $isOwnerAuthorized = true )
-      #end
-    #end
-  #end
-  #if( $util.isString($allowedOwners0) )
-    #if( $allowedOwners0 == $identityValue )
-      #set( $isOwnerAuthorized = true )
-    #end
-  #end
-  #if( $util.isNull($allowedOwners0) && (! $ctx.args.input.containsKey("owner")) )
-    $util.qr($ctx.args.input.put("owner", $identityValue))
-    #set( $isOwnerAuthorized = true )
-  #end
-  ## [End] Owner Authorization Checks **
-
-
-  ## [Start] Throw if unauthorized **
-  #if( !($isStaticGroupAuthorized == true || $isDynamicGroupAuthorized == true || $isOwnerAuthorized == true) )
-    $util.unauthorized()
-  #end
-  ## [End] Throw if unauthorized **
-#end
-## [End] Check authMode and execute owner/group checks **
+## [Start] Set the primary @key. **
+#set( $modelObjectKey = {
+  "listId": $listId,
+  "userId": $owner
+} )
+## [End] Set the primary @key. **
 
 ## [Start] Prepare DynamoDB PutItem Request. **
-$util.qr($context.args.input.put("createdAt", $util.defaultIfNull($ctx.args.input.createdAt, $util.time.nowISO8601())))
-$util.qr($context.args.input.put("updatedAt", $util.defaultIfNull($ctx.args.input.updatedAt, $util.time.nowISO8601())))
-$util.qr($context.args.input.put("__typename", "GroceryList"))
+#set($editor = {})
+$util.qr($editor.put("key", $modelObjectKey))
+$util.qr($editor.put("createdAt", $util.time.nowISO8601()))
+$util.qr($editor.put("updatedAt", $util.time.nowISO8601()))
+$util.qr($editor.put("__typename", "ListEditor"))
+$util.qr($editor.put("id", "${listId}:$owner"))
+$util.qr($editor.put("editorUserId", $owner))
+$util.qr($editor.put("editorListId", $listId))
+
+#set($arr2 = [])
+$util.qr($arr2.add($util.dynamodb.toMapValues($editor)))
+
 {
-  "version": "2017-02-28",
-  "operation": "PutItem",
-  "key": #if( $modelObjectKey ) $util.toJson($modelObjectKey) #else {
-  "id":   $util.dynamodb.toDynamoDBJson($util.defaultIfNullOrBlank($ctx.args.input.id, $util.autoId()))
-} #end,
-  "attributeValues": $util.dynamodb.toMapValuesJson($context.args.input),
-  "condition": {
-      "expression": "attribute_not_exists(#id)",
-      "expressionNames": {
-          "#id": "id"
+    "version" : "2018-05-29",
+    "operation" : "BatchPutItem",
+    "tables" : {
+        "GroceryList-uzrt3gmxc5c4rhsyrdkriizm24-dev": $utils.toJson($arr),
+        "Editor-uzrt3gmxc5c4rhsyrdkriizm24-dev": $utils.toJson($arr2)
     }
-  }
 }
-## [End] Prepare DynamoDB PutItem Request. **
