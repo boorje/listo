@@ -113,9 +113,7 @@ class OverlayModal extends React.Component {
               size={35}
               color={'rgba(52, 52, 52, 1)'}
               name={'ios-close-circle'}
-              onPress={() => {
-                this.props.closeModal();
-              }}
+              onPress={() => this.props.closeModal()}
             />
           </View>
           <View style={styles.headline}>

@@ -189,15 +189,13 @@ export default class ListScreen extends React.Component {
     return (
       <View style={styles.container}>
         {historyOpen && (
-          <PreviousGroceriesModal
-            closeModal={() => this.openGroceryHistory()}
-          />
+          <PreviousGroceriesModal closeModal={this.openGroceryHistory} />
         )}
         {listSettingsOpen && (
           <ListSettingsModal
             groceryList={groceryList}
             user={user}
-            closeModal={() => this.openListSettings()}
+            closeModal={this.openListSettings}
           />
         )}
         {apiError.length > 0 && messageOpen && (
@@ -207,9 +205,9 @@ export default class ListScreen extends React.Component {
           />
         )}
         <ScreenHeader
-          leftIconPress={() => this.props.navigation.goBack()}
-          rightIcon1Press={() => this.openGroceryHistory()}
-          rightIcon2Press={() => this.renameList('newTitle')}
+          leftIconPress={this.props.navigation.goBack}
+          rightIcon1Press={this.openGroceryHistory}
+          rightIcon2Press={this.openListSettings}
           headerTitle={groceryList.title}
           leftIcon={'ios-arrow-round-back'}
           //rightIcon1={'md-hourglass'}
