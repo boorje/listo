@@ -15,17 +15,31 @@ export const createUser = `mutation createUser($input: CreateUserInput!) {
  * Grocery List
  */
 
-export const createGroceryList = `mutation createGroceryList($input: CreateGroceryListInput!) {
-  createGroceryList(input: $input) {
+export const createGroceryListAndEditor = `mutation createGroceryListAndEditor($title: String!) {
+  createGroceryListAndEditor(title: $title) {
     id
+    title
     owner
-    title 
   }
- }`;
+}`;
+
+export const deleteGroceryListAndEditors = `mutation deleteGroceryListAndEditors($listId: ID!) {
+  deleteGroceryListAndEditors(listId: $listId) {
+    id
+  }
+}`;
 
 export const deleteGroceryList = `mutation deleteGroceryList($input: DeleteGroceryListInput!) {
   deleteGroceryList(input: $input) {
     id
+  }
+}`;
+
+export const updateGroceryList = `mutation updateGroceryList($input: UpdateGroceryListInput!) {
+  updateGroceryList(input: $input) {
+    id
+    title
+    owner
   }
 }`;
 
@@ -51,8 +65,8 @@ export const createOwnerEditor = `mutation createEditor($input: CreateEditorInpu
   }
  }`;
 
-export const deleteEditor = `mutation deleteEditor($input: DeleteEditorInput!) {
-  deleteEditor(input: $input) {
+export const deleteListEditor = `mutation deleteListEditor($input: DeleteListEditorInput!) {
+  deleteListEditor(input: $input) {
     id
   }
 }`;

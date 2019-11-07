@@ -1,0 +1,21 @@
+## Ensure that the resolver exists if it runs in to an error.
+#if($ctx.error)
+    $util.error($ctx.error.message, $ctx.error.type)
+#end
+
+## Ensure that the grocery list was created !== null
+#if($util.isNullOrBlank($ctx.result))
+    ## Set the error message
+    $util.error($ctx.error.message, $ctx.error.type)
+#end
+
+#set($user = $util.defaultIfNull($ctx.identity.claims.get("username"), $ctx.identity.claims.get("cognito:username")))
+## Ensure that only the owner of the list can delete an editor
+#if( $user != $ctx.result.owner ) 
+	$util.error("Only the owner can delete an editor.")
+## Ensure that the owner of a list cannot be deleted
+#elseif( $ctx.result.owner == $ctx.stash.userId )
+	$util.error("Can not delete the owner of the list.")
+#end
+
+$util.toJson($ctx.result)
