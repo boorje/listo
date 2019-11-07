@@ -1,17 +1,10 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Animated,
-  Dimensions,
-  Modal,
-} from 'react-native';
-import IoniconsIcon from 'react-native-vector-icons/Ionicons';
+import {View, StyleSheet, Animated, Dimensions} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import GroceryForm from './forms/groceryForm';
 import textStyles from '../styles/textStyles';
 import PropTypes from 'prop-types';
+import * as colors from '../styles/colors';
 
 const {height, width} = Dimensions.get('window');
 const {Value} = Animated;
@@ -122,7 +115,6 @@ export default class AddGroceryFooter extends React.Component {
               <GroceryForm
                 placeholderColor="white"
                 textColor="white"
-                fontWeight="bold"
                 closeGroceryForm={() => {
                   this.props.showAddGrocery();
                   this.closeAddIcon();
@@ -141,12 +133,12 @@ export default class AddGroceryFooter extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    bottom: 0,
     backgroundColor: 'white',
-    justifyContent: 'center',
     shadowColor: 'black',
     shadowOffset: {width: 0, height: 0},
     shadowRadius: 2,
-    shadowOpacity: 1,
+    shadowOpacity: 0.5,
   },
   sideIconsView: {
     flex: 1,
@@ -155,23 +147,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: '10%',
   },
-  sideIconStyle: {
-    shadowColor: 'black',
-    shadowOffset: {width: 0, height: 0},
-    shadowRadius: 2,
-    shadowOpacity: 1,
-  },
+
   addIcon: {
     position: 'absolute',
     borderRadius: 50,
     justifyContent: 'center',
-    top: '-50%',
+    top: '-40%',
     alignSelf: 'center',
-    backgroundColor: '#06BA63',
+    backgroundColor: colors.primaryColor,
     shadowColor: 'black',
     shadowOffset: {width: 0, height: 0},
-    shadowRadius: 2,
-    shadowOpacity: 1,
+    shadowOpacity: 0.5,
   },
   form: {
     position: 'absolute',

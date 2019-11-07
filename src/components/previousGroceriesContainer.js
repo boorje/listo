@@ -9,7 +9,7 @@ import {
 import PropTypes from 'prop-types';
 import textStyles from '../styles/textStyles';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
-import animations from '../styles/animations';
+import * as colors from '../styles/colors';
 import PrimaryButton from '../components/buttons/primaryButton';
 import {KeyboardAwareFlatList} from 'react-native-keyboard-aware-scroll-view';
 
@@ -80,14 +80,14 @@ class PreviousGroceriesContainer extends React.Component {
             <IoniconsIcon
               style={styles.iconStyle}
               size={30}
-              color={'#06BA63'}
+              color={colors.primaryColor}
               name={'ios-radio-button-off'}
             />
           ) : (
             <IoniconsIcon
               style={styles.iconStyle}
               size={30}
-              color={'#06BA63'}
+              color={colors.primaryColor}
               name={'ios-radio-button-on'}
             />
           )}
@@ -102,7 +102,7 @@ class PreviousGroceriesContainer extends React.Component {
 
   addButton = (
     <View style={styles.button}>
-      <PrimaryButton title="Lägg till" onPress={() => {}} />
+      <PrimaryButton title="Add" onPress={() => {}} />
     </View>
   );
 

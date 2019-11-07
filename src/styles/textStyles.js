@@ -18,19 +18,14 @@ const textStyles = StyleSheet.create({
   myLists: {
     fontSize: 40,
     fontFamily: 'Avenir Next',
+    fontWeight: '500',
     color: 'white',
     lineHeight: 45,
-    textShadowColor: 'rgba(0, 0, 0, 1)',
-    textShadowOffset: {width: 3, height: 2},
-    textShadowRadius: 10,
   },
   listTitle: {
-    fontSize: 30,
+    fontSize: 25,
     fontFamily: 'Avenir Next',
     color: 'white',
-    textShadowColor: 'rgba(0, 0, 0, 0.75)',
-    textShadowOffset: {width: 5, height: 1},
-    textShadowRadius: 5,
   },
   modalTitle: {
     fontSize: 20,
@@ -50,23 +45,15 @@ const textStyles = StyleSheet.create({
     color: 'white',
   },
   loginHeadline: {
-    fontSize: 40,
+    fontSize: 20,
+    alignSelf: 'center',
     fontFamily: 'Avenir Next',
     color: 'white',
     fontWeight: 'bold',
-    textShadowColor: 'rgba(0, 0, 0, 0.75)',
-    textShadowOffset: {width: -1, height: 1},
-    textShadowRadius: 10,
   },
   smallText: {
     fontSize: 15,
     fontFamily: 'Avenir Next',
-    fontWeight: 'bold',
-    alignSelf: 'center',
-    padding: 10,
-    textShadowColor: 'rgba(0, 0, 0, 0.75)',
-    textShadowOffset: {width: 1, height: 0},
-    textShadowRadius: 5,
   },
 });
 

@@ -4,15 +4,18 @@ import {
   SafeAreaView,
   StyleSheet,
   Text,
+  LayoutAnimation,
   View,
 } from 'react-native';
-import IoniconsIcon from 'react-native-vector-icons/Ionicons';
+
 // components
 import GroceryListsContainer from '../components/groceryListsContainer';
 import AddGroceryListModal from '../components/modals/AddGroceryListModal';
 import Message from '../components/message';
 import HomeScreenBackground from '../components/homeScreenBackground';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import animations from '../styles/animations';
+import * as colors from '../styles/colors';
 // api
 import {
   createGroceryList,
@@ -33,6 +36,7 @@ export default class HomeScreen extends React.Component {
     user: {},
     apiError: '',
     viewWidth: 0,
+    messageOpen: false,
   };
 
   componentDidMount = async () => {
@@ -42,6 +46,7 @@ export default class HomeScreen extends React.Component {
       this.setState({
         apiError: error ? error : 'Could not fetch lists. Please try again.',
       });
+      this.setState({messageOpen: true});
     }
   };
 
@@ -84,6 +89,7 @@ export default class HomeScreen extends React.Component {
       this.setState({
         apiError: `Kunde inte skapa listan "${title}". Försök igen.`,
       });
+      this.setState({messageOpen: true});
     }
   };
 
@@ -129,6 +135,7 @@ export default class HomeScreen extends React.Component {
             const groceryListsCopy = this.state.groceryLists.filter(
               groceryList => groceryList.list.id !== list.id,
             );
+            LayoutAnimation.configureNext(animations.default);
             this.setState({groceryLists: groceryListsCopy});
           }
         },
@@ -136,6 +143,7 @@ export default class HomeScreen extends React.Component {
     } catch (error) {
       console.log(error);
       this.setState({apiError: error});
+      this.setState({messageOpen: true});
     }
   };
 
@@ -148,15 +156,20 @@ export default class HomeScreen extends React.Component {
       modalOpen: prevstate.modalOpen ? false : true,
     }));
   };
+  toggleMessage = () => {
+    this.setState(prevstate => ({
+      messageOpen: prevstate.messageOpen ? false : true,
+    }));
+  };
 
   render() {
-    const {apiError, groceryLists, modalOpen, user} = this.state;
+    const {apiError, groceryLists, modalOpen, user, messageOpen} = this.state;
     return (
       <View style={styles.container}>
         {modalOpen && (
           <AddGroceryListModal
             closeModal={() => this.toggleModal()}
-            placeholder="Lägg till lista..."
+            placeholder="Add list..."
             addGroceryList={this.addGroceryList}
           />
         )}
@@ -165,7 +178,12 @@ export default class HomeScreen extends React.Component {
             this.props.navigation.navigate('Settings', {user})
           }
         />
-        {apiError.length > 0 && <Message message={apiError} />}
+        {apiError.length > 0 && messageOpen && (
+          <Message
+            messageOpen={() => this.toggleMessage()}
+            message={apiError}
+          />
+        )}
         <SafeAreaView style={{flex: 5, marginTop: '3%'}}>
           <GroceryListsContainer
             user={user}
@@ -193,17 +211,17 @@ export default class HomeScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#E3E3E3',
+    backgroundColor: 'white',
   },
   addIcon: {
     position: 'absolute',
     borderRadius: 50,
     bottom: '10%',
     right: '15%',
-    backgroundColor: '#06BA63',
+    backgroundColor: colors.primaryColor,
     shadowColor: 'black',
     shadowOffset: {width: 0, height: 0},
     shadowRadius: 2,
-    shadowOpacity: 1,
+    shadowOpacity: 0.7,
   },
 });
