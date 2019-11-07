@@ -5,9 +5,13 @@ import {Auth} from 'aws-amplify';
 // -- Components --
 import CodeForm from '../../components/forms/codeForm';
 import Message from '../../components/message';
+import Logo from '../../components/logo';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 // -- API --
 import {createUser} from '../../api/authAPI';
+import textStyles from '../../styles/textStyles';
+import * as colors from '../../styles/colors';
 
 class VerifyScreen extends React.Component {
   state = {
@@ -15,6 +19,7 @@ class VerifyScreen extends React.Component {
     user: this.props.navigation.getParam('user', null),
     loading: false,
     cognitoUser: {},
+    messageOpen: false,
   };
 
   _validateCode = code => {
@@ -71,19 +76,29 @@ class VerifyScreen extends React.Component {
       this.props.navigation.navigate('Login');
     }
   };
+  toggleMessage = () => {
+    this.setState(prevstate => ({
+      messageOpen: prevstate.messageOpen ? false : true,
+    }));
+  };
 
   render() {
-    const {loading, verificationError, user} = this.state;
+    const {loading, verificationError, user, messageOpen} = this.state;
     return (
       <View style={styles.container}>
-        {verificationError.length > 0 && (
-          <Message message={verificationError} />
+        {verificationError.length > 0 && messageOpen && (
+          <Message
+            messageOpen={() => this.toggleMessage()}
+            message={verificationError}
+          />
         )}
+        <Logo />
         <CodeForm
           handleSubmit={this.confirmSignup}
           loading={loading}
           submitTitle="VERIFY CODE"
         />
+
         {user.username && (
           <Text style={styles.textInfo}>
             A verification code has been sent to{' '}
@@ -98,7 +113,10 @@ class VerifyScreen extends React.Component {
 export default VerifyScreen;
 
 const styles = StyleSheet.create({
-  container: {margin: 30},
+  container: {
+    flex: 1,
+    backgroundColor: colors.primaryColor,
+  },
   textInfo: {
     textAlign: 'center',
   },

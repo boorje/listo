@@ -13,11 +13,12 @@ import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {KeyboardAwareFlatList} from 'react-native-keyboard-aware-scroll-view';
 // components
-import AddGroceryFooter from '../components/addGroceryFooter';
 import GroceryForm from './forms/groceryForm';
+import EmptyListInfo from './emptyListInfo';
 // styles
 import textStyles from '../styles/textStyles';
 import animations from '../styles/animations';
+import * as colors from '../styles/colors';
 
 const {Value} = Animated;
 const {height, width} = Dimensions.get('window');
@@ -26,11 +27,9 @@ class GroceriesContainer extends React.Component {
   constructor(props) {
     super(props);
     this.itemX = new Value(1);
-    this.itemHeight = new Value(45);
   }
   state = {
     groceries: this.props.groceries,
-    addItemOpen: false,
     refreshing: false,
     removeId: '',
   };
@@ -60,16 +59,6 @@ class GroceriesContainer extends React.Component {
     });
   };
 
-  showAddGrocery = () => {
-    if (this.state.addItemOpen === false) {
-      LayoutAnimation.configureNext(animations.default);
-      this.setState({addItemOpen: true});
-    } else {
-      LayoutAnimation.configureNext(animations.default);
-      this.setState({addItemOpen: false});
-    }
-  };
-
   renderItem(grocery) {
     return (
       <TouchableHighlight
@@ -79,7 +68,9 @@ class GroceriesContainer extends React.Component {
         style={{flex: 1}}
         fontSize={50}
         onPress={() => {
-          this.props.removeGrocery(grocery.id);
+          if (!this.props.addItemOpen) {
+            this.props.removeGrocery(grocery.id);
+          }
         }}
         underlayColor={'transparent'}>
         <Animated.View
@@ -87,17 +78,18 @@ class GroceriesContainer extends React.Component {
             styles.container2,
             {
               opacity: this.state.removeId === grocery.id ? this.itemX : 1,
-              height: this.state.removeId === grocery.id ? this.itemHeight : 45,
             },
           ]}>
           <View style={{flex: 1, paddingLeft: '5%'}}>
             {grocery.details ? (
-              <GroceryForm
-                closeGroceryForm={() => this.showGroceryForm(grocery)}
-                addGrocery={this.props.updateGrocery}
-                item={grocery}
-                shouldCloseOnSubmit={true}
-              />
+              <View>
+                <GroceryForm
+                  closeGroceryForm={() => this.showGroceryForm(grocery)}
+                  addGrocery={this.props.updateGrocery}
+                  item={grocery}
+                  shouldCloseOnSubmit={true}
+                />
+              </View>
             ) : (
               <View style={styles.textInfo}>
                 <Text style={textStyles.default}>{grocery.content}</Text>
@@ -114,7 +106,7 @@ class GroceriesContainer extends React.Component {
               name={!grocery.details ? 'expand-more' : 'expand-less'}
               color={'black'}
               onPress={() => {
-                if (!this.state.addItemOpen) {
+                if (!this.props.addItemOpen) {
                   this.showGroceryForm(grocery);
                 }
               }}
@@ -132,15 +124,20 @@ class GroceriesContainer extends React.Component {
   render() {
     return (
       <View style={{flex: 1}}>
-        <View style={{flex: 8}}>
+        <View style={styles.groceries}>
+          {this.state.groceries.length === 0 && (
+            <EmptyListInfo emoji={this.props.addItemOpen ? '😃' : '🥺'} />
+          )}
+
           <KeyboardAwareFlatList
-            ref="flatList"
-            onContentSizeChange={() => this.refs.flatList.scrollToEnd()}
+            //ref="flatList" //! USE TO ADJUST LIST WHEN ADDING ITEMS. BEHAVIOR IS NOT OPTIMAL.
+            //onContentSizeChange={() => this.refs.flatList.scrollToEnd()}
+            contentContainerStyle={{marginBottom: 10}}
             scrollEnabled={true}
             refreshControl={
               <RefreshControl
                 refreshing={this.state.refreshing}
-                tintColor={'#06BA63'}
+                tintColor={colors.primaryColor}
                 onRefresh={() => this.props.onRefresh()}
               />
             }
@@ -151,13 +148,6 @@ class GroceriesContainer extends React.Component {
             keyboardShouldPersistTaps="always"
           />
         </View>
-        <View style={[styles.footer, {justifyContent: 'center', flex: 1}]}>
-          <AddGroceryFooter
-            addGrocery={this.props.addGrocery}
-            addItemOpen={this.state.addItemOpen}
-            showAddGrocery={this.showAddGrocery}
-          />
-        </View>
       </View>
     );
   }
@@ -166,42 +156,40 @@ class GroceriesContainer extends React.Component {
 export default GroceriesContainer;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingLeft: '10%',
-    paddingRight: '10%',
-  },
-  separator: {
-    height: 2,
-    width: '97%',
-    marginLeft: '3%',
-    backgroundColor: '#E3E3E3',
-  },
-  container1: {
-    flex: 1,
+  groceries: {
+    position: 'absolute',
+    top: '-9%',
+    height: '110%',
+    backgroundColor: 'white',
+    paddingTop: '3%',
+    width: '95%',
+    alignSelf: 'flex-end',
+    borderTopLeftRadius: 30,
+    shadowColor: 'black',
+    shadowOffset: {width: 0, height: 0},
+    shadowOpacity: 0.2,
   },
   container2: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    backgroundColor: 'white',
-    borderTopLeftRadius: 15,
-    borderBottomLeftRadius: 15,
+    backgroundColor: colors.secondaryColor,
+    borderTopLeftRadius: 10,
+    borderBottomLeftRadius: 10,
     alignItems: 'center',
     marginLeft: '3%',
     paddingRight: '3%',
     paddingBottom: '3%',
+    marginRight: -1,
+  },
+  separator: {
+    height: 3,
+    width: '97%',
+    marginLeft: '3%',
   },
   textInfo: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  footer: {
-    paddingBottom: 0,
   },
 });
 

@@ -1,17 +1,14 @@
 import React from 'react';
-import {StyleSheet, Image, View, Text} from 'react-native';
+import {StyleSheet, Dimensions, View, Text} from 'react-native';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 import textStyles from '../styles/textStyles';
 import PropTypes from 'prop-types';
+import * as colors from '../styles/colors';
+
+const {height, width} = Dimensions.get('window');
 
 const ScreenHeader = props => (
   <View style={styles.container}>
-    <Image
-      style={styles.image}
-      source={{
-        uri: props.background,
-      }}
-    />
     <View style={styles.container2}>
       <View style={{flex: 1}}>
         <IoniconsIcon
@@ -22,8 +19,8 @@ const ScreenHeader = props => (
           onPress={() => props.leftIconPress()}
         />
       </View>
-      <View style={{flex: 1, alignItems: 'center'}}>
-        <Text style={textStyles.listTitle}>{props.headerTitle}</Text>
+      <View style={styles.headerTitle}>
+        <Text style={[textStyles.listTitle]}>{props.headerTitle}</Text>
       </View>
       <View style={styles.rightIcons}>
         {props.rightIcon1 && (
@@ -54,24 +51,26 @@ export default ScreenHeader;
 const styles = StyleSheet.create({
   container: {
     top: 0,
-    height: '15%',
-    justifyContent: 'flex-end',
+    backgroundColor: colors.primaryColor,
+    height: '20%',
+    justifyContent: 'center',
+    shadowColor: 'black',
+    shadowOffset: {width: 0, height: 0},
+    shadowOpacity: 0.5,
   },
-  image: {flex: 1, opacity: 0.6, top: 0},
   container2: {
-    width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingLeft: '5%',
-    paddingRight: '3%',
+    paddingHorizontal: '4%',
     paddingBottom: '3%',
     position: 'absolute',
   },
+  headerTitle: {
+    flex: 5,
+    alignItems: 'center',
+  },
   iconStyle: {
-    textShadowColor: 'rgba(0, 0, 0, 0.75)',
-    textShadowOffset: {width: 3, height: 1},
-    textShadowRadius: 10,
     paddingRight: '10%',
   },
   rightIcons: {
@@ -82,7 +81,6 @@ const styles = StyleSheet.create({
 });
 
 ScreenHeader.propTypes = {
-  background: PropTypes.string.isRequired,
   leftIconPress: PropTypes.func.isRequired,
   leftIcon: PropTypes.string.isRequired,
 };

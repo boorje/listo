@@ -1,3 +1,4 @@
-export const primaryColor = '#1fb2cc';
-export const submitColor = '#06BA63';
+export const primaryColor = '#03B5AA';
+export const secondaryColor = '#F3F3F3';
+export const submitColor = 'white';
 export const errorColor = '#fc642d';

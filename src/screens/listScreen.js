@@ -1,5 +1,5 @@
 import React from 'react';
-import {LayoutAnimation, StyleSheet, View} from 'react-native';
+import {LayoutAnimation, StyleSheet, View, Modal} from 'react-native';
 // components
 import GroceriesContainer from '../components/groceriesContainer';
 import Message from '../components/message';
@@ -7,6 +7,8 @@ import ScreenHeader from '../components/screenHeader';
 import PreviousGroceriesModal from './modals/previousGroceriesModal';
 import ListSettingsModal from './modals/listSettingsModal';
 import animations from '../styles/animations';
+import * as colors from '../styles/colors';
+import AddGroceryFooter from '../components/addGroceryFooter';
 
 // api
 import {
@@ -16,19 +18,33 @@ import {
   deleteGroceryItem,
   updateGroceryItem,
 } from '../api/groceryListsAPI';
-
-const BACKGROUND_URL =
-  'https://images.unsplash.com/photo-1456324504439-367cee3b3c32?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80';
+import {
+  TouchableHighlight,
+  TouchableOpacity,
+} from 'react-native-gesture-handler';
 
 export default class ListScreen extends React.Component {
   state = {
     groceryList: {},
     groceries: [],
+    // groceries: [ //! MOCK DATA
+    //   {id: 1, content: 'bärs', quantity: 3, unit: 'flak'},
+    //   {id: 2, content: 'bärs', quantity: 3, unit: 'flak'},
+    //   {id: 3, content: 'bärs', quantity: 3, unit: 'flak'},
+    //   {id: 4, content: 'bärs', quantity: 3, unit: 'flak'},
+    //   {id: 5, content: 'bärs', quantity: 3, unit: 'flak'},
+    //   {id: 6, content: 'bärs', quantity: 3, unit: 'flak'},
+    //   {id: 7, content: 'bärs', quantity: 3, unit: 'flak'},
+    //   {id: 8, content: 'bärs', quantity: 3, unit: 'flak'},
+    //   {id: 9, content: 'bärs', quantity: 3, unit: 'flak'},
+    // ],
     user: {},
     apiError: '',
     listSettingsOpen: false,
     historyOpen: false,
     previousGroceries: [],
+    addItemOpen: false,
+    messageOpen: false,
   };
 
   componentDidMount = async () => {
@@ -47,6 +63,7 @@ export default class ListScreen extends React.Component {
           ? error
           : 'Could not fetch list items. Please try again. ',
       });
+      this.setState({messageOpen: true});
     }
   };
 
@@ -98,6 +115,7 @@ export default class ListScreen extends React.Component {
       });
     } catch (error) {
       this.setState({apiError: error});
+      this.setState({messageOpen: true});
     }
   };
 
@@ -114,6 +132,7 @@ export default class ListScreen extends React.Component {
       this.setState({groceries: stateCopy});
     } catch (error) {
       this.setState({apiError: error});
+      this.setState({messageOpen: true});
     }
   };
 
@@ -130,9 +149,18 @@ export default class ListScreen extends React.Component {
       this.setState({groceries: stateCopy});
     } catch (error) {
       this.setState({apiError: error});
+      this.setState({messageOpen: true});
     }
   };
-
+  showAddGrocery = () => {
+    if (this.state.addItemOpen === false) {
+      LayoutAnimation.configureNext(animations.default);
+      this.setState({addItemOpen: true});
+    } else {
+      LayoutAnimation.configureNext(animations.default);
+      this.setState({addItemOpen: false});
+    }
+  };
   openListSettings = () => {
     this.setState({
       listSettingsOpen: this.state.listSettingsOpen ? false : true,
@@ -141,6 +169,11 @@ export default class ListScreen extends React.Component {
 
   openGroceryHistory = () => {
     this.setState({historyOpen: this.state.historyOpen ? false : true});
+  };
+  toggleMessage = () => {
+    this.setState(prevstate => ({
+      messageOpen: prevstate.messageOpen ? false : true,
+    }));
   };
 
   render() {
@@ -151,6 +184,7 @@ export default class ListScreen extends React.Component {
       historyOpen,
       listSettingsOpen,
       user,
+      messageOpen,
     } = this.state;
     return (
       <View style={styles.container}>
@@ -166,7 +200,12 @@ export default class ListScreen extends React.Component {
             closeModal={() => this.openListSettings()}
           />
         )}
-        {apiError.length > 0 && <Message message={apiError} />}
+        {apiError.length > 0 && messageOpen && (
+          <Message
+            messageOpen={() => this.toggleMessage()}
+            message={apiError}
+          />
+        )}
         <ScreenHeader
           leftIconPress={() => this.props.navigation.goBack()}
           rightIcon1Press={() => this.openGroceryHistory()}
@@ -175,18 +214,25 @@ export default class ListScreen extends React.Component {
           leftIcon={'ios-arrow-round-back'}
           //rightIcon1={'md-hourglass'}
           rightIcon2={'md-person-add'}
-          background={BACKGROUND_URL}
         />
-
-        <View style={styles.separator} />
-        <GroceriesContainer
-          groceries={groceries}
-          addGrocery={this.addGrocery}
-          updateGrocery={this.updateGrocery}
-          removeGrocery={this.removeGrocery}
-          navigation={this.props.navigation}
-          onRefresh={() => this.fetchListItems(groceryList.id)}
-        />
+        <View style={{flex: 11}}>
+          <GroceriesContainer
+            groceries={groceries}
+            addGrocery={this.addGrocery}
+            updateGrocery={this.updateGrocery}
+            removeGrocery={this.removeGrocery}
+            navigation={this.props.navigation}
+            addItemOpen={this.state.addItemOpen}
+            onRefresh={() => this.fetchListItems(groceryList.id)}
+          />
+        </View>
+        <View style={styles.footer}>
+          <AddGroceryFooter
+            addGrocery={this.addGrocery}
+            addItemOpen={this.state.addItemOpen}
+            showAddGrocery={this.showAddGrocery}
+          />
+        </View>
       </View>
     );
   }
@@ -195,12 +241,11 @@ export default class ListScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#E3E3E3',
+    backgroundColor: colors.secondaryColor,
   },
-  separator: {
-    height: 1,
-    backgroundColor: '#808080',
-    opacity: 0.5,
-    marginBottom: '2%',
+  footer: {
+    bottom: 0,
+    flex: 2,
+    justifyContent: 'center',
   },
 });
