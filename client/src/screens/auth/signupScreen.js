@@ -1,7 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, Image, Text} from 'react-native';
-import {Auth} from 'aws-amplify';
-import textStyles from '../../styles/textStyles';
+import {StyleSheet, View} from 'react-native';
 import * as colors from '../../styles/colors';
 
 // -- Components --
@@ -25,15 +23,6 @@ class SignupScreen extends React.Component {
     this.setState({loading: true});
     try {
       await validateValues(values);
-      const {user} = await Auth.signUp({
-        username: email,
-        password,
-      });
-      this.setState({loading: false});
-      this.props.navigation.navigate('Verify', {
-        user,
-        values,
-      });
     } catch (error) {
       this.setState({loading: false});
       switch (error.code) {

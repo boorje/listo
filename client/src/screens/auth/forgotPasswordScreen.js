@@ -1,6 +1,5 @@
 import React from 'react';
-import {StyleSheet, Text, View, Image} from 'react-native';
-import {Auth} from 'aws-amplify';
+import {StyleSheet, Text, View} from 'react-native';
 import textStyles from '../../styles/textStyles';
 import * as colors from '../../styles/colors';
 
@@ -31,9 +30,7 @@ class VerifyScreen extends React.Component {
     try {
       this.setState({loading: true});
       await this._validateEmail(email);
-      await Auth.forgotPassword(email);
       this.setState({loading: false});
-      this.props.navigation.navigate('ResetPassword', {email});
     } catch (error) {
       switch (error.code) {
         case 'ValidationError':
