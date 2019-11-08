@@ -1,6 +1,5 @@
 import React from 'react';
 import {View, StyleSheet, Text, Dimensions} from 'react-native';
-import {Auth} from 'aws-amplify';
 import Svg, {ClipPath, Circle, Rect} from 'react-native-svg';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import textStyles from '../styles/textStyles';
@@ -25,7 +24,6 @@ class SettingsScreen extends React.Component {
 
   _logout = async () => {
     try {
-      await Auth.signOut();
       this.props.navigation.navigate('Auth');
     } catch (error) {
       console.log(error);

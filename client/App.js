@@ -1,6 +1,5 @@
 import {createAppContainer, createSwitchNavigator} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
-import Amplify from 'aws-amplify';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -17,10 +16,6 @@ import SignedupScreen from './src/screens/auth/signupFinishedScreen';
 import ForgotPasswordScreen from './src/screens/auth/forgotPasswordScreen';
 import ResetPasswordScreen from './src/screens/auth/resetPasswordScreen';
 import PasswordFinishedScreen from './src/screens/auth/passwordFinishedScreen';
-
-// -- AMPLIFY SETUP --
-import aws_exports from './aws-exports';
-Amplify.configure(aws_exports);
 
 Icon.loadFont();
 IoniconsIcon.loadFont();

@@ -1,7 +1,5 @@
 import React from 'react';
-import {StyleSheet, Text, View, Image} from 'react-native';
-import {Auth} from 'aws-amplify';
-import textStyles from '../../styles/textStyles';
+import {StyleSheet, View} from 'react-native';
 
 // -- Components --
 import ResetPasswordForm from '../../components/forms/resetPasswordForm';
@@ -45,9 +43,7 @@ class ResetPasswordScreen extends React.Component {
       const {code, new_password} = values;
       const email = await this.props.navigation.getParam('email', null);
       await this._validateValues({email, code, new_password});
-      await Auth.forgotPasswordSubmit(email, code, new_password);
       this.setState({loading: false});
-      this.props.navigation.navigate('PasswordFinished');
     } catch (error) {
       this.setState({loading: false});
       switch (error.code) {

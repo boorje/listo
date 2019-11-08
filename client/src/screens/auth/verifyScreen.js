@@ -1,16 +1,12 @@
 import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
-import {Auth} from 'aws-amplify';
 
 // -- Components --
 import CodeForm from '../../components/forms/codeForm';
 import Message from '../../components/message';
 import Logo from '../../components/logo';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
-// -- API --
-import {createUser} from '../../api/authAPI';
-import textStyles from '../../styles/textStyles';
+// -- helper --
 import * as colors from '../../styles/colors';
 
 class VerifyScreen extends React.Component {
@@ -38,11 +34,6 @@ class VerifyScreen extends React.Component {
     try {
       this.setState({loading: true});
       await this._validateCode(code);
-      await Auth.confirmSignUp(this.state.user.username, code);
-      await this._signUserInAndAddToDB();
-      this.props.navigation.navigate('Signedup', {
-        user: this.state.cognitoUser,
-      });
       this.setState({loading: false});
     } catch (error) {
       this.setState({loading: false});
@@ -69,9 +60,6 @@ class VerifyScreen extends React.Component {
   _signUserInAndAddToDB = async () => {
     try {
       const {email, password} = this.props.navigation.getParam('values', null);
-      const cognitoUser = await Auth.signIn({username: email, password});
-      await createUser(email);
-      this.setState({cognitoUser});
     } catch (error) {
       this.props.navigation.navigate('Login');
     }

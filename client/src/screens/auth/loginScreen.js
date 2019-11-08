@@ -1,7 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import {StyleSheet, Image, View, Dimensions, Animated} from 'react-native';
-import {Auth} from 'aws-amplify';
+import {StyleSheet, View, Dimensions, Animated} from 'react-native';
 
 // -- Components --
 import LoginForm from '../../components/forms/loginForm';
@@ -14,7 +13,7 @@ import Logo from '../../components/logo';
 import validateValues from '../../helpers/validateFormValues';
 import {addUserToDB} from '../../helpers/addUserToDB';
 
-const {height, width} = Dimensions.get('window');
+const {height} = Dimensions.get('window');
 const {Value} = Animated;
 
 class LoginScreen extends React.Component {
@@ -35,16 +34,6 @@ class LoginScreen extends React.Component {
     this.setState({loading: true});
     try {
       await validateValues(values);
-      const user = await Auth.signIn({
-        username: email,
-        password,
-      });
-      // ! Remove this, add inside the homescreen instead. After successfully logged in, if getUser() is not found, then add it
-      await addUserToDB(user.attributes);
-      this.setState({loading: false});
-      this.props.navigation.navigate('Home', {
-        user,
-      });
     } catch (error) {
       this.setState({loading: false});
       switch (error.code) {
