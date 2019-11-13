@@ -3,6 +3,7 @@ import {StyleSheet, View, TextInput, Animated, Dimensions} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import textStyles from '../styles/textStyles';
 import PropTypes from 'prop-types';
+import * as colors from '../styles/colors';
 
 const {Value} = Animated;
 const {width, height} = Dimensions.get('window');
@@ -81,7 +82,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     borderRadius: 50,
     alignItems: 'center',
-    backgroundColor: '#06BA63',
+    backgroundColor: colors.primaryColor,
     shadowColor: 'black',
     shadowOffset: {width: 0, height: 0},
     shadowRadius: 2,

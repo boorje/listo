@@ -10,6 +10,7 @@ import {
 import * as yup from 'yup';
 import PropTypes from 'prop-types';
 import {KeyboardAwareFlatList} from 'react-native-keyboard-aware-scroll-view';
+import * as colors from '../styles/colors';
 // components
 import OverlayModal from '../../components/modals/overlayModal';
 import Message from '../../components/message';
