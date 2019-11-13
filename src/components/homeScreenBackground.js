@@ -32,8 +32,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 2,
     alignItems: 'center',
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
+    // borderBottomLeftRadius: 30,
+    // borderBottomRightRadius: 30,
     backgroundColor: colors.primaryColor,
     shadowColor: 'black',
     shadowOffset: {width: 0, height: 1},
