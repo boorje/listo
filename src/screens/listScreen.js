@@ -28,15 +28,16 @@ export default class ListScreen extends React.Component {
     //groceries: [],
     groceries: [
       //! MOCK DATA
-      {id: 1, content: 'bärs', quantity: 3, unit: 'flak'},
-      {id: 2, content: 'bärs', quantity: 3, unit: 'flak'},
-      {id: 3, content: 'bärs', quantity: 3, unit: 'flak'},
-      {id: 4, content: 'bärs', quantity: 3, unit: 'flak'},
-      {id: 5, content: 'bärs', quantity: 3, unit: 'flak'},
-      {id: 6, content: 'bärs', quantity: 3, unit: 'flak'},
-      {id: 7, content: 'bärs', quantity: 3, unit: 'flak'},
-      {id: 8, content: 'bärs', quantity: 3, unit: 'flak'},
-      {id: 9, content: 'bärs', quantity: 3, unit: 'flak'},
+      {id: 0, content: '0', quantity: 3, unit: 'flak'},
+      {id: 1, content: '1', quantity: 3, unit: 'flak'},
+      {id: 2, content: '2', quantity: 3, unit: 'flak'},
+      {id: 3, content: '3', quantity: 3, unit: 'flak'},
+      {id: 4, content: '4', quantity: 3, unit: 'flak'},
+      {id: 5, content: '5', quantity: 3, unit: 'flak'},
+      {id: 6, content: '6', quantity: 3, unit: 'flak'},
+      {id: 7, content: '7', quantity: 3, unit: 'flak'},
+      {id: 8, content: '8', quantity: 3, unit: 'flak'},
+      {id: 9, content: '9', quantity: 3, unit: 'flak'},
     ],
     user: {},
     apiError: '',
@@ -45,6 +46,7 @@ export default class ListScreen extends React.Component {
     previousGroceries: [],
     addItemOpen: false,
     messageOpen: false,
+    listOffset: 0,
   };
 
   componentDidMount = async () => {
@@ -203,7 +205,11 @@ export default class ListScreen extends React.Component {
           //rightIcon1={'md-hourglass'}
           rightIcon2={'md-person-add'}
         />
-        <View style={{flex: 11}}>
+        <View
+          style={{flex: 11}}
+          onLayout={e => {
+            this.setState({listOffset: e.nativeEvent.layout.y});
+          }}>
           <GroceriesContainer
             groceries={groceries}
             addGrocery={this.addGrocery}
@@ -212,6 +218,7 @@ export default class ListScreen extends React.Component {
             navigation={this.props.navigation}
             addItemOpen={this.state.addItemOpen}
             onRefresh={() => this.fetchListItems(groceryList.id)}
+            parentOffset={this.state.listOffset}
           />
         </View>
         <View style={styles.footer}>

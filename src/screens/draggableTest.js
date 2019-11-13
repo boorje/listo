@@ -25,9 +25,8 @@ class DraggableTest extends React.Component {
         this.currentIdx = this.yToIndex(gestureState.y0);
         this.currentY = gestureState.y0;
         this.draggingPos.setValue(
-          this.currentY - this.listOffset - this.rowHeight / 2,
-        ); // ! IMPROVE TO MORE SPECIFIC VALUE
-
+          this.currentY - this.state.parentOffset - this.rowHeight / 2,
+        );
         this.setState(
           {
             dragging: true,
@@ -39,7 +38,7 @@ class DraggableTest extends React.Component {
       onPanResponderMove: (evt, gestureState) => {
         this.currentY = gestureState.moveY;
         this.draggingPos.setValue(
-          this.currentY - this.listOffset - this.rowHeight / 2,
+          this.currentY - this.state.parentOffset - this.rowHeight / 2,
         );
       },
       onPanResponderRelease: (evt, gestureState) => {
@@ -54,7 +53,6 @@ class DraggableTest extends React.Component {
     this.draggingPos = new Value(0);
     this.flatList = createRef();
     this.scrollOffset = 0;
-    this.listOffset = 0;
     this.flatlistTopOffset = 0;
     this.flatListHeight = 0;
   }
@@ -91,7 +89,17 @@ class DraggableTest extends React.Component {
     ],
     dragging: false,
     draggingIndex: -1,
+    parentOffset: this.props.parentOffset,
   };
+
+  static getDerivedStateFromProps(props, state) {
+    if (props.parentOffset !== state.parentOffset) {
+      return {
+        parentOffset: props.parentOffset,
+      };
+    }
+    return null;
+  }
 
   immutableMove(arr, from, to) {
     return arr.reduce((prev, current, idx, self) => {
@@ -145,16 +153,21 @@ class DraggableTest extends React.Component {
   };
 
   yToIndex = y => {
-    const res = Math.floor(
-      (y + this.scrollOffset - this.flatlistTopOffset - this.listOffset) /
-        this.rowHeight,
-    );
+    if (y < this.state.parentOffset - this.rowHeight) {
+      return 0;
+    }
+    const res =
+      (Math.abs(y - this.state.parentOffset) +
+        this.scrollOffset -
+        this.flatlistTopOffset) /
+      this.rowHeight;
+
     if (res > this.state.data.length - 1) {
       return this.state.data.length - 1;
     } else if (res < 0) {
       return 0;
     }
-    return Math.abs(res);
+    return Math.floor(Math.abs(res));
   };
 
   item({item, index}) {
@@ -187,12 +200,8 @@ class DraggableTest extends React.Component {
   render() {
     const {dragging, draggingIndex, data} = this.state;
     return (
-      <SafeAreaView style={styles.container}>
-        <View
-          style={styles.flatlist}
-          onLayout={e => {
-            this.listOffset = e.nativeEvent.layout.y;
-          }}>
+      <View style={styles.container}>
+        <View style={styles.flatlist}>
           {dragging && (
             <Animated.View style={[styles.dragItem, {top: this.draggingPos}]}>
               {this.item({item: data[draggingIndex]})}
@@ -214,7 +223,7 @@ class DraggableTest extends React.Component {
             ItemSeparatorComponent={this.FlatListItemSeparator}
           />
         </View>
-      </SafeAreaView>
+      </View>
     );
   }
 }

@@ -8,6 +8,7 @@ import {
   Animated,
   RefreshControl,
   Dimensions,
+  FlatList,
   PanResponder,
 } from 'react-native';
 import PropTypes from 'prop-types';
@@ -31,12 +32,11 @@ class GroceriesContainer extends React.Component {
       onMoveShouldSetPanResponder: (evt, gestureState) => true,
 
       onPanResponderGrant: (evt, gestureState) => {
-        console.log('HEJ');
         this.currentIdx = this.yToIndex(gestureState.y0);
         this.currentY = gestureState.y0;
         this.draggingPos.setValue(
-          this.currentY - this.listOffset - this.rowHeight / 2,
-        ); // ! IMPROVE TO MORE SPECIFIC VALUE
+          this.currentY - this.state.parentOffset - this.rowHeight / 2,
+        );
 
         this.setState(
           {
@@ -49,7 +49,7 @@ class GroceriesContainer extends React.Component {
       onPanResponderMove: (evt, gestureState) => {
         this.currentY = gestureState.moveY;
         this.draggingPos.setValue(
-          this.currentY - this.listOffset - this.rowHeight / 2,
+          this.currentY - this.state.parentOffset - this.rowHeight / 2,
         );
       },
       onPanResponderRelease: (evt, gestureState) => {
@@ -64,7 +64,6 @@ class GroceriesContainer extends React.Component {
     this.draggingPos = new Value(0);
     this.flatList = createRef();
     this.scrollOffset = 0;
-    this.listOffset = 0;
     this.flatlistTopOffset = 0;
     this.flatListHeight = 0;
   }
@@ -74,7 +73,17 @@ class GroceriesContainer extends React.Component {
     removeId: '',
     dragging: false,
     draggingIndex: -1,
+    parentOffset: this.props.parentOffset,
   };
+
+  static getDerivedStateFromProps(props, state) {
+    if (props.parentOffset !== state.parentOffset) {
+      return {
+        parentOffset: props.parentOffset,
+      };
+    }
+    return null;
+  }
 
   // ? enough comparison
   componentDidUpdate(prevProps) {
@@ -110,17 +119,17 @@ class GroceriesContainer extends React.Component {
       return;
     }
     requestAnimationFrame(() => {
-      if (this.currentY + 150 > this.flatListHeight) {
-        this.flatList.current.scrollToOffset({
-          offset: this.scrollOffset + 5,
-          animated: false,
-        });
-      } else if (this.currentY < 150) {
-        this.flatList.current.scrollToOffset({
-          offset: this.scrollOffset - 5,
-          animated: false,
-        });
-      }
+      // if (this.currentY + 150 > this.flatListHeight) {
+      //   this.flatList.current.scrollToOffset({
+      //     offset: this.scrollOffset + 5,
+      //     animated: false,
+      //   });
+      // } else if (this.currentY < 150) {
+      //   this.flatList.current.scrollToOffset({
+      //     offset: this.scrollOffset - 5,
+      //     animated: false,
+      //   });
+      // }
       const newIdx = this.yToIndex(this.currentY);
       if (this.currentIdx !== newIdx) {
         LayoutAnimation.configureNext(animations.default);
@@ -139,16 +148,20 @@ class GroceriesContainer extends React.Component {
   };
 
   yToIndex = y => {
-    const res = Math.floor(
-      (y + this.scrollOffset - this.flatlistTopOffset - this.listOffset) /
-        this.rowHeight,
-    );
+    if (y < this.state.parentOffset - this.rowHeight) {
+      return 0;
+    }
+    const res =
+      (Math.abs(y - this.state.parentOffset) +
+        this.scrollOffset -
+        this.flatlistTopOffset) /
+      this.rowHeight;
     if (res > this.state.groceries.length - 1) {
       return this.state.groceries.length - 1;
     } else if (res < 0) {
       return 0;
     }
-    return Math.abs(res);
+    return Math.floor(Math.abs(res));
   };
 
   // ! When updating item. Can not open details before reload.
@@ -171,9 +184,6 @@ class GroceriesContainer extends React.Component {
   renderItem(grocery, index) {
     return (
       <TouchableHighlight
-        onLayout={e => {
-          this.rowHeight = e.nativeEvent.layout.height;
-        }}
         style={{flex: 1}}
         fontSize={50}
         onPress={() => {
@@ -183,6 +193,9 @@ class GroceriesContainer extends React.Component {
         }}
         underlayColor={'transparent'}>
         <Animated.View
+          onLayout={e => {
+            this.rowHeight = e.nativeEvent.layout.height;
+          }}
           style={[
             styles.container2,
             {
@@ -218,11 +231,11 @@ class GroceriesContainer extends React.Component {
               size={32}
               name={!grocery.details ? 'expand-more' : 'expand-less'}
               color={'black'}
-              onPress={() => {
-                if (!this.props.addItemOpen) {
-                  this.showGroceryForm(grocery);
-                }
-              }}
+              // onPress={() => {
+              //   if (!this.props.addItemOpen) {
+              //     this.showGroceryForm(grocery);
+              //   }
+              // }}
             />
           </Animated.View>
         </Animated.View>
@@ -238,11 +251,7 @@ class GroceriesContainer extends React.Component {
     const {groceries, dragging, draggingIndex} = this.state;
     return (
       <View style={{flex: 1}}>
-        <View
-          style={styles.groceries}
-          onLayout={e => {
-            this.listOffset = e.nativeEvent.layout.y;
-          }}>
+        <View style={styles.groceries}>
           {this.state.groceries.length === 0 && (
             <EmptyListInfo emoji={this.props.addItemOpen ? '😃' : '🥺'} />
           )}
@@ -286,7 +295,7 @@ export default GroceriesContainer;
 const styles = StyleSheet.create({
   groceries: {
     position: 'absolute',
-    top: '-9%',
+    //top: '-9%',
     height: '110%',
     backgroundColor: 'white',
     paddingTop: '3%',

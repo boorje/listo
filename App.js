@@ -9,6 +9,7 @@ import HomeScreen from './src/screens/homeScreen';
 import ListScreen from './src/screens/listScreen';
 import SettingsScreen from './src/screens/settingsScreen';
 import DraggableTest from './src/screens/draggableTest';
+import DraggableScreen from './src/screens/draggableScreen';
 // -- AUTH --
 import AuthScreen from './src/screens/auth/authScreen';
 import LoginScreen from './src/screens/auth/loginScreen';
