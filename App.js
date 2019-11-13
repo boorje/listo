@@ -8,6 +8,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import HomeScreen from './src/screens/homeScreen';
 import ListScreen from './src/screens/listScreen';
 import SettingsScreen from './src/screens/settingsScreen';
+import CameraScreen from './src/screens/cameraScreen';
 // -- AUTH --
 import AuthScreen from './src/screens/auth/authScreen';
 import LoginScreen from './src/screens/auth/loginScreen';
@@ -27,7 +28,7 @@ IoniconsIcon.loadFont();
 
 const MainStack = createStackNavigator(
   {
-    Home: HomeScreen,
+    Home: CameraScreen,
     List: ListScreen,
     Settings: SettingsScreen,
   },

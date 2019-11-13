@@ -15,7 +15,6 @@ const HomeScreenBackground = props => {
           size={30}
           name={'settings'}
           color={'white'}
-          style={styles.icon}
           onPress={() => props.openSettings()}
         />
       </View>
