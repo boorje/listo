@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -6,87 +6,88 @@ import {
   TouchableWithoutFeedback,
   RefreshControl,
 } from 'react-native';
+import {KeyboardAwareFlatList} from 'react-native-keyboard-aware-scroll-view';
 import PropTypes from 'prop-types';
+import {useQuery} from '@apollo/react-hooks';
+
+// components
 import Swipeout from '../components/swipeout';
 import textStyles from '../styles/textStyles';
-import {KeyboardAwareFlatList} from 'react-native-keyboard-aware-scroll-view';
 import * as colors from '../styles/colors';
+import * as queries from '../api/queries';
 
-class GroceryListItem extends React.Component {
-  state = {
-    viewWidth: 0,
-    viewHeight: 0,
-  };
-
-  render() {
-    return (
-      <View
-        onLayout={event => {
-          var {height, width} = event.nativeEvent.layout;
-          this.setState({viewWidth: width, viewHeight: height});
-        }}
-        style={[GroceryListItemStyles.container]}
-        underlayColor="transparent"
-        fontSize={50}>
-        <Swipeout
-          list={this.props.item}
-          user={this.props.user}
-          swipeoutEnabled={true}
-          disableScroll={() => {}}
-          enableScroll={() => {}}
-          viewWidth={this.state.viewWidth}
-          delete={() => this.props.removeGroceryList()}>
-          <TouchableWithoutFeedback
-            onPress={() => this.props.goToGroceryList(this.props.item)}>
-            <View style={GroceryListItemStyles.container2}>
-              <Text style={textStyles.default}>{this.props.item.title}</Text>
-              {/* {this.props.isShared && (
-                <Icon size={30} name={'people'} color={'black'} />
-              )} */}
-            </View>
-          </TouchableWithoutFeedback>
-        </Swipeout>
-      </View>
-    );
-  }
+function GroceryListItem(props) {
+  const [viewWidth, setViewWidth] = useState(0);
+  return (
+    <View
+      onLayout={event => {
+        const {width} = event.nativeEvent.layout;
+        setViewWidth(width);
+      }}
+      style={[GroceryListItemStyles.container]}
+      underlayColor="transparent"
+      fontSize={50}>
+      <Swipeout
+        list={props.item}
+        user={props.user}
+        swipeoutEnabled={true}
+        disableScroll={() => {}}
+        enableScroll={() => {}}
+        viewWidth={viewWidth}
+        delete={() => props.removeGroceryList()}>
+        <TouchableWithoutFeedback
+          onPress={() => props.goToGroceryList(props.item)}>
+          <View style={GroceryListItemStyles.container2}>
+            <Text style={textStyles.default}>{props.item.title}</Text>
+            {/* {this.props.isShared && (
+                    <Icon size={30} name={'people'} color={'black'} />
+                  )} */}
+          </View>
+        </TouchableWithoutFeedback>
+      </Swipeout>
+    </View>
+  );
 }
 
-export default class GroceryListsContainer extends React.Component {
-  state = {
-    refreshing: false,
-  };
-  renderList({list}) {
-    return (
-      <GroceryListItem
-        user={this.props.user}
-        isShared={list.owner === this.props.user.id ? true : false} // TODO: When possible, adjust
-        item={list}
-        goToGroceryList={this.props.goToGroceryList}
-        numberOfItems={this.props.numberOfItems}
-        removeGroceryList={() => this.props.removeGroceryList({list})}
-      />
-    );
-  }
+export default function GroceryListsContainerHook(props) {
+  const {data, loading, error, refetch, networkStatus} = useQuery(
+    queries.GET_USERS_LISTS,
+    {
+      variables: {owner: props.user.id},
+      //fetchPolicy: 'network-only',
+      notifyOnNetworkStatusChange: true,
+    },
+  );
 
-  render() {
-    return (
-      <KeyboardAwareFlatList
-        style={{paddingTop: '3%'}}
-        data={this.props.groceryLists}
-        renderItem={({item}) => {
-          return this.renderList(item);
-        }}
-        keyExtractor={({list}) => list.id}
-        refreshControl={
-          <RefreshControl
-            refreshing={this.state.refreshing}
-            tintColor={colors.primaryColor}
-            onRefresh={() => this.props.onRefresh()}
-          />
-        }
-      />
-    );
-  }
+  if (loading) console.log(loading);
+  if (error) console.log(error);
+
+  return data && data.getUserGroceryLists ? (
+    <KeyboardAwareFlatList
+      style={{paddingTop: '3%'}}
+      data={data ? data.getUserGroceryLists : []}
+      renderItem={({item}) => (
+        <GroceryListItem
+          user={props.user}
+          //isShared={list.owner === props.user.id ? true : false} // TODO: When possible, adjust
+          item={item}
+          goToGroceryList={props.goToGroceryList}
+          numberOfItems={props.numberOfItems}
+          removeGroceryList={() => props.removeGroceryList({item})}
+        />
+      )}
+      keyExtractor={list => list.id}
+      refreshControl={
+        <RefreshControl
+          refreshing={networkStatus === 4}
+          tintColor={colors.primaryColor}
+          onRefresh={() => !loading && refetch()}
+        />
+      }
+    />
+  ) : (
+    <Text>You don't have any lists yet.</Text>
+  );
 }
 
 const GroceryListItemStyles = StyleSheet.create({
@@ -124,8 +125,6 @@ const GroceryListItemStyles = StyleSheet.create({
   },
 });
 
-GroceryListsContainer.propTypes = {
+GroceryListsContainerHook.propTypes = {
   goToGroceryList: PropTypes.func.isRequired,
-  removeGroceryList: PropTypes.func.isRequired,
-  groceryLists: PropTypes.array.isRequired,
 };

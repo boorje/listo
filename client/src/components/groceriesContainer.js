@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   StyleSheet,
   View,
@@ -9,6 +9,7 @@ import {
   RefreshControl,
   Dimensions,
 } from 'react-native';
+import {useQuery} from '@apollo/react-hooks';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {KeyboardAwareFlatList} from 'react-native-keyboard-aware-scroll-view';
@@ -19,14 +20,60 @@ import EmptyListInfo from './emptyListInfo';
 import textStyles from '../styles/textStyles';
 import animations from '../styles/animations';
 import * as colors from '../styles/colors';
+// api
+import * as queries from '../api/queries';
 
-const {Value} = Animated;
-const {height, width} = Dimensions.get('window');
+export default function GroceriesContainer(props) {
+  const {data, loading, error, refetch, networkStatus} = useQuery(
+    queries.GET_GROCERY_LIST,
+    {
+      variables: {list: props.listId},
+      notifyOnNetworkStatusChange: true,
+    },
+  );
 
-class GroceriesContainer extends React.Component {
+  if (loading) console.log(loading);
+  if (error) console.log(error);
+  if (data) console.log(data);
+
+  return (
+    <View style={{flex: 1}}>
+      <View style={styles.groceries}>
+        {data &&
+        data.getGroceryListItems &&
+        data.getGroceryListItems.length > 0 ? (
+          <KeyboardAwareFlatList
+            //ref="flatList" //! USE TO ADJUST LIST WHEN ADDING ITEMS. BEHAVIOR IS NOT OPTIMAL.
+            //onContentSizeChange={() => this.refs.flatList.scrollToEnd()}
+            contentContainerStyle={{marginBottom: 10}}
+            scrollEnabled={true}
+            refreshControl={
+              <RefreshControl
+                refreshing={networkStatus === 4}
+                onRefresh={() => refetch()}
+                tintColor={colors.primaryColor}
+              />
+            }
+            data={data.getGroceryListItems}
+            renderItem={({item}) => {
+              return <Text>{item.name}</Text>;
+              // this.renderItem(item);
+            }}
+            keyExtractor={item => item.id}
+            ItemSeparatorComponent={() => <View style={styles.separator} />}
+            keyboardShouldPersistTaps="always"
+          />
+        ) : (
+          <EmptyListInfo emoji={props.addItemOpen ? '😃' : '🥺'} />
+        )}
+      </View>
+    </View>
+  );
+}
+
+class GroceriesContainer2 extends React.Component {
   constructor(props) {
     super(props);
-    this.itemX = new Value(1);
   }
   state = {
     groceries: this.props.groceries,
@@ -153,8 +200,6 @@ class GroceriesContainer extends React.Component {
   }
 }
 
-export default GroceriesContainer;
-
 const styles = StyleSheet.create({
   groceries: {
     position: 'absolute',
@@ -193,9 +238,4 @@ const styles = StyleSheet.create({
   },
 });
 
-GroceriesContainer.propTypes = {
-  groceries: PropTypes.arrayOf(PropTypes.shape()).isRequired,
-  addGrocery: PropTypes.func.isRequired,
-  updateGrocery: PropTypes.func.isRequired,
-  removeGrocery: PropTypes.func.isRequired,
-};
+GroceriesContainer.propTypes = {};
