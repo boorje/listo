@@ -212,6 +212,9 @@ export default class ListScreen extends React.Component {
           leftIcon={'ios-arrow-round-back'}
           //rightIcon1={'md-hourglass'}
           rightIcon2={'md-person-add'}
+          renameList={newTitle => this.renameList(newTitle)}
+          groceryList={groceryList}
+          user={user}
         />
         <View style={{flex: 11}}>
           <GroceriesContainer
