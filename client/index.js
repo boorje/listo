@@ -18,6 +18,8 @@ const client = new ApolloClient({
   link,
 });
 
+console.log('Client:', client);
+
 const AppWrapper = () => (
   <ApolloProvider client={client}>
     <App />
