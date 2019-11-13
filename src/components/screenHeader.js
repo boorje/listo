@@ -47,7 +47,6 @@ function ScreenHeader(props) {
             style={styles.headerTitle}
             onPress={() => {
               if (user.id === groceryList.owner) {
-                console.log('bajs');
                 setTextInputActive(true);
               }
             }}>
