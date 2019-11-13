@@ -50,7 +50,10 @@ function ScreenHeader(props) {
                 setTextInputActive(true);
               }
             }}>
-            <Text style={[textStyles.listTitle]}>{props.headerTitle}</Text>
+            <View>
+              <Text style={[textStyles.listTitle]}>{props.headerTitle}</Text>
+              {/* <Text style={[textStyles.listTitle]}>{groceryList.owner}</Text> */}
+            </View>
           </TouchableHighlight>
         ) : (
           <TextInput
