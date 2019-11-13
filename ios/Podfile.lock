@@ -223,6 +223,8 @@ PODS:
     - React
   - RNGestureHandler (1.5.0):
     - React
+  - RNReactNativeHapticFeedback (1.8.2):
+    - React
   - RNSVG (9.13.3):
     - React
   - RNVectorIcons (6.6.0):
@@ -259,6 +261,7 @@ DEPENDENCIES:
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - RNAWSCognito (from `../node_modules/amazon-cognito-identity-js`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
+  - RNReactNativeHapticFeedback (from `../node_modules/react-native-haptic-feedback`)
   - RNSVG (from `../node_modules/react-native-svg`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
@@ -321,6 +324,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/amazon-cognito-identity-js"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
+  RNReactNativeHapticFeedback:
+    :path: "../node_modules/react-native-haptic-feedback"
   RNSVG:
     :path: "../node_modules/react-native-svg"
   RNVectorIcons:
@@ -357,10 +362,11 @@ SPEC CHECKSUMS:
   ReactCommon: 5848032ed2f274fcb40f6b9ec24067787c42d479
   RNAWSCognito: b0b908817ce6547cdddaa7842bc166b4c5e7c128
   RNGestureHandler: a4ddde1ffc6e590c8127b8b7eabfdade45475c74
+  RNReactNativeHapticFeedback: e11a4da0ce174e9f88b03cbaf5d76d94633cdee2
   RNSVG: f6177f8d7c095fada7cfee2e4bb7388ba426064c
   RNVectorIcons: 0bb4def82230be1333ddaeee9fcba45f0b288ed4
   Yoga: 14927e37bd25376d216b150ab2a561773d57911f
 
 PODFILE CHECKSUM: a197531afd2ef28639d8b00b53f7d370bf6a4066
 
-COCOAPODS: 1.8.4
+COCOAPODS: 1.8.3

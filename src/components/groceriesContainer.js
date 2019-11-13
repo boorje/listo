@@ -132,8 +132,8 @@ class GroceriesContainer extends React.Component {
           )}
 
           <KeyboardAwareFlatList
-            //ref="flatList" //! USE TO ADJUST LIST WHEN ADDING ITEMS. BEHAVIOR IS NOT OPTIMAL.
-            //onContentSizeChange={() => this.refs.flatList.scrollToEnd()}
+            ref="flatList"
+            onContentSizeChange={() => this.refs.flatList.scrollToEnd()}
             contentContainerStyle={{marginBottom: 10}}
             scrollEnabled={true}
             refreshControl={
