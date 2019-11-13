@@ -8,8 +8,8 @@ const HomeScreenBackground = props => {
   return (
     <View style={styles.container}>
       <View style={styles.top}>
-        <Text style={[textStyles.smallText, {color: 'white', fontSize: 20}]}>
-          Hello!
+        <Text style={[textStyles.smallText, {color: 'white', fontSize: 40}]}>
+          👋🏼
         </Text>
         <Icon
           size={30}
