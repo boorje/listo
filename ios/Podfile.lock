@@ -20,6 +20,7 @@ PODS:
     - glog
   - glog (0.3.5)
   - JKBigInteger2 (0.0.5)
+  - QBImagePickerController (3.4.0)
   - RCTRequired (0.61.2)
   - RCTTypeSafety (0.61.2):
     - FBLazyVector (= 0.61.2)
@@ -193,6 +194,9 @@ PODS:
     - React
   - react-native-haptic (1.0.1):
     - React
+  - react-native-image-editor (2.1.0):
+    - React
+    - React-RCTImage
   - React-RCTActionSheet (0.61.2):
     - React-Core/RCTActionSheetHeaders (= 0.61.2)
   - React-RCTAnimation (0.61.2):
@@ -233,12 +237,18 @@ PODS:
     - React
   - RNGestureHandler (1.5.0):
     - React
+  - RNImageCropPicker (0.26.1):
+    - QBImagePickerController
+    - React-Core
+    - React-RCTImage
+    - RSKImageCropper
   - RNReactNativeHapticFeedback (1.8.2):
     - React
   - RNSVG (9.13.3):
     - React
   - RNVectorIcons (6.6.0):
     - React
+  - RSKImageCropper (2.2.3)
   - Yoga (1.14.0)
 
 DEPENDENCIES:
@@ -260,6 +270,7 @@ DEPENDENCIES:
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - react-native-camera (from `../node_modules/react-native-camera`)
   - react-native-haptic (from `../node_modules/react-native-haptic`)
+  - "react-native-image-editor (from `../node_modules/@react-native-community/image-editor`)"
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
   - React-RCTAnimation (from `../node_modules/react-native/Libraries/NativeAnimation`)
   - React-RCTBlob (from `../node_modules/react-native/Libraries/Blob`)
@@ -273,6 +284,7 @@ DEPENDENCIES:
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - RNAWSCognito (from `../node_modules/amazon-cognito-identity-js`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
+  - RNImageCropPicker (from `../node_modules/react-native-image-crop-picker`)
   - RNReactNativeHapticFeedback (from `../node_modules/react-native-haptic-feedback`)
   - RNSVG (from `../node_modules/react-native-svg`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
@@ -282,6 +294,9 @@ SPEC REPOS:
   https://github.com/CocoaPods/Specs.git:
     - boost-for-react-native
     - JKBigInteger2
+  trunk:
+    - QBImagePickerController
+    - RSKImageCropper
 
 EXTERNAL SOURCES:
   DoubleConversion:
@@ -316,6 +331,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-camera"
   react-native-haptic:
     :path: "../node_modules/react-native-haptic"
+  react-native-image-editor:
+    :path: "../node_modules/@react-native-community/image-editor"
   React-RCTActionSheet:
     :path: "../node_modules/react-native/Libraries/ActionSheetIOS"
   React-RCTAnimation:
@@ -340,6 +357,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/amazon-cognito-identity-js"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
+  RNImageCropPicker:
+    :path: "../node_modules/react-native-image-crop-picker"
   RNReactNativeHapticFeedback:
     :path: "../node_modules/react-native-haptic-feedback"
   RNSVG:
@@ -357,6 +376,7 @@ SPEC CHECKSUMS:
   Folly: 30e7936e1c45c08d884aa59369ed951a8e68cf51
   glog: 1f3da668190260b06b429bb211bfbee5cd790c28
   JKBigInteger2: e91672035c42328c48b7dd015b66812ddf40ca9b
+  QBImagePickerController: d54cf93db6decf26baf6ed3472f336ef35cae022
   RCTRequired: c639d59ed389cfb1f1203f65c2ea946d8ec586e2
   RCTTypeSafety: dc23fb655d6c77667c78e327bf661bc11e3b8aec
   React: 7e586e5d7bec12b91c1a096826b0fc9ab1da7865
@@ -368,6 +388,7 @@ SPEC CHECKSUMS:
   React-jsinspector: 111d7d342b07a904c400592e02a2b958f1098b60
   react-native-camera: 8ad12cae113fd60b07236983532acc8e595c0fc3
   react-native-haptic: b83dbc1933ebfc2d474914eae483b324a0d27aa5
+  react-native-image-editor: eef37d0dd2a55cc1aba56f3e902b7f7f1888f309
   React-RCTActionSheet: 89b037c0fb7d2671607cb645760164e7e0c013f6
   React-RCTAnimation: e3cefa93c38c004c318f7ec04b883eb14b8b8235
   React-RCTBlob: d26ac0e313fbf14e7203473fd593ccaaeee8329e
@@ -380,9 +401,11 @@ SPEC CHECKSUMS:
   ReactCommon: 5848032ed2f274fcb40f6b9ec24067787c42d479
   RNAWSCognito: b0b908817ce6547cdddaa7842bc166b4c5e7c128
   RNGestureHandler: a4ddde1ffc6e590c8127b8b7eabfdade45475c74
+  RNImageCropPicker: e1d8c3381e5b05a1bdcd13ea57a4f1c020a09cef
   RNReactNativeHapticFeedback: e11a4da0ce174e9f88b03cbaf5d76d94633cdee2
   RNSVG: f6177f8d7c095fada7cfee2e4bb7388ba426064c
   RNVectorIcons: 0bb4def82230be1333ddaeee9fcba45f0b288ed4
+  RSKImageCropper: a446db0e8444a036b34f3c43db01b2373baa4b2a
   Yoga: 14927e37bd25376d216b150ab2a561773d57911f
 
 PODFILE CHECKSUM: a197531afd2ef28639d8b00b53f7d370bf6a4066
