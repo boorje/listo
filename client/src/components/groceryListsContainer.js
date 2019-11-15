@@ -8,13 +8,14 @@ import {
 } from 'react-native';
 import {KeyboardAwareFlatList} from 'react-native-keyboard-aware-scroll-view';
 import PropTypes from 'prop-types';
-import {useQuery} from '@apollo/react-hooks';
-
+import {useQuery, useMutation} from '@apollo/react-hooks';
 // components
 import Swipeout from '../components/swipeout';
 import textStyles from '../styles/textStyles';
 import * as colors from '../styles/colors';
+// api
 import * as queries from '../api/queries';
+import * as mutations from '../api/mutations';
 
 function GroceryListItem(props) {
   const [viewWidth, setViewWidth] = useState(0);
@@ -34,7 +35,7 @@ function GroceryListItem(props) {
         disableScroll={() => {}}
         enableScroll={() => {}}
         viewWidth={viewWidth}
-        delete={() => props.removeGroceryList()}>
+        delete={() => props.removeGroceryList(props.item.id)}>
         <TouchableWithoutFeedback
           onPress={() => props.goToGroceryList(props.item)}>
           <View style={GroceryListItemStyles.container2}>
@@ -50,14 +51,38 @@ function GroceryListItem(props) {
 }
 
 export default function GroceryListsContainerHook(props) {
+  const [user] = useState({
+    id: '9cd866c9-02cc-4d93-aef6-28dfc28392a3',
+    email: 'eric.borjesson@hotmail.com',
+  });
   const {data, loading, error, refetch, networkStatus} = useQuery(
     queries.GET_USERS_LISTS,
     {
       variables: {owner: props.user.id},
-      //fetchPolicy: 'network-only',
       notifyOnNetworkStatusChange: true,
     },
   );
+
+  const [deleteList] = useMutation(mutations.DELETE_GROCERY_LIST, {
+    update(cache, {data}) {
+      const {getUserGroceryLists} = cache.readQuery({
+        query: queries.GET_USERS_LISTS,
+        variables: {owner: user.id},
+      });
+      cache.writeQuery({
+        query: queries.GET_USERS_LISTS,
+        variables: {owner: user.id},
+        data: {
+          getUserGroceryLists: getUserGroceryLists.filter(
+            list => list.id !== data.deleteGroceryList.list.id,
+          ),
+        },
+      });
+    },
+    onError(error) {
+      console.log('ERROR\n ', error);
+    },
+  });
 
   if (loading) return <Text>loading...</Text>;
   if (error) console.log(error);
@@ -73,7 +98,7 @@ export default function GroceryListsContainerHook(props) {
           item={item}
           goToGroceryList={props.goToGroceryList}
           numberOfItems={props.numberOfItems}
-          removeGroceryList={() => props.removeGroceryList({item})}
+          removeGroceryList={id => deleteList({variables: {id}})}
         />
       )}
       keyExtractor={list => list.id}
