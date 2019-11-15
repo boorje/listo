@@ -10,25 +10,25 @@ import {
 } from 'react-native';
 import {RNCamera} from 'react-native-camera';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
-import ImageCropper from 'react-native-advance-image-cropper';
+import ImageEditor from '@react-native-community/image-editor';
 
 const exImage =
   'https://images.unsplash.com/photo-1520440229-6469a149ac59?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=675&q=80';
 const {height, width} = Dimensions.get('window');
-const initialHeight = height * 0.8;
+const initialHeight = height * 0.6;
 const initialWidth = width * 0.8;
-const screenRatio = width / height;
 const {Value, ValueXY} = Animated;
 
 function CameraScreen(props) {
-  const [cameraActive, setCamera] = useState(false); //! Set to true
+  const [cameraActive, setCamera] = useState(true); //! Set to true
   const [capture, setCapture] = useState('');
-  const [cropWidth, setCropWidth] = useState(initialWidth);
-  const [cropHeight, setCropHeight] = useState(initialHeight);
-  const [cropLeft, setCropLeft] = useState(0);
-  const [cropRight, setCropRight] = useState(0);
-  const [cropTop, setCropTop] = useState(0);
-  const [cropBottom, setCropBottom] = useState(0);
+
+  const cropWidth = new Value(initialWidth);
+  const cropHeight = new Value(initialHeight);
+  const cropLeft = new Value(0);
+  const cropRight = new Value(0);
+  const cropTop = new Value(0);
+  const cropBottom = new Value(0);
 
   //HANDLE POSITIONS
   const topLeftPos = new ValueXY({x: -15, y: -15});
@@ -38,21 +38,6 @@ function CameraScreen(props) {
     x: initialWidth - 15,
     y: initialHeight - 15,
   });
-
-  async function takePhoto() {
-    const cameraOptions = {base64: true};
-
-    try {
-      if (!this.camera) {
-        throw 'Could not take a photo. Please try again';
-      }
-      const response = await this.camera.takePictureAsync(cameraOptions);
-      setCapture(response.uri);
-      setCamera(false);
-    } catch (error) {
-      throw 'Could not take a photo. Please try again';
-    }
-  }
 
   function toggleOffsets() {
     topLeftPos.setOffset({
@@ -105,10 +90,12 @@ function CameraScreen(props) {
     },
     onPanResponderRelease: (evt, gestureState) => {
       flattenOffsets();
-      setCropHeight(Math.abs(topLeftPos.y._value - bottomLeftPos.y._value));
-      setCropWidth(Math.abs(topLeftPos.x._value - topRightPos.x._value));
-      setCropLeft(topLeftPos.x._value + 15);
-      setCropTop(topLeftPos.y._value + 15);
+      cropHeight.setValue(
+        Math.abs(topLeftPos.y._value - bottomLeftPos.y._value),
+      );
+      cropWidth.setValue(Math.abs(topLeftPos.x._value - topRightPos.x._value));
+      cropLeft.setValue(topLeftPos.x._value + 15);
+      cropTop.setValue(topLeftPos.y._value + 15);
     },
   });
   const _panResponderTopRight = PanResponder.create({
@@ -135,6 +122,12 @@ function CameraScreen(props) {
 
     onPanResponderRelease: (evt, gestureState) => {
       flattenOffsets();
+      cropHeight.setValue(
+        Math.abs(topRightPos.y._value - bottomRightPos.y._value),
+      );
+      cropWidth.setValue(Math.abs(topRightPos.x._value - topLeftPos.x._value));
+      cropRight.setValue(topRightPos.x._value + 15);
+      cropTop.setValue(topRightPos.y._value + 15);
     },
   });
   const _panResponderBottomLeft = PanResponder.create({
@@ -160,6 +153,14 @@ function CameraScreen(props) {
     },
     onPanResponderRelease: (evt, gestureState) => {
       flattenOffsets();
+      cropHeight.setValue(
+        Math.abs(bottomLeftPos.y._value - topLeftPos.y._value),
+      );
+      cropWidth.setValue(
+        Math.abs(bottomLeftPos.x._value - bottomRightPos.x._value),
+      );
+      cropBottom.setValue(bottomLeftPos.y._value + 15);
+      cropLeft.setValue(bottomLeftPos.x._value + 15);
     },
   });
   const _panResponderBottomRight = PanResponder.create({
@@ -183,10 +184,14 @@ function CameraScreen(props) {
     },
     onPanResponderRelease: (evt, gestureState) => {
       flattenOffsets();
-      setCropHeight(Math.abs(bottomRightPos.y._value - topRightPos.y._value));
-      setCropWidth(Math.abs(bottomRightPos.x._value - bottomLeftPos.x._value));
-      setCropRight(bottomRightPos.x._value + 15);
-      setCropBottom(bottomRightPos.y._value + 15);
+      cropHeight.setValue(
+        Math.abs(bottomRightPos.y._value - topRightPos.y._value),
+      );
+      cropWidth.setValue(
+        Math.abs(bottomRightPos.x._value - bottomLeftPos.x._value),
+      );
+      cropRight.setValue(bottomRightPos.x._value + 15);
+      cropBottom.setValue(bottomRightPos.y._value + 15);
     },
   });
   function handle(pos) {
@@ -227,6 +232,58 @@ function CameraScreen(props) {
     }
   }
 
+  async function takePhoto() {
+    const cameraOptions = {base64: true};
+
+    try {
+      if (!this.camera) {
+        throw 'Could not take a photo. Please try again';
+      }
+      const response = await this.camera.takePictureAsync(cameraOptions);
+      setCapture(response.uri);
+      setCamera(false);
+    } catch (error) {
+      throw 'Could not take a photo. Please try again';
+    }
+  }
+
+  function getSize() {
+    return new Promise((resolve, reject) =>
+      Image.getSize(
+        capture,
+        (w, h) => resolve({w, h}),
+        () => reject('No width and height found.'),
+      ),
+    );
+  }
+
+  async function cropImage() {
+    try {
+      const {w, h} = await getSize();
+      const ratioW = w / initialWidth;
+      const ratioH = h / initialHeight;
+      const cropData = {
+        offset: {
+          x: (topLeftPos.x._value + 15) * ratioW,
+          y: (topLeftPos.y._value + 15) * ratioH,
+        },
+        size: {
+          width: cropWidth._value * ratioW,
+          height: cropHeight._value * ratioH,
+        },
+        //displaySize: {width: initialWidth, height: initialHeight},
+        resizeMode: 'contain',
+      };
+
+      const croppedImageURI = await ImageEditor.cropImage(capture, cropData);
+      if (croppedImageURI) {
+        setCapture(croppedImageURI);
+      }
+    } catch (cropError) {
+      console.log('cropError: ' + cropError);
+    }
+  }
+
   return (
     <View style={styles.container}>
       {cameraActive ? (
@@ -240,12 +297,14 @@ function CameraScreen(props) {
           />
         </TouchableHighlight>
       ) : (
-        <Animated.View style={styles.imageView}>
+        <View style={{justifyContent: 'center', alignItems: 'center'}}>
           <Image
             style={{
-              aspectRatio: screenRatio,
+              width: cropWidth._value,
+              height: cropHeight._value,
             }}
-            source={{uri: exImage}}
+            source={{uri: capture}}
+            resizeMode="contain"
           />
           <Animated.View
             style={[
@@ -264,7 +323,14 @@ function CameraScreen(props) {
           {handle('topRight')}
           {handle('bottomLeft')}
           {handle('bottomRight')}
-        </Animated.View>
+          <IoniconsIcon
+            style={{marginTop: 20}}
+            size={50}
+            color={'black'}
+            name={'ios-crop'}
+            onPress={() => cropImage()}
+          />
+        </View>
       )}
     </View>
   );
@@ -283,10 +349,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
-  imageView: {
-    width: initialWidth,
-    height: initialHeight,
-  },
+  imageView: {backgroundColor: 'blue'},
   cropView: {
     backgroundColor: 'black',
     position: 'absolute',
