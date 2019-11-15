@@ -7,7 +7,6 @@ import {
   LayoutAnimation,
   Animated,
   RefreshControl,
-  Dimensions,
 } from 'react-native';
 import {useQuery} from '@apollo/react-hooks';
 import PropTypes from 'prop-types';
@@ -175,7 +174,6 @@ class GroceriesContainer2 extends React.Component {
           {this.state.groceries.length === 0 && (
             <EmptyListInfo emoji={this.props.addItemOpen ? '😃' : '🥺'} />
           )}
-
           <KeyboardAwareFlatList
             //ref="flatList" //! USE TO ADJUST LIST WHEN ADDING ITEMS. BEHAVIOR IS NOT OPTIMAL.
             //onContentSizeChange={() => this.refs.flatList.scrollToEnd()}
