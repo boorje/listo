@@ -4,6 +4,7 @@ import {ApolloClient} from 'apollo-client';
 import {InMemoryCache} from 'apollo-cache-inmemory';
 import {HttpLink} from 'apollo-link-http';
 import {ApolloProvider} from '@apollo/react-hooks';
+import {resolvers} from './src/api/resolvers';
 
 import App from './App';
 import {name as appName} from './app.json';
@@ -16,9 +17,8 @@ const link = new HttpLink({
 const client = new ApolloClient({
   cache,
   link,
+  resolvers,
 });
-
-console.log('Client:', client);
 
 const AppWrapper = () => (
   <ApolloProvider client={client}>

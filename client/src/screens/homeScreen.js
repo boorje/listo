@@ -1,22 +1,21 @@
-import React, {useState, useEffect} from 'react';
-import {
-  ActionSheetIOS,
-  SafeAreaView,
-  StyleSheet,
-  LayoutAnimation,
-  View,
-} from 'react-native';
+import React, {useState} from 'react';
+import {SafeAreaView, StyleSheet, View} from 'react-native';
+import {useMutation} from '@apollo/react-hooks';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-
 // components
 import GroceryListsContainer from '../components/groceryListsContainer';
 import AddGroceryListModal from '../components/modals/AddGroceryListModal';
 import Message from '../components/message';
 import HomeScreenBackground from '../components/homeScreenBackground';
+// api
+import * as queries from '../api/queries';
+import * as mutations from '../api/mutations';
+// styles
 import * as colors from '../styles/colors';
 
 export default function HomeScreen(props) {
-  const [user, setUser] = useState({
+  // TODO: Add to cache on signup
+  const [user] = useState({
     id: '9cd866c9-02cc-4d93-aef6-28dfc28392a3',
     email: 'eric.borjesson@hotmail.com',
   });
@@ -24,7 +23,34 @@ export default function HomeScreen(props) {
   const [messageOpen, toggleMessage] = useState(false);
   const [apiError, setApiError] = useState('');
 
-  function addGroceryList() {}
+  const [
+    newList,
+    {loading: mutationLoading, error: mutationError},
+  ] = useMutation(mutations.CREATE_GROCERY_LIST, {
+    update(cache, {data}) {
+      const {getUserGroceryLists} = cache.readQuery({
+        query: queries.GET_USERS_LISTS,
+        variables: {owner: user.id},
+      });
+      cache.writeQuery({
+        query: queries.GET_USERS_LISTS,
+        variables: {owner: user.id},
+        data: {
+          getUserGroceryLists: [
+            ...getUserGroceryLists,
+            {...data.createGroceryList.list, items: null},
+          ],
+        },
+      });
+    },
+  });
+
+  if (mutationLoading) console.log('loading');
+  if (mutationError) console.log('error');
+
+  function addGroceryList(title) {
+    newList({variables: {input: {owner: user.id, title}}});
+  }
 
   return (
     <View style={styles.container}>
@@ -32,7 +58,7 @@ export default function HomeScreen(props) {
         <AddGroceryListModal
           closeModal={() => toggleModal(modalOpen ? false : true)}
           placeholder="Add list..."
-          addGroceryList={this.addGroceryList}
+          addGroceryList={addGroceryList}
         />
       )}
       <HomeScreenBackground

@@ -59,7 +59,7 @@ export default function GroceryListsContainerHook(props) {
     },
   );
 
-  if (loading) console.log(loading);
+  if (loading) return <Text>loading...</Text>;
   if (error) console.log(error);
 
   return data && data.getUserGroceryLists ? (
