@@ -1,4 +1,4 @@
-import React, {PureComponent, useState} from 'react';
+import React, {PureComponent, useState, useEffect} from 'react';
 import {
   PanResponder,
   StyleSheet,
@@ -6,22 +6,41 @@ import {
   TouchableHighlight,
   View,
   Image,
+  LayoutAnimation,
   Animated,
 } from 'react-native';
 import {RNCamera} from 'react-native-camera';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 import ImageEditor from '@react-native-community/image-editor';
+import animations from '../styles/animations';
 
-const exImage =
-  'https://images.unsplash.com/photo-1520440229-6469a149ac59?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=675&q=80';
-const {height, width} = Dimensions.get('window');
-const initialHeight = height * 0.6;
-const initialWidth = width * 0.8;
+const exImageH =
+  'https://images.unsplash.com/photo-1539108842340-ae72fbf39857?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=700&q=80';
+const exImageW =
+  'https://images.unsplash.com/photo-1512397739299-fe5a4327d192?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80';
+
 const {Value, ValueXY} = Animated;
 
 function CameraScreen(props) {
-  const [cameraActive, setCamera] = useState(true); //! Set to true
-  const [capture, setCapture] = useState('');
+  const [cameraActive, setCamera] = useState(false); //! Set to true
+  const [capture, setCapture] = useState(exImageW);
+  const [imageSize, setImageSize] = useState({});
+  const [cropped, setCropped] = useState(false);
+
+  useEffect(() => {
+    async function getImageSize() {
+      await Image.getSize(
+        capture,
+        (w, h) => setImageSize({w, h}),
+        err => console.log(err),
+      );
+    }
+    getImageSize();
+  }, [capture]);
+
+  const {height, width} = Dimensions.get('window');
+  const initialWidth = width * 0.9;
+  const initialHeight = initialWidth / (imageSize.w / imageSize.h);
 
   const cropWidth = new Value(initialWidth);
   const cropHeight = new Value(initialHeight);
@@ -195,7 +214,7 @@ function CameraScreen(props) {
     },
   });
   function handle(pos) {
-    if (pos === 'topLeft') {
+    if (pos === 'topLeft' && !cropped) {
       return (
         <Animated.View
           style={[styles.handle, {left: topLeftPos.x, top: topLeftPos.y}]}
@@ -203,7 +222,7 @@ function CameraScreen(props) {
         />
       );
     }
-    if (pos === 'topRight') {
+    if (pos === 'topRight' && !cropped) {
       return (
         <Animated.View
           style={[styles.handle, {left: topRightPos.x, top: topRightPos.y}]}
@@ -211,7 +230,7 @@ function CameraScreen(props) {
         />
       );
     }
-    if (pos === 'bottomLeft') {
+    if (pos === 'bottomLeft' && !cropped) {
       return (
         <Animated.View
           style={[styles.handle, {left: bottomLeftPos.x, top: bottomLeftPos.y}]}
@@ -219,7 +238,7 @@ function CameraScreen(props) {
         />
       );
     }
-    if (pos === 'bottomRight') {
+    if (pos === 'bottomRight' && !cropped) {
       return (
         <Animated.View
           style={[
@@ -260,8 +279,9 @@ function CameraScreen(props) {
   async function cropImage() {
     try {
       const {w, h} = await getSize();
+      const ratioImage = w / h;
       const ratioW = w / initialWidth;
-      const ratioH = h / initialHeight;
+      const ratioH = h / (initialWidth / ratioImage);
       const cropData = {
         offset: {
           x: (topLeftPos.x._value + 15) * ratioW,
@@ -271,69 +291,76 @@ function CameraScreen(props) {
           width: cropWidth._value * ratioW,
           height: cropHeight._value * ratioH,
         },
-        //displaySize: {width: initialWidth, height: initialHeight},
+        displaySize: {width: cropWidth._value, height: cropHeight._value},
         resizeMode: 'contain',
       };
 
       const croppedImageURI = await ImageEditor.cropImage(capture, cropData);
       if (croppedImageURI) {
+        LayoutAnimation.configureNext(animations.default);
         setCapture(croppedImageURI);
+        setCropped(true);
       }
     } catch (cropError) {
       console.log('cropError: ' + cropError);
     }
   }
 
-  return (
-    <View style={styles.container}>
-      {cameraActive ? (
-        <TouchableHighlight style={styles.camera} onPress={() => takePhoto()}>
-          <RNCamera
-            style={styles.camera}
-            ref={ref => {
-              this.camera = ref;
-            }}
-            captureAudio={false}
-          />
-        </TouchableHighlight>
-      ) : (
-        <View style={{justifyContent: 'center', alignItems: 'center'}}>
-          <Image
-            style={{
-              width: cropWidth._value,
-              height: cropHeight._value,
-            }}
-            source={{uri: capture}}
-            resizeMode="contain"
-          />
-          <Animated.View
-            style={[
-              styles.cropView,
-              {
-                width: cropWidth,
-                height: cropHeight,
-                left: cropLeft,
-                right: cropRight,
-                top: cropTop,
-                bottom: cropBottom,
-              },
-            ]}
-          />
-          {handle('topLeft')}
-          {handle('topRight')}
-          {handle('bottomLeft')}
-          {handle('bottomRight')}
-          <IoniconsIcon
-            style={{marginTop: 20}}
-            size={50}
-            color={'black'}
-            name={'ios-crop'}
-            onPress={() => cropImage()}
-          />
-        </View>
-      )}
-    </View>
-  );
+  if (initialHeight) {
+    return (
+      <View style={styles.container}>
+        {cameraActive ? (
+          <TouchableHighlight style={styles.camera} onPress={() => takePhoto()}>
+            <RNCamera
+              style={styles.camera}
+              ref={ref => {
+                this.camera = ref;
+              }}
+              captureAudio={false}
+            />
+          </TouchableHighlight>
+        ) : (
+          <View style={{justifyContent: 'center', alignItems: 'center'}}>
+            <Image
+              style={{
+                width: initialWidth,
+                height: initialHeight,
+              }}
+              source={{uri: capture}}
+              resizeMode="contain"
+            />
+            {!cropped && (
+              <Animated.View
+                style={[
+                  styles.cropView,
+                  {
+                    width: cropWidth,
+                    height: cropHeight,
+                    left: cropLeft,
+                    right: cropRight,
+                    top: cropTop,
+                    bottom: cropBottom,
+                  },
+                ]}
+              />
+            )}
+            {handle('topLeft')}
+            {handle('topRight')}
+            {handle('bottomLeft')}
+            {handle('bottomRight')}
+
+            <IoniconsIcon
+              style={{marginTop: 20}}
+              size={50}
+              color={'black'}
+              name={'ios-crop'}
+              onPress={() => cropImage()}
+            />
+          </View>
+        )}
+      </View>
+    );
+  } else return null;
 }
 
 export default CameraScreen;
