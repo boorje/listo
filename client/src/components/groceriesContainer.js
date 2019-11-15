@@ -7,7 +7,7 @@ import {
   Animated,
   RefreshControl,
 } from 'react-native';
-import {useQuery} from '@apollo/react-hooks';
+import {useQuery, useMutation} from '@apollo/react-hooks';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {KeyboardAwareFlatList} from 'react-native-keyboard-aware-scroll-view';
@@ -19,6 +19,7 @@ import textStyles from '../styles/textStyles';
 import * as colors from '../styles/colors';
 // api
 import * as queries from '../api/queries';
+import * as mutations from '../api/mutations';
 
 function GroceryItem(props) {
   const [detailsOpen, toggleDetails] = useState(false);
@@ -83,6 +84,27 @@ export default function GroceriesContainer(props) {
       notifyOnNetworkStatusChange: true,
     },
   );
+  const [deleteItem] = useMutation(mutations.DELETE_GROCERY_LIST_ITEM, {
+    update(cache, {data}) {
+      const {getGroceryListItems} = cache.readQuery({
+        query: queries.GET_GROCERY_LIST_ITEMS,
+        variables: {list: props.listId},
+      });
+      cache.writeQuery({
+        query: queries.GET_GROCERY_LIST_ITEMS,
+        variables: {list: props.listId},
+        data: {
+          getGroceryListItems: getGroceryListItems.filter(
+            item => item.id !== data.deleteGroceryListItem.item.id,
+          ),
+        },
+      });
+    },
+    onError(error) {
+      console.log('ERROR\n ', error);
+    },
+  });
+  const [updateItem] = useMutation(mutations.UPDATE_GROCERY_ITEM);
 
   if (loading) return <Text>loading...</Text>;
   if (error) console.log(error);
@@ -110,9 +132,9 @@ export default function GroceriesContainer(props) {
               <GroceryItem
                 grocery={item}
                 addItemOpen={props.addItemOpen}
-                removeGrocery={() => {}}
+                removeGrocery={id => deleteItem({variables: {id}})}
                 showGroceryForm={() => {}}
-                updateGrocery={() => {}}
+                updateGrocery={input => updateItem({variables: {input}})}
               />
             )}
             keyExtractor={item => item.id}

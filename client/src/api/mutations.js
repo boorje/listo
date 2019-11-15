@@ -40,3 +40,32 @@ export const CREATE_GROCERY_LIST_ITEM = gql`
     }
   }
 `;
+
+export const DELETE_GROCERY_LIST_ITEM = gql`
+  mutation deleteGroceryListItem($id: ID!) {
+    deleteGroceryListItem(id: $id) {
+      success
+      message
+      code
+      item {
+        id
+      }
+    }
+  }
+`;
+
+export const UPDATE_GROCERY_ITEM = gql`
+  mutation updateGroceryItem($input: UpdateGroceryItemInput!) {
+    updateGroceryItem(input: $input) {
+      code
+      success
+      message
+      item {
+        id
+        name
+        unit
+        quantity
+      }
+    }
+  }
+`;

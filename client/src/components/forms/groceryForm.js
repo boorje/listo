@@ -11,7 +11,7 @@ import PropTypes from 'prop-types';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 import textStyles from '../../styles/textStyles';
 
-const {height, width} = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 
 export default class GroceryForm extends React.Component {
   state = {
