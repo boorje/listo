@@ -43,10 +43,14 @@ export default function HomeScreen(props) {
         },
       });
     },
+    onError(error) {
+      setApiError('API Error');
+      toggleMessage(true);
+    },
   });
 
   if (mutationLoading) console.log('loading');
-  if (mutationError) console.log('error');
+  //if (mutationError) console.log('error: ', mutationError);
 
   function addGroceryList(title) {
     newList({variables: {input: {owner: user.id, title}}});

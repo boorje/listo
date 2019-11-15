@@ -10,10 +10,12 @@ import {
 import PropTypes from 'prop-types';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 import textStyles from '../../styles/textStyles';
+
 const {height, width} = Dimensions.get('window');
+
 export default class GroceryForm extends React.Component {
   state = {
-    content: '',
+    name: '',
     quantity: '',
     unit: '',
     id: '',
@@ -22,15 +24,19 @@ export default class GroceryForm extends React.Component {
 
   componentDidMount = () => {
     if (this.props.item) {
-      const {content, quantity, unit, id} = this.props.item;
-      this.setState({content, quantity, unit, id});
+      const {name, quantity, unit, id} = this.props.item;
+      let data = {name, unit, id};
+      if (quantity) data.quantity = quantity.toString();
+      this.setState(data);
     }
   };
 
   handleSubmitEditing = () => {
-    const {content, quantity, unit, id} = this.state;
-    this.props.addGrocery({content, quantity, unit, id});
-    this.setState({content: '', quantity: '', unit: ''});
+    const {name, quantity, unit, id} = this.state;
+    let data = {name, unit, quantity: parseInt(quantity)};
+    if (id) data.id = id;
+    this.props.addGrocery(data);
+    this.setState({name: '', quantity: null, unit: null});
     if (this.props.shouldCloseOnSubmit) {
       this.props.closeGroceryForm();
     }
@@ -38,7 +44,7 @@ export default class GroceryForm extends React.Component {
 
   render() {
     const inputID = 'inputID';
-    const {content, quantity, unit, isFocused} = this.state;
+    const {name, quantity, unit, isFocused} = this.state;
     return (
       <View style={{flex: 1}}>
         <View>
@@ -72,9 +78,9 @@ export default class GroceryForm extends React.Component {
             }}
             inputAccessoryViewID={inputID}
             onChangeText={text => {
-              this.setState({content: text});
+              this.setState({name: text});
             }}
-            value={content}
+            value={name}
           />
         </View>
         <View
@@ -220,7 +226,7 @@ const styles = StyleSheet.create({
 });
 
 GroceryForm.propTypes = {
-  content: PropTypes.string,
+  name: PropTypes.string,
   quantity: PropTypes.number,
   unit: PropTypes.string,
   addGrocery: PropTypes.func.isRequired,

@@ -13,7 +13,7 @@ export const GET_USERS_LISTS = gql`
   }
 `;
 
-export const GET_GROCERY_LIST = gql`
+export const GET_GROCERY_LIST_ITEMS = gql`
   query getGroceryListItems($list: ID!) {
     getGroceryListItems(list: $list) {
       id

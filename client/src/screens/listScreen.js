@@ -1,19 +1,17 @@
 import React, {useEffect, useState} from 'react';
-import {LayoutAnimation, StyleSheet, View, Modal} from 'react-native';
-import {
-  TouchableHighlight,
-  TouchableOpacity,
-} from 'react-native-gesture-handler';
-
+import {StyleSheet, View} from 'react-native';
+import {useQuery, useMutation} from '@apollo/react-hooks';
 // components
 import GroceriesContainer from '../components/groceriesContainer';
 import Message from '../components/message';
 import ScreenHeader from '../components/screenHeader';
 import PreviousGroceriesModal from './modals/previousGroceriesModal';
 import ListSettingsModal from './modals/listSettingsModal';
-import animations from '../styles/animations';
-import * as colors from '../styles/colors';
 import AddGroceryFooter from '../components/addGroceryFooter';
+//api
+import * as queries from '../api/queries';
+import * as mutations from '../api/mutations';
+import * as colors from '../styles/colors';
 
 export default function ListScreen(props) {
   const [list, setList] = useState({});
@@ -21,14 +19,34 @@ export default function ListScreen(props) {
   const [historyOpen, toggleHistory] = useState(false);
   const [listSettingsOpen, toggleSettings] = useState(false);
   const [messageOpen, toggleMessage] = useState(false);
-  const [apiError] = useState('');
+  const [apiError, setApiError] = useState('');
   const [addItemOpen, toggleAddItem] = useState(false);
+
+  const [addGroceryItem] = useMutation(mutations.CREATE_GROCERY_LIST_ITEM, {
+    update(cache, {data}) {
+      const {getGroceryListItems} = cache.readQuery({
+        query: queries.GET_GROCERY_LIST_ITEMS,
+        variables: {list: list.id},
+      });
+      cache.writeQuery({
+        query: queries.GET_GROCERY_LIST_ITEMS,
+        variables: {list: list.id},
+        data: {
+          getGroceryListItems: [
+            ...getGroceryListItems,
+            {...data.createGroceryItem.item},
+          ],
+        },
+      });
+    },
+    onError(error) {
+      setApiError('Haha');
+    },
+  });
 
   useEffect(() => {
     setList(props.navigation.getParam('list', {}));
   }, [props.navigation]);
-
-  function addGrocery() {}
 
   return (
     <View style={styles.container}>
@@ -63,9 +81,12 @@ export default function ListScreen(props) {
       </View>
       <View style={styles.footer}>
         <AddGroceryFooter
-          addGrocery={() => addGrocery}
+          addGrocery={input => {
+            const item = {...input, list: list.id};
+            addGroceryItem({variables: {input: item}});
+          }}
           addItemOpen={addItemOpen}
-          showAddGrocery={() => toggleAddItem(true)}
+          showAddGrocery={() => toggleAddItem(!addItemOpen)}
         />
       </View>
     </View>
