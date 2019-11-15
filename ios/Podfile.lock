@@ -242,6 +242,8 @@ PODS:
     - React-Core
     - React-RCTImage
     - RSKImageCropper
+  - RNImageRotate (2.1.0):
+    - React
   - RNReactNativeHapticFeedback (1.8.2):
     - React
   - RNSVG (9.13.3):
@@ -285,6 +287,7 @@ DEPENDENCIES:
   - RNAWSCognito (from `../node_modules/amazon-cognito-identity-js`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNImageCropPicker (from `../node_modules/react-native-image-crop-picker`)
+  - RNImageRotate (from `../node_modules/react-native-image-rotate`)
   - RNReactNativeHapticFeedback (from `../node_modules/react-native-haptic-feedback`)
   - RNSVG (from `../node_modules/react-native-svg`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
@@ -359,6 +362,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-gesture-handler"
   RNImageCropPicker:
     :path: "../node_modules/react-native-image-crop-picker"
+  RNImageRotate:
+    :path: "../node_modules/react-native-image-rotate"
   RNReactNativeHapticFeedback:
     :path: "../node_modules/react-native-haptic-feedback"
   RNSVG:
@@ -402,6 +407,7 @@ SPEC CHECKSUMS:
   RNAWSCognito: b0b908817ce6547cdddaa7842bc166b4c5e7c128
   RNGestureHandler: a4ddde1ffc6e590c8127b8b7eabfdade45475c74
   RNImageCropPicker: e1d8c3381e5b05a1bdcd13ea57a4f1c020a09cef
+  RNImageRotate: 61c62c5a907405821e28dc8c0e04e4fdc909b1fa
   RNReactNativeHapticFeedback: e11a4da0ce174e9f88b03cbaf5d76d94633cdee2
   RNSVG: f6177f8d7c095fada7cfee2e4bb7388ba426064c
   RNVectorIcons: 0bb4def82230be1333ddaeee9fcba45f0b288ed4
