@@ -197,6 +197,8 @@ PODS:
   - react-native-image-editor (2.1.0):
     - React
     - React-RCTImage
+  - react-native-view-shot (3.0.2):
+    - React
   - React-RCTActionSheet (0.61.2):
     - React-Core/RCTActionSheetHeaders (= 0.61.2)
   - React-RCTAnimation (0.61.2):
@@ -273,6 +275,7 @@ DEPENDENCIES:
   - react-native-camera (from `../node_modules/react-native-camera`)
   - react-native-haptic (from `../node_modules/react-native-haptic`)
   - "react-native-image-editor (from `../node_modules/@react-native-community/image-editor`)"
+  - react-native-view-shot (from `../node_modules/react-native-view-shot`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
   - React-RCTAnimation (from `../node_modules/react-native/Libraries/NativeAnimation`)
   - React-RCTBlob (from `../node_modules/react-native/Libraries/Blob`)
@@ -336,6 +339,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-haptic"
   react-native-image-editor:
     :path: "../node_modules/@react-native-community/image-editor"
+  react-native-view-shot:
+    :path: "../node_modules/react-native-view-shot"
   React-RCTActionSheet:
     :path: "../node_modules/react-native/Libraries/ActionSheetIOS"
   React-RCTAnimation:
@@ -394,6 +399,7 @@ SPEC CHECKSUMS:
   react-native-camera: 8ad12cae113fd60b07236983532acc8e595c0fc3
   react-native-haptic: b83dbc1933ebfc2d474914eae483b324a0d27aa5
   react-native-image-editor: eef37d0dd2a55cc1aba56f3e902b7f7f1888f309
+  react-native-view-shot: a94dce9b44d7846edd1204ad6f0bd88f64c29cc0
   React-RCTActionSheet: 89b037c0fb7d2671607cb645760164e7e0c013f6
   React-RCTAnimation: e3cefa93c38c004c318f7ec04b883eb14b8b8235
   React-RCTBlob: d26ac0e313fbf14e7203473fd593ccaaeee8329e
