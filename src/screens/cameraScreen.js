@@ -8,11 +8,18 @@ import {
   Image,
   LayoutAnimation,
   Animated,
+  Text,
+  TouchableOpacity,
+  ImageBackground,
 } from 'react-native';
 import {RNCamera} from 'react-native-camera';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import ImageEditor from '@react-native-community/image-editor';
 import animations from '../styles/animations';
+import PrimaryButton from '../components/buttons/primaryButton';
+import * as colors from '../styles/colors';
+import textStyles from '../styles/textStyles';
 
 const exImageH =
   'https://images.unsplash.com/photo-1539108842340-ae72fbf39857?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=700&q=80';
@@ -20,10 +27,13 @@ const exImageW =
   'https://images.unsplash.com/photo-1512397739299-fe5a4327d192?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80';
 
 const {Value, ValueXY} = Animated;
+const handleSize = 20;
 
 function CameraScreen(props) {
   const [cameraActive, setCamera] = useState(false); //! Set to true
-  const [capture, setCapture] = useState(exImageW);
+  const [capture, setCapture] = useState(props.imageUri || exImageH);
+  const imageUri = exImageH; //! REMOVE
+  const [overlayImage, setOverlayImage] = useState(exImageH); //! SET TO PROP
   const [imageSize, setImageSize] = useState({});
   const [cropped, setCropped] = useState(false);
 
@@ -39,7 +49,7 @@ function CameraScreen(props) {
   }, [capture]);
 
   const {height, width} = Dimensions.get('window');
-  const initialWidth = width * 0.9;
+  const initialWidth = width * 0.7;
   const initialHeight = initialWidth / (imageSize.w / imageSize.h);
 
   const cropWidth = new Value(initialWidth);
@@ -50,12 +60,18 @@ function CameraScreen(props) {
   const cropBottom = new Value(0);
 
   //HANDLE POSITIONS
-  const topLeftPos = new ValueXY({x: -15, y: -15});
-  const topRightPos = new ValueXY({x: initialWidth - 15, y: -15});
-  const bottomLeftPos = new ValueXY({x: -15, y: initialHeight - 15});
+  const topLeftPos = new ValueXY({x: -handleSize / 2, y: -handleSize / 2});
+  const topRightPos = new ValueXY({
+    x: initialWidth - handleSize / 2,
+    y: -handleSize / 2,
+  });
+  const bottomLeftPos = new ValueXY({
+    x: -handleSize / 2,
+    y: initialHeight - handleSize / 2,
+  });
   const bottomRightPos = new ValueXY({
-    x: initialWidth - 15,
-    y: initialHeight - 15,
+    x: initialWidth - handleSize / 2,
+    y: initialHeight - handleSize / 2,
   });
 
   function toggleOffsets() {
@@ -108,13 +124,14 @@ function CameraScreen(props) {
       }
     },
     onPanResponderRelease: (evt, gestureState) => {
+      cropOverlayImage();
       flattenOffsets();
       cropHeight.setValue(
         Math.abs(topLeftPos.y._value - bottomLeftPos.y._value),
       );
       cropWidth.setValue(Math.abs(topLeftPos.x._value - topRightPos.x._value));
-      cropLeft.setValue(topLeftPos.x._value + 15);
-      cropTop.setValue(topLeftPos.y._value + 15);
+      cropLeft.setValue(topLeftPos.x._value + handleSize / 2);
+      cropTop.setValue(topLeftPos.y._value + handleSize / 2);
     },
   });
   const _panResponderTopRight = PanResponder.create({
@@ -140,13 +157,14 @@ function CameraScreen(props) {
     },
 
     onPanResponderRelease: (evt, gestureState) => {
+      cropOverlayImage();
       flattenOffsets();
       cropHeight.setValue(
         Math.abs(topRightPos.y._value - bottomRightPos.y._value),
       );
       cropWidth.setValue(Math.abs(topRightPos.x._value - topLeftPos.x._value));
-      cropRight.setValue(topRightPos.x._value + 15);
-      cropTop.setValue(topRightPos.y._value + 15);
+      cropRight.setValue(topRightPos.x._value + handleSize / 2);
+      cropTop.setValue(topRightPos.y._value + handleSize / 2);
     },
   });
   const _panResponderBottomLeft = PanResponder.create({
@@ -171,6 +189,7 @@ function CameraScreen(props) {
       }
     },
     onPanResponderRelease: (evt, gestureState) => {
+      cropOverlayImage();
       flattenOffsets();
       cropHeight.setValue(
         Math.abs(bottomLeftPos.y._value - topLeftPos.y._value),
@@ -178,8 +197,8 @@ function CameraScreen(props) {
       cropWidth.setValue(
         Math.abs(bottomLeftPos.x._value - bottomRightPos.x._value),
       );
-      cropBottom.setValue(bottomLeftPos.y._value + 15);
-      cropLeft.setValue(bottomLeftPos.x._value + 15);
+      cropBottom.setValue(bottomLeftPos.y._value + handleSize / 2);
+      cropLeft.setValue(bottomLeftPos.x._value + handleSize / 2);
     },
   });
   const _panResponderBottomRight = PanResponder.create({
@@ -202,6 +221,7 @@ function CameraScreen(props) {
       }
     },
     onPanResponderRelease: (evt, gestureState) => {
+      cropOverlayImage();
       flattenOffsets();
       cropHeight.setValue(
         Math.abs(bottomRightPos.y._value - topRightPos.y._value),
@@ -209,8 +229,8 @@ function CameraScreen(props) {
       cropWidth.setValue(
         Math.abs(bottomRightPos.x._value - bottomLeftPos.x._value),
       );
-      cropRight.setValue(bottomRightPos.x._value + 15);
-      cropBottom.setValue(bottomRightPos.y._value + 15);
+      cropRight.setValue(bottomRightPos.x._value + handleSize / 2);
+      cropBottom.setValue(bottomRightPos.y._value + handleSize / 2);
     },
   });
   function handle(pos) {
@@ -267,13 +287,13 @@ function CameraScreen(props) {
   }
 
   function getSize() {
-    return new Promise((resolve, reject) =>
+    return new Promise((resolve, reject) => {
       Image.getSize(
         capture,
         (w, h) => resolve({w, h}),
         () => reject('No width and height found.'),
-      ),
-    );
+      );
+    });
   }
 
   async function cropImage() {
@@ -284,19 +304,22 @@ function CameraScreen(props) {
       const ratioH = h / (initialWidth / ratioImage);
       const cropData = {
         offset: {
-          x: (topLeftPos.x._value + 15) * ratioW,
-          y: (topLeftPos.y._value + 15) * ratioH,
+          x: (topLeftPos.x._value + handleSize / 2) * ratioW,
+          y: (topLeftPos.y._value + handleSize / 2) * ratioH,
         },
         size: {
           width: cropWidth._value * ratioW,
           height: cropHeight._value * ratioH,
         },
-        displaySize: {width: cropWidth._value, height: cropHeight._value},
+        // displaySize: {
+        //   width: cropWidth._value,
+        //   height: cropHeight._value,
+        // },
         resizeMode: 'contain',
       };
-
       const croppedImageURI = await ImageEditor.cropImage(capture, cropData);
       if (croppedImageURI) {
+        console.log('BAJSBAJS');
         LayoutAnimation.configureNext(animations.default);
         setCapture(croppedImageURI);
         setCropped(true);
@@ -306,61 +329,124 @@ function CameraScreen(props) {
     }
   }
 
-  if (initialHeight) {
-    return (
-      <View style={styles.container}>
-        {cameraActive ? (
-          <TouchableHighlight style={styles.camera} onPress={() => takePhoto()}>
-            <RNCamera
-              style={styles.camera}
-              ref={ref => {
-                this.camera = ref;
-              }}
-              captureAudio={false}
-            />
-          </TouchableHighlight>
-        ) : (
-          <View style={{justifyContent: 'center', alignItems: 'center'}}>
+  async function cropOverlayImage() {
+    try {
+      const {w, h} = await getSize();
+      const ratioImage = w / h;
+      const ratioW = w / initialWidth;
+      const ratioH = h / (initialWidth / ratioImage);
+      const cropData = {
+        offset: {
+          x: (topLeftPos.x._value + handleSize / 2) * ratioW,
+          y: (topLeftPos.y._value + handleSize / 2) * ratioH,
+        },
+        size: {
+          width: cropWidth._value * ratioW,
+          height: cropHeight._value * ratioH,
+        },
+        // displaySize: {
+        //   width: cropWidth._value,
+        //   height: cropHeight._value,
+        // },
+        resizeMode: 'contain',
+      };
+      const croppedImageURI = await ImageEditor.cropImage(imageUri, cropData);
+      if (croppedImageURI) {
+        LayoutAnimation.configureNext(animations.default);
+        setOverlayImage(croppedImageURI);
+      }
+    } catch (cropError) {
+      console.log('cropError: ' + cropError);
+    }
+  }
+
+  return (
+    <View style={styles.container}>
+      {cameraActive ? (
+        <TouchableHighlight style={styles.camera} onPress={() => takePhoto()}>
+          <RNCamera
+            style={styles.camera}
+            ref={ref => {
+              this.camera = ref;
+            }}
+            captureAudio={false}
+          />
+        </TouchableHighlight>
+      ) : initialHeight ? (
+        <View style={{justifyContent: 'center', alignItems: 'center'}}>
+          {!cropped && (
             <Image
               style={{
+                opacity: 0.5,
                 width: initialWidth,
                 height: initialHeight,
               }}
               source={{uri: capture}}
               resizeMode="contain"
             />
-            {!cropped && (
-              <Animated.View
-                style={[
-                  styles.cropView,
-                  {
-                    width: cropWidth,
-                    height: cropHeight,
-                    left: cropLeft,
-                    right: cropRight,
-                    top: cropTop,
-                    bottom: cropBottom,
-                  },
-                ]}
-              />
-            )}
-            {handle('topLeft')}
-            {handle('topRight')}
-            {handle('bottomLeft')}
-            {handle('bottomRight')}
+          )}
 
-            <IoniconsIcon
-              style={{marginTop: 20}}
-              size={50}
-              color={'black'}
-              name={'ios-crop'}
-              onPress={() => cropImage()}
-            />
-          </View>
-        )}
-      </View>
-    );
-  } else return null;
+          <Animated.Image
+            style={[
+              styles.cropView,
+              {
+                width: cropWidth,
+                height: cropHeight,
+                left: !cropped ? cropLeft : null,
+                right: !cropped ? cropRight : null,
+                top: !cropped ? cropTop : null,
+                bottom: !cropped ? cropBottom : null,
+                position: !cropped ? 'absolute' : 'relative',
+              },
+            ]}
+            source={{uri: overlayImage}}
+            resizeMode="contain"
+          />
+
+          {handle('topLeft')}
+          {handle('topRight')}
+          {handle('bottomLeft')}
+          {handle('bottomRight')}
+
+          {!cropped ? (
+            <TouchableOpacity
+              style={styles.cropButton}
+              onPress={() => cropImage()}>
+              <Icon size={30} color={'white'} name={'crop'} />
+              <Text style={[textStyles.button, {fontWeight: '500'}]}>Crop</Text>
+            </TouchableOpacity>
+          ) : (
+            <View
+              style={{
+                top: 50,
+                alignItems: 'center',
+              }}>
+              <IoniconsIcon
+                style={{paddingHorizontal: 50}}
+                size={50}
+                color={'white'}
+                name={'ios-refresh'}
+                onPress={() => {
+                  LayoutAnimation.configureNext(animations.default);
+                  setCropped(false);
+                  setOverlayImage(imageUri);
+                  cropHeight.setValue(initialHeight);
+                  cropWidth.setValue(initialWidth);
+                }}
+              />
+              <View style={{width: 200, marginTop: 20}}>
+                <PrimaryButton
+                  disabled={false}
+                  title={'Use image'}
+                  onPress={() => {}}
+                />
+              </View>
+            </View>
+          )}
+        </View>
+      ) : null}
+    </View>
+  );
 }
 
 export default CameraScreen;
@@ -370,22 +456,31 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: 'black',
   },
   camera: {
     flex: 1,
     width: '100%',
     height: '100%',
   },
-  imageView: {backgroundColor: 'blue'},
   cropView: {
     backgroundColor: 'black',
-    position: 'absolute',
-    opacity: 0.5,
   },
   handle: {
     position: 'absolute',
-    width: 30,
-    height: 30,
-    backgroundColor: 'green',
+    width: handleSize,
+    height: handleSize,
+    borderRadius: 50,
+    backgroundColor: 'white',
+  },
+  cropButton: {
+    marginTop: 50,
+    borderRadius: 50,
+    padding: 10,
+    width: 150,
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+    backgroundColor: colors.primaryColor,
   },
 });

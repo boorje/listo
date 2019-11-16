@@ -16,6 +16,7 @@ import HomeScreenBackground from '../components/homeScreenBackground';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import animations from '../styles/animations';
 import * as colors from '../styles/colors';
+import CameraScreen from './cameraScreen';
 
 // api
 import {
