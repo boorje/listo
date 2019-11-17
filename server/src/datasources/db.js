@@ -17,15 +17,8 @@ class DB extends DataSource {
 
   async getUserGroceryLists({ owner }) {
     const lists = await this.store.groceryLists.findAll({
-      where: { owner },
-      include: [
-        {
-          model: this.store.groceryItems,
-          where: { list: "c425e503-7fdc-4a2b-b970-427d458740ff" }
-        }
-      ]
+      where: { owner }
     });
-    console.log(lists);
     return lists ? lists : null;
   }
 
@@ -45,6 +38,25 @@ class DB extends DataSource {
   async createGroceryItem({ input }) {
     const res = await this.store.groceryItems.create(input);
     return res && res.dataValues ? res.dataValues : null;
+  }
+
+  async deleteGroceryList({ id }) {
+    const res = await this.store.groceryLists.destroy({ where: { id } });
+    return res && res === 1 ? { id } : null;
+  }
+
+  async deleteGroceryListItem({ id }) {
+    const res = await this.store.groceryItems.destroy({ where: { id } });
+    return res && res === 1 ? { id } : null;
+  }
+
+  async updateGroceryItem({ input }) {
+    const res = await this.store.groceryItems.update(input, {
+      where: { id: input.id },
+      returning: true,
+      plain: true
+    });
+    return res && res[1] && res[1].dataValues ? res[1].dataValues : null;
   }
 }
 
