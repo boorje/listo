@@ -30,12 +30,49 @@ const {Value, ValueXY} = Animated;
 const handleSize = 20;
 
 function CameraScreen(props) {
+  // STATES
   const [cameraActive, setCamera] = useState(false); //! Set to true
   const [capture, setCapture] = useState(props.imageUri || exImageH);
   const imageUri = exImageH; //! REMOVE
   const [overlayImage, setOverlayImage] = useState(exImageH); //! SET TO PROP
   const [imageSize, setImageSize] = useState({});
   const [cropped, setCropped] = useState(false);
+
+  // CONSTANTS
+  const {height, width} = Dimensions.get('window');
+  const initialWidth = width * 0.9;
+  const initialHeight = initialWidth / (imageSize.w / imageSize.h);
+
+  // ANIMATED VALUES - USED FOR CROP VIEW
+  const cropWidth = new Value(initialWidth);
+  const cropHeight = new Value(initialHeight);
+  const cropLeft = new Value(0);
+  const cropRight = new Value(0);
+  const cropTop = new Value(0);
+  const cropBottom = new Value(0);
+
+  //HANDLE POSITIONS
+  const [topLeftPos, setTopLeftPos] = useState(
+    new ValueXY({x: -handleSize / 2, y: -handleSize / 2}),
+  );
+  const [topRightPos, setTopRightPos] = useState(
+    new ValueXY({
+      x: initialWidth - handleSize / 2,
+      y: -handleSize / 2,
+    }),
+  );
+  const [bottomLeftPos, setBottomLeftPos] = useState(
+    new ValueXY({
+      x: -handleSize / 2,
+      y: height / 2 - handleSize / 2, //! Trouble with initialHeight
+    }),
+  );
+  const [bottomRightPos, setBottomRightPos] = useState(
+    new ValueXY({
+      x: initialWidth - handleSize / 2,
+      y: height / 2 - handleSize / 2,
+    }),
+  );
 
   useEffect(() => {
     async function getImageSize() {
@@ -47,32 +84,6 @@ function CameraScreen(props) {
     }
     getImageSize();
   }, [capture]);
-
-  const {height, width} = Dimensions.get('window');
-  const initialWidth = width * 0.7;
-  const initialHeight = initialWidth / (imageSize.w / imageSize.h);
-
-  const cropWidth = new Value(initialWidth);
-  const cropHeight = new Value(initialHeight);
-  const cropLeft = new Value(0);
-  const cropRight = new Value(0);
-  const cropTop = new Value(0);
-  const cropBottom = new Value(0);
-
-  //HANDLE POSITIONS
-  const topLeftPos = new ValueXY({x: -handleSize / 2, y: -handleSize / 2});
-  const topRightPos = new ValueXY({
-    x: initialWidth - handleSize / 2,
-    y: -handleSize / 2,
-  });
-  const bottomLeftPos = new ValueXY({
-    x: -handleSize / 2,
-    y: initialHeight - handleSize / 2,
-  });
-  const bottomRightPos = new ValueXY({
-    x: initialWidth - handleSize / 2,
-    y: initialHeight - handleSize / 2,
-  });
 
   function toggleOffsets() {
     topLeftPos.setOffset({
@@ -124,7 +135,6 @@ function CameraScreen(props) {
       }
     },
     onPanResponderRelease: (evt, gestureState) => {
-      cropOverlayImage();
       flattenOffsets();
       cropHeight.setValue(
         Math.abs(topLeftPos.y._value - bottomLeftPos.y._value),
@@ -132,6 +142,7 @@ function CameraScreen(props) {
       cropWidth.setValue(Math.abs(topLeftPos.x._value - topRightPos.x._value));
       cropLeft.setValue(topLeftPos.x._value + handleSize / 2);
       cropTop.setValue(topLeftPos.y._value + handleSize / 2);
+      cropOverlayImage();
     },
   });
   const _panResponderTopRight = PanResponder.create({
@@ -157,7 +168,6 @@ function CameraScreen(props) {
     },
 
     onPanResponderRelease: (evt, gestureState) => {
-      cropOverlayImage();
       flattenOffsets();
       cropHeight.setValue(
         Math.abs(topRightPos.y._value - bottomRightPos.y._value),
@@ -165,6 +175,7 @@ function CameraScreen(props) {
       cropWidth.setValue(Math.abs(topRightPos.x._value - topLeftPos.x._value));
       cropRight.setValue(topRightPos.x._value + handleSize / 2);
       cropTop.setValue(topRightPos.y._value + handleSize / 2);
+      cropOverlayImage();
     },
   });
   const _panResponderBottomLeft = PanResponder.create({
@@ -189,7 +200,6 @@ function CameraScreen(props) {
       }
     },
     onPanResponderRelease: (evt, gestureState) => {
-      cropOverlayImage();
       flattenOffsets();
       cropHeight.setValue(
         Math.abs(bottomLeftPos.y._value - topLeftPos.y._value),
@@ -199,6 +209,7 @@ function CameraScreen(props) {
       );
       cropBottom.setValue(bottomLeftPos.y._value + handleSize / 2);
       cropLeft.setValue(bottomLeftPos.x._value + handleSize / 2);
+      cropOverlayImage();
     },
   });
   const _panResponderBottomRight = PanResponder.create({
@@ -221,7 +232,6 @@ function CameraScreen(props) {
       }
     },
     onPanResponderRelease: (evt, gestureState) => {
-      cropOverlayImage();
       flattenOffsets();
       cropHeight.setValue(
         Math.abs(bottomRightPos.y._value - topRightPos.y._value),
@@ -231,6 +241,7 @@ function CameraScreen(props) {
       );
       cropRight.setValue(bottomRightPos.x._value + handleSize / 2);
       cropBottom.setValue(bottomRightPos.y._value + handleSize / 2);
+      cropOverlayImage();
     },
   });
   function handle(pos) {
@@ -311,15 +322,10 @@ function CameraScreen(props) {
           width: cropWidth._value * ratioW,
           height: cropHeight._value * ratioH,
         },
-        // displaySize: {
-        //   width: cropWidth._value,
-        //   height: cropHeight._value,
-        // },
         resizeMode: 'contain',
       };
       const croppedImageURI = await ImageEditor.cropImage(capture, cropData);
       if (croppedImageURI) {
-        console.log('BAJSBAJS');
         LayoutAnimation.configureNext(animations.default);
         setCapture(croppedImageURI);
         setCropped(true);
@@ -344,10 +350,6 @@ function CameraScreen(props) {
           width: cropWidth._value * ratioW,
           height: cropHeight._value * ratioH,
         },
-        // displaySize: {
-        //   width: cropWidth._value,
-        //   height: cropHeight._value,
-        // },
         resizeMode: 'contain',
       };
       const croppedImageURI = await ImageEditor.cropImage(imageUri, cropData);
@@ -374,40 +376,40 @@ function CameraScreen(props) {
         </TouchableHighlight>
       ) : initialHeight ? (
         <View style={{justifyContent: 'center', alignItems: 'center'}}>
-          {!cropped && (
-            <Image
-              style={{
-                opacity: 0.5,
-                width: initialWidth,
-                height: initialHeight,
-              }}
-              source={{uri: capture}}
-              resizeMode="contain"
+          <View>
+            {!cropped && (
+              <Image
+                style={{
+                  opacity: 0.2,
+                  width: initialWidth,
+                  height: initialHeight,
+                }}
+                source={{uri: capture}}
+                resizeMode="contain"
+              />
+            )}
+
+            <Animated.Image
+              style={[
+                styles.cropView,
+                {
+                  width: cropWidth,
+                  height: cropHeight,
+                  left: !cropped ? cropLeft : null,
+                  right: !cropped ? cropRight : null,
+                  top: !cropped ? cropTop : null,
+                  bottom: !cropped ? cropBottom : null,
+                  position: !cropped ? 'absolute' : 'relative',
+                },
+              ]}
+              source={{uri: overlayImage}}
             />
-          )}
 
-          <Animated.Image
-            style={[
-              styles.cropView,
-              {
-                width: cropWidth,
-                height: cropHeight,
-                left: !cropped ? cropLeft : null,
-                right: !cropped ? cropRight : null,
-                top: !cropped ? cropTop : null,
-                bottom: !cropped ? cropBottom : null,
-                position: !cropped ? 'absolute' : 'relative',
-              },
-            ]}
-            source={{uri: overlayImage}}
-            resizeMode="contain"
-          />
-
-          {handle('topLeft')}
-          {handle('topRight')}
-          {handle('bottomLeft')}
-          {handle('bottomRight')}
-
+            {handle('topLeft')}
+            {handle('topRight')}
+            {handle('bottomLeft')}
+            {handle('bottomRight')}
+          </View>
           {!cropped ? (
             <TouchableOpacity
               style={styles.cropButton}
