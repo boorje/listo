@@ -16,6 +16,7 @@ module.exports.createStore = () => {
     }
   );
 
+  // defining schemas
   const users = db.define("user", {
     id: {
       type: Sequelize.UUIDV4,
@@ -34,7 +35,6 @@ module.exports.createStore = () => {
       type: Sequelize.DATE
     }
   });
-
   const groceryLists = db.define("grocerylist", {
     id: {
       type: Sequelize.UUIDV4,
@@ -44,14 +44,6 @@ module.exports.createStore = () => {
     title: {
       type: Sequelize.STRING,
       allowNull: false
-    },
-    owner: {
-      type: Sequelize.UUIDV4,
-      references: {
-        model: "user",
-        key: "id",
-        deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
-      }
     },
     created_at: {
       type: Sequelize.DATE
@@ -69,14 +61,6 @@ module.exports.createStore = () => {
     name: { type: Sequelize.STRING, allowNull: false },
     quantity: Sequelize.INTEGER,
     unit: Sequelize.STRING,
-    list: {
-      type: Sequelize.UUIDV4,
-      references: {
-        model: "grocerylist",
-        key: "id",
-        deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
-      }
-    },
     created_at: {
       type: Sequelize.DATE
     },
@@ -84,5 +68,26 @@ module.exports.createStore = () => {
       type: Sequelize.DATE
     }
   });
+
+  // defining the relations
+  groceryLists.belongsTo(users, {
+    foreignKey: "owner",
+    targetKey: "id",
+    onDelete: "CASCADE"
+  });
+  groceryLists.hasMany(groceryItems, {
+    foreignKey: "list",
+    targetKey: "id"
+  });
+  users.hasMany(groceryLists, {
+    foreignKey: "owner",
+    targetKey: "id"
+  });
+  groceryItems.belongsTo(groceryLists, {
+    foreignKey: "list",
+    targetKey: "id",
+    onDelete: "CASCADE"
+  });
+
   return { groceryLists, groceryItems, users };
 };

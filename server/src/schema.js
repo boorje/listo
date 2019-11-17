@@ -3,7 +3,7 @@ const { gql } = require("apollo-server");
 const typeDefs = gql`
   type User {
     id: ID!
-    username: String!
+    email: String!
     lists: GroceryList
   }
 
@@ -27,6 +27,7 @@ const typeDefs = gql`
     getUser(id: ID!): User
     getUserGroceryLists(owner: ID!): [GroceryList]
     getGroceryListItems(list: ID!): [GroceryItem]
+    getGroceryList(list: ID!): [GroceryItem]
   }
 
   type Mutation {
@@ -37,11 +38,16 @@ const typeDefs = gql`
     createGroceryItem(
       input: CreateGroceryItemInput!
     ): CreateGroceryItemMutationResponse!
+    updateGroceryItem(
+      input: UpdateGroceryItemInput!
+    ): UpdateGroceryItemMutationResponse!
+    deleteGroceryList(id: ID!): DeleteGroceryListMutationResponse!
+    deleteGroceryListItem(id: ID!): DeleteGroceryListItemMutationResponse!
   }
 
   input CreateUserInput {
     id: ID
-    username: String!
+    email: String!
   }
 
   input CreateGroceryListInput {
@@ -56,6 +62,14 @@ const typeDefs = gql`
     quantity: Int
     unit: String
     list: ID!
+  }
+
+  input UpdateGroceryItemInput {
+    id: ID!
+    name: String!
+    quantity: Int
+    unit: String
+    list: ID
   }
 
   interface MutationResponse {
@@ -83,6 +97,27 @@ const typeDefs = gql`
     success: Boolean!
     message: String!
     item: GroceryItem
+  }
+
+  type DeleteGroceryListMutationResponse implements MutationResponse {
+    code: String!
+    success: Boolean!
+    message: String!
+    list: GroceryList
+  }
+
+  type DeleteGroceryListItemMutationResponse implements MutationResponse {
+    code: String!
+    success: Boolean!
+    message: String!
+    item: GroceryItem
+  }
+
+  type UpdateGroceryItemMutationResponse implements MutationResponse {
+    code: String!
+    success: Boolean!
+    message: String!
+    item: GroceryItem!
   }
 `;
 
