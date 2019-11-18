@@ -45,10 +45,10 @@ function CameraScreen(props) {
   // ANIMATED VALUES - USED FOR CROP VIEW
   const cropWidth = new Value(initialWidth);
   const cropHeight = new Value(initialHeight);
-  const [cropLeft] = useState(new Value(0));
-  const [cropRight] = useState(new Value(0));
-  const [cropTop] = useState(new Value(0));
-  const [cropBottom] = useState(new Value(0));
+  const [cropLeft, setCropLeft] = useState(new Value(0));
+  const [cropRight, setCropRight] = useState(new Value(0));
+  const [cropTop, setCropTop] = useState(new Value(0));
+  const [cropBottom, setCropBottom] = useState(new Value(0));
 
   //HANDLE POSITIONS
   const [topLeftPos] = useState(
@@ -105,6 +105,29 @@ function CameraScreen(props) {
       }),
     );
   }, [imageSize.w, imageSize.h, initialWidth]);
+
+  function resetImageAndPositions() {
+    setCapture(props.imageUri || exImageH);
+    topLeftPos.setValue({x: -handleSize / 2, y: -handleSize / 2});
+    topRightPos.setValue({
+      x: initialWidth - handleSize / 2,
+      y: -handleSize / 2,
+    });
+    bottomLeftPos.setValue({
+      x: -handleSize / 2,
+      y: initialHeight - handleSize / 2,
+    });
+    bottomRightPos.setValue({
+      x: initialWidth - handleSize / 2,
+      y: initialHeight - handleSize / 2,
+    });
+    cropHeight.setValue(initialHeight);
+    cropWidth.setValue(initialWidth);
+    cropLeft.setValue(0);
+    cropRight.setValue(0);
+    cropTop.setValue(0);
+    cropBottom.setValue(0);
+  }
 
   function toggleOffsets() {
     topLeftPos.setOffset({
@@ -464,8 +487,7 @@ function CameraScreen(props) {
                   LayoutAnimation.configureNext(animations.default);
                   setCropped(false);
                   setOverlayImage(imageUri);
-                  cropHeight.setValue(initialHeight);
-                  cropWidth.setValue(initialWidth);
+                  resetImageAndPositions();
                 }}
               />
               <View style={{width: 200, marginTop: 20}}>
