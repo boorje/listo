@@ -10,7 +10,6 @@ import {
   Animated,
   Text,
   TouchableOpacity,
-  ImageBackground,
 } from 'react-native';
 import {RNCamera} from 'react-native-camera';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
@@ -35,27 +34,27 @@ function CameraScreen(props) {
   const [capture, setCapture] = useState(props.imageUri || exImageH);
   const imageUri = exImageH; //! REMOVE
   const [overlayImage, setOverlayImage] = useState(exImageH); //! SET TO PROP
-  const [imageSize, setImageSize] = useState({});
   const [cropped, setCropped] = useState(false);
 
-  // CONSTANTS
+  // STATES - DIMENSIONS
   const {height, width} = Dimensions.get('window');
-  const initialWidth = width * 0.9;
-  const initialHeight = initialWidth / (imageSize.w / imageSize.h);
+  const [initialWidth] = useState(width * 0.9);
+  const [imageSize, setImageSize] = useState({});
+  const [initialHeight, setInitialHeight] = useState(initialWidth);
 
   // ANIMATED VALUES - USED FOR CROP VIEW
   const cropWidth = new Value(initialWidth);
   const cropHeight = new Value(initialHeight);
-  const cropLeft = new Value(0);
-  const cropRight = new Value(0);
-  const cropTop = new Value(0);
-  const cropBottom = new Value(0);
+  const [cropLeft] = useState(new Value(0));
+  const [cropRight] = useState(new Value(0));
+  const [cropTop] = useState(new Value(0));
+  const [cropBottom] = useState(new Value(0));
 
   //HANDLE POSITIONS
-  const [topLeftPos, setTopLeftPos] = useState(
+  const [topLeftPos] = useState(
     new ValueXY({x: -handleSize / 2, y: -handleSize / 2}),
   );
-  const [topRightPos, setTopRightPos] = useState(
+  const [topRightPos] = useState(
     new ValueXY({
       x: initialWidth - handleSize / 2,
       y: -handleSize / 2,
@@ -64,26 +63,48 @@ function CameraScreen(props) {
   const [bottomLeftPos, setBottomLeftPos] = useState(
     new ValueXY({
       x: -handleSize / 2,
-      y: height / 2 - handleSize / 2, //! Trouble with initialHeight
+      y: initialHeight - handleSize / 2,
     }),
   );
   const [bottomRightPos, setBottomRightPos] = useState(
     new ValueXY({
       x: initialWidth - handleSize / 2,
-      y: height / 2 - handleSize / 2,
+      y: initialHeight - handleSize / 2,
     }),
   );
 
+  // USE EFFECTS
   useEffect(() => {
-    async function getImageSize() {
-      await Image.getSize(
-        capture,
-        (w, h) => setImageSize({w, h}),
-        err => console.log(err),
-      );
-    }
-    getImageSize();
+    Image.getSize(
+      capture,
+      (w, h) => {
+        setImageSize({w, h});
+      },
+      err => console.log(err),
+    );
   }, [capture]);
+
+  useEffect(() => {
+    setInitialHeight(initialWidth / (imageSize.w / imageSize.h));
+  }, [imageSize.w, imageSize.h, initialWidth]);
+
+  useEffect(() => {
+    setBottomLeftPos(
+      new ValueXY({
+        x: -handleSize / 2,
+        y: initialWidth / (imageSize.w / imageSize.h) - handleSize / 2,
+      }),
+    );
+  }, [imageSize.w, imageSize.h, initialWidth]);
+
+  useEffect(() => {
+    setBottomRightPos(
+      new ValueXY({
+        x: initialWidth - handleSize / 2,
+        y: initialWidth / (imageSize.w / imageSize.h) - handleSize / 2,
+      }),
+    );
+  }, [imageSize.w, imageSize.h, initialWidth]);
 
   function toggleOffsets() {
     topLeftPos.setOffset({
@@ -110,12 +131,14 @@ function CameraScreen(props) {
     });
     bottomRightPos.setValue({x: 0, y: 0});
   }
+
   function flattenOffsets() {
     topLeftPos.flattenOffset();
     topRightPos.flattenOffset();
     bottomLeftPos.flattenOffset();
     bottomRightPos.flattenOffset();
   }
+
   const _panResponderTopLeft = PanResponder.create({
     onMoveShouldSetPanResponder: (evt, gestureState) => true,
     onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
@@ -145,6 +168,7 @@ function CameraScreen(props) {
       cropOverlayImage();
     },
   });
+
   const _panResponderTopRight = PanResponder.create({
     onMoveShouldSetPanResponder: (evt, gestureState) => true,
     onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
@@ -178,6 +202,7 @@ function CameraScreen(props) {
       cropOverlayImage();
     },
   });
+
   const _panResponderBottomLeft = PanResponder.create({
     onMoveShouldSetPanResponder: (evt, gestureState) => true,
     onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
@@ -207,11 +232,13 @@ function CameraScreen(props) {
       cropWidth.setValue(
         Math.abs(bottomLeftPos.x._value - bottomRightPos.x._value),
       );
+      console.log(bottomLeftPos);
       cropBottom.setValue(bottomLeftPos.y._value + handleSize / 2);
       cropLeft.setValue(bottomLeftPos.x._value + handleSize / 2);
       cropOverlayImage();
     },
   });
+
   const _panResponderBottomRight = PanResponder.create({
     onMoveShouldSetPanResponder: (evt, gestureState) => true,
     onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
@@ -244,6 +271,7 @@ function CameraScreen(props) {
       cropOverlayImage();
     },
   });
+
   function handle(pos) {
     if (pos === 'topLeft' && !cropped) {
       return (
@@ -375,7 +403,11 @@ function CameraScreen(props) {
           />
         </TouchableHighlight>
       ) : initialHeight ? (
-        <View style={{justifyContent: 'center', alignItems: 'center'}}>
+        <View
+          style={{
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
           <View>
             {!cropped && (
               <Image
