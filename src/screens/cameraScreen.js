@@ -448,6 +448,7 @@ function CameraScreen(props) {
               style={[
                 styles.cropView,
                 {
+                  borderWidth: !cropped ? 1 : 0,
                   width: cropWidth,
                   height: cropHeight,
                   left: !cropped ? cropLeft : null,
@@ -521,6 +522,7 @@ const styles = StyleSheet.create({
   },
   cropView: {
     backgroundColor: 'black',
+    borderColor: 'white',
   },
   handle: {
     position: 'absolute',
