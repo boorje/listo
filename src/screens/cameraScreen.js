@@ -37,7 +37,7 @@ function CameraScreen(props) {
   const [cropped, setCropped] = useState(false);
 
   // STATES - DIMENSIONS
-  const {height, width} = Dimensions.get('window');
+  const width = Dimensions.get('window').width;
   const [initialWidth] = useState(width * 0.9);
   const [imageSize, setImageSize] = useState({});
   const [initialHeight, setInitialHeight] = useState(initialWidth);
@@ -45,10 +45,10 @@ function CameraScreen(props) {
   // ANIMATED VALUES - USED FOR CROP VIEW
   const cropWidth = new Value(initialWidth);
   const cropHeight = new Value(initialHeight);
-  const [cropLeft, setCropLeft] = useState(new Value(0));
-  const [cropRight, setCropRight] = useState(new Value(0));
-  const [cropTop, setCropTop] = useState(new Value(0));
-  const [cropBottom, setCropBottom] = useState(new Value(0));
+  const [cropLeft] = useState(new Value(0));
+  const [cropRight] = useState(new Value(0));
+  const [cropTop] = useState(new Value(0));
+  const [cropBottom] = useState(new Value(0));
 
   //HANDLE POSITIONS
   const [topLeftPos] = useState(
