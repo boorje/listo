@@ -41,13 +41,16 @@ function CameraScreen(props) {
   const [initialHeight, setInitialHeight] = useState(initialWidth);
 
   // ANIMATED VALUES - USED FOR CROP VIEW
-  const [cropWidthLeft, setCropWidthLeft] = useState(new Value(0));
-  const [cropHeightLeft, setCropHeightLeft] = useState(
-    new Value(initialHeight),
-  );
-  const [cropWidthRight, setCropWidthRight] = useState(new Value(0));
-  const [cropHeightTop, setCropHeightTop] = useState(new Value(0));
-  const [cropHeightBottom, setCropHeightBottom] = useState(new Value(0));
+  const cropWidth = new Value(initialWidth);
+  const cropHeight = new Value(initialHeight);
+  const [cropLeft] = useState(new Value(0));
+  const [cropRight] = useState(new Value(0));
+  const [cropTop] = useState(new Value(0));
+  const [cropBottom] = useState(new Value(0));
+  const [blurWidthLeft] = useState(new Value(0));
+  const [blurWidthRight] = useState(new Value(0));
+  const [blurHeightTop] = useState(new Value(0));
+  const [blurHeightBottom] = useState(new Value(0));
 
   //HANDLE POSITIONS
   const [topLeftPos] = useState(
@@ -120,10 +123,14 @@ function CameraScreen(props) {
       x: initialWidth - handleSize / 2,
       y: initialHeight - handleSize / 2,
     });
-    cropWidthLeft.setValue(0);
-    cropWidthRight.setValue(0);
-    cropHeightTop.setValue(0);
-    cropHeightBottom.setValue(0);
+    blurWidthLeft.setValue(0);
+    blurWidthRight.setValue(0);
+    blurHeightTop.setValue(0);
+    blurHeightBottom.setValue(0);
+    cropLeft.setValue(0);
+    cropRight.setValue(0);
+    cropTop.setValue(0);
+    cropBottom.setValue(0);
   }
 
   function toggleOffsets() {
@@ -151,14 +158,14 @@ function CameraScreen(props) {
     });
     bottomRightPos.setValue({x: 0, y: 0});
 
-    cropWidthLeft.setOffset(cropWidthLeft._value);
-    cropWidthLeft.setValue(0);
-    cropWidthRight.setOffset(cropWidthRight._value);
-    cropWidthRight.setValue(0);
-    cropHeightTop.setOffset(cropHeightTop._value);
-    cropHeightTop.setValue(0);
-    cropHeightBottom.setOffset(cropHeightBottom._value);
-    cropHeightBottom.setValue(0);
+    blurWidthLeft.setOffset(blurWidthLeft._value);
+    blurWidthLeft.setValue(0);
+    blurWidthRight.setOffset(blurWidthRight._value);
+    blurWidthRight.setValue(0);
+    blurHeightTop.setOffset(blurHeightTop._value);
+    blurHeightTop.setValue(0);
+    blurHeightBottom.setOffset(blurHeightBottom._value);
+    blurHeightBottom.setValue(0);
   }
 
   function flattenOffsets() {
@@ -166,10 +173,10 @@ function CameraScreen(props) {
     topRightPos.flattenOffset();
     bottomLeftPos.flattenOffset();
     bottomRightPos.flattenOffset();
-    cropWidthLeft.flattenOffset();
-    cropWidthRight.flattenOffset();
-    cropHeightTop.flattenOffset();
-    cropHeightBottom.flattenOffset();
+    blurWidthLeft.flattenOffset();
+    blurWidthRight.flattenOffset();
+    blurHeightTop.flattenOffset();
+    blurHeightBottom.flattenOffset();
   }
 
   const _panResponderTopLeft = PanResponder.create({
@@ -183,7 +190,7 @@ function CameraScreen(props) {
         evt,
         gestureState,
       );
-      Animated.event([null, {dx: cropWidthLeft, dy: cropHeightTop}])(
+      Animated.event([null, {dx: blurWidthLeft, dy: blurHeightTop}])(
         evt,
         gestureState,
       );
@@ -197,6 +204,12 @@ function CameraScreen(props) {
     },
     onPanResponderRelease: (evt, gestureState) => {
       flattenOffsets();
+      cropHeight.setValue(
+        Math.abs(topLeftPos.y._value - bottomLeftPos.y._value),
+      );
+      cropWidth.setValue(Math.abs(topLeftPos.x._value - topRightPos.x._value));
+      cropLeft.setValue(topLeftPos.x._value + handleSize / 2);
+      cropTop.setValue(topLeftPos.y._value + handleSize / 2);
     },
   });
 
@@ -211,7 +224,8 @@ function CameraScreen(props) {
         evt,
         gestureState,
       );
-      Animated.event([null, {dx: 0, dy: cropHeightTop}])(evt, gestureState);
+      Animated.event([null, {dx: 0, dy: blurHeightTop}])(evt, gestureState);
+      blurWidthRight.setValue(Math.abs(gestureState.dx));
       if (Math.abs(gestureState.dx) > 0) {
         Animated.event([null, {dx: bottomRightPos.x, dy: 0}])(
           evt,
@@ -225,6 +239,12 @@ function CameraScreen(props) {
 
     onPanResponderRelease: (evt, gestureState) => {
       flattenOffsets();
+      cropHeight.setValue(
+        Math.abs(topRightPos.y._value - bottomRightPos.y._value),
+      );
+      cropWidth.setValue(Math.abs(topRightPos.x._value - topLeftPos.x._value));
+      cropRight.setValue(topRightPos.x._value + handleSize / 2);
+      cropTop.setValue(topRightPos.y._value + handleSize / 2);
     },
   });
 
@@ -239,8 +259,8 @@ function CameraScreen(props) {
         evt,
         gestureState,
       );
-      Animated.event([null, {dx: cropWidthLeft, dy: 0}])(evt, gestureState);
-      cropHeightBottom.setValue(Math.abs(gestureState.dy));
+      Animated.event([null, {dx: blurWidthLeft}])(evt, gestureState);
+      blurHeightBottom.setValue(Math.abs(gestureState.dy));
       if (Math.abs(gestureState.dx) > 0) {
         Animated.event([null, {dx: topLeftPos.x, dy: 0}])(evt, gestureState);
       }
@@ -253,6 +273,14 @@ function CameraScreen(props) {
     },
     onPanResponderRelease: (evt, gestureState) => {
       flattenOffsets();
+      cropHeight.setValue(
+        Math.abs(bottomLeftPos.y._value - topLeftPos.y._value),
+      );
+      cropWidth.setValue(
+        Math.abs(bottomLeftPos.x._value - bottomRightPos.x._value),
+      );
+      cropBottom.setValue(bottomLeftPos.y._value + handleSize / 2);
+      cropLeft.setValue(bottomLeftPos.x._value + handleSize / 2);
     },
   });
 
@@ -269,6 +297,8 @@ function CameraScreen(props) {
         gestureState,
       );
 
+      blurWidthRight.setValue(Math.abs(gestureState.dx));
+      blurHeightBottom.setValue(Math.abs(gestureState.dy));
       if (Math.abs(gestureState.dx) > 0) {
         Animated.event([null, {dx: topRightPos.x, dy: 0}])(evt, gestureState);
       }
@@ -278,6 +308,14 @@ function CameraScreen(props) {
     },
     onPanResponderRelease: (evt, gestureState) => {
       flattenOffsets();
+      cropHeight.setValue(
+        Math.abs(bottomRightPos.y._value - topRightPos.y._value),
+      );
+      cropWidth.setValue(
+        Math.abs(bottomRightPos.x._value - bottomLeftPos.x._value),
+      );
+      cropRight.setValue(bottomRightPos.x._value + handleSize / 2);
+      cropBottom.setValue(bottomRightPos.y._value + handleSize / 2);
     },
   });
 
@@ -320,14 +358,14 @@ function CameraScreen(props) {
   }
 
   function blur(pos) {
-    if (pos === 'leftBlur') {
+    if (pos === 'leftBlur' && !cropped) {
       return (
         <Animated.View
           style={[
             styles.blur,
             {
               height: initialHeight,
-              width: cropWidthLeft,
+              width: blurWidthLeft,
               left: 0,
               bottom: 0,
             },
@@ -336,29 +374,30 @@ function CameraScreen(props) {
       );
     }
 
-    if (pos === 'rightBlur') {
+    if (pos === 'rightBlur' && !cropped) {
       return (
         <Animated.View
           style={[
             styles.blur,
             {
               height: initialHeight,
-              width: cropWidthRight,
-              left: topRightPos.x._value + 10,
+              width: blurWidthRight,
+              right: 0,
               top: 0,
+              marginLeft: blurWidthRight,
             },
           ]}
         />
       );
     }
 
-    if (pos === 'topBlur') {
+    if (pos === 'topBlur' && !cropped) {
       return (
         <Animated.View
           style={[
             styles.blur,
             {
-              height: cropHeightTop,
+              height: blurHeightTop,
               width: initialWidth,
               left: topLeftPos.x._value + 10,
               top: topLeftPos.y._value + 10,
@@ -368,16 +407,17 @@ function CameraScreen(props) {
       );
     }
 
-    if (pos === 'bottomBlur') {
+    if (pos === 'bottomBlur' && !cropped) {
       return (
         <Animated.View
           style={[
             styles.blur,
             {
-              height: cropHeightBottom,
+              height: blurHeightBottom,
               width: initialWidth,
               left: bottomLeftPos.x._value + 10,
-              top: bottomLeftPos.y._value,
+              bottom: 0,
+              marginTop: blurHeightBottom,
             },
           ]}
         />
@@ -412,6 +452,7 @@ function CameraScreen(props) {
 
   async function cropImage() {
     try {
+      console.log(cropWidth);
       const {w, h} = await getSize();
       const ratioImage = w / h;
       const ratioW = w / initialWidth;
@@ -422,9 +463,10 @@ function CameraScreen(props) {
           y: (topLeftPos.y._value + handleSize / 2) * ratioH,
         },
         size: {
-          width: cropWidthLeft._value * ratioW, //! Change
-          height: cropHeight._value * ratioH, //! Change
+          width: cropWidth._value * ratioW,
+          height: cropHeight._value * ratioH,
         },
+
         resizeMode: 'contain',
       };
       const croppedImageURI = await ImageEditor.cropImage(capture, cropData);
@@ -457,12 +499,29 @@ function CameraScreen(props) {
             alignItems: 'center',
           }}>
           <View>
-            {!cropped && (
-              <Image
+            {!cropped ? (
+              <Animated.Image
                 style={{
-                  width: initialWidth,
+                  width: initialWidth, //! Use transform to make the animation smoother?
                   height: initialHeight,
                 }}
+                source={{uri: capture}}
+                resizeMode="contain"
+              />
+            ) : (
+              <Animated.Image
+                style={[
+                  styles.cropView,
+                  {
+                    width: cropWidth,
+                    height: cropHeight,
+                    left: !cropped ? cropLeft : null,
+                    right: !cropped ? cropRight : null,
+                    top: !cropped ? cropTop : null,
+                    bottom: !cropped ? cropBottom : null,
+                    position: !cropped ? 'absolute' : 'relative',
+                  },
+                ]}
                 source={{uri: capture}}
                 resizeMode="contain"
               />
