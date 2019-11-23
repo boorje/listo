@@ -35,7 +35,7 @@ function CameraScreen(props) {
   const [cropped, setCropped] = useState(false);
 
   // STATES - DIMENSIONS
-  const width = Dimensions.get('window').width;
+  const {height, width} = Dimensions.get('window');
   const [initialWidth] = useState(width * 0.9);
   const [imageSize, setImageSize] = useState({});
   const [initialHeight, setInitialHeight] = useState(initialWidth);
@@ -452,7 +452,6 @@ function CameraScreen(props) {
 
   async function cropImage() {
     try {
-      console.log(cropWidth);
       const {w, h} = await getSize();
       const ratioImage = w / h;
       const ratioW = w / initialWidth;
@@ -466,7 +465,6 @@ function CameraScreen(props) {
           width: cropWidth._value * ratioW,
           height: cropHeight._value * ratioH,
         },
-
         resizeMode: 'contain',
       };
       const croppedImageURI = await ImageEditor.cropImage(capture, cropData);
@@ -499,33 +497,15 @@ function CameraScreen(props) {
             alignItems: 'center',
           }}>
           <View>
-            {!cropped ? (
-              <Animated.Image
-                style={{
-                  width: initialWidth, //! Use transform to make the animation smoother?
-                  height: initialHeight,
-                }}
-                source={{uri: capture}}
-                resizeMode="contain"
-              />
-            ) : (
-              <Animated.Image
-                style={[
-                  styles.cropView,
-                  {
-                    width: cropWidth,
-                    height: cropHeight,
-                    left: !cropped ? cropLeft : null,
-                    right: !cropped ? cropRight : null,
-                    top: !cropped ? cropTop : null,
-                    bottom: !cropped ? cropBottom : null,
-                    position: !cropped ? 'absolute' : 'relative',
-                  },
-                ]}
-                source={{uri: capture}}
-                resizeMode="contain"
-              />
-            )}
+            <Animated.Image
+              style={{
+                width: initialWidth,
+                height: !cropped ? initialHeight : height * 0.5,
+              }}
+              source={{uri: capture}}
+              resizeMode="contain"
+            />
+
             {blur('leftBlur')}
             {blur('rightBlur')}
             {blur('topBlur')}
@@ -538,7 +518,9 @@ function CameraScreen(props) {
           {!cropped ? (
             <TouchableOpacity
               style={styles.cropButton}
-              onPress={() => cropImage()}>
+              onPress={() => {
+                cropImage();
+              }}>
               <Icon size={30} color={'white'} name={'crop'} />
               <Text style={[textStyles.button, {fontWeight: '500'}]}>Crop</Text>
             </TouchableOpacity>
