@@ -225,7 +225,11 @@ function CameraScreen(props) {
         gestureState,
       );
       Animated.event([null, {dx: 0, dy: blurHeightTop}])(evt, gestureState);
-      blurWidthRight.setValue(Math.abs(gestureState.dx));
+      if (gestureState.dx < 0) {
+        blurWidthRight.setValue(Math.abs(gestureState.dx));
+      } else {
+        blurWidthRight.setValue(-gestureState.dx);
+      }
       if (Math.abs(gestureState.dx) > 0) {
         Animated.event([null, {dx: bottomRightPos.x, dy: 0}])(
           evt,
@@ -260,7 +264,11 @@ function CameraScreen(props) {
         gestureState,
       );
       Animated.event([null, {dx: blurWidthLeft}])(evt, gestureState);
-      blurHeightBottom.setValue(Math.abs(gestureState.dy));
+      if (gestureState.dy < 0) {
+        blurHeightBottom.setValue(Math.abs(gestureState.dy));
+      } else {
+        blurHeightBottom.setValue(-gestureState.dy);
+      }
       if (Math.abs(gestureState.dx) > 0) {
         Animated.event([null, {dx: topLeftPos.x, dy: 0}])(evt, gestureState);
       }
@@ -297,8 +305,16 @@ function CameraScreen(props) {
         gestureState,
       );
 
-      blurWidthRight.setValue(Math.abs(gestureState.dx));
-      blurHeightBottom.setValue(Math.abs(gestureState.dy));
+      if (gestureState.dx < 0) {
+        blurWidthRight.setValue(Math.abs(gestureState.dx));
+      } else {
+        blurWidthRight.setValue(-gestureState.dx);
+      }
+      if (gestureState.dy < 0) {
+        blurHeightBottom.setValue(Math.abs(gestureState.dy));
+      } else {
+        blurHeightBottom.setValue(-gestureState.dy);
+      }
       if (Math.abs(gestureState.dx) > 0) {
         Animated.event([null, {dx: topRightPos.x, dy: 0}])(evt, gestureState);
       }
