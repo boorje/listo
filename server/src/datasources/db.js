@@ -15,6 +15,11 @@ class DB extends DataSource {
     return user && user.dataValues ? user.dataValues : null;
   }
 
+  async findOrCreateUser({ email }) {
+    const user = await this.store.users.findOrCreate({ where: { email } });
+    return user && user[0] ? user[0].dataValues : null;
+  }
+
   async getUserGroceryLists({ owner }) {
     const lists = await this.store.groceryLists.findAll({
       where: { owner }

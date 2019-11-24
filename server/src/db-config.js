@@ -23,7 +23,7 @@ module.exports.createStore = () => {
       defaultValue: Sequelize.UUIDV4, // TODO: should not create id. Should come from auth provider
       primaryKey: true
     },
-    username: {
+    email: {
       type: Sequelize.STRING,
       allowNull: false,
       unique: true

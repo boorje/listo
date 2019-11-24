@@ -57,16 +57,6 @@ module.exports = {
         item: res
       };
       return response;
-    },
-    createUser: async (_, { input }, { dataSources }) => {
-      try {
-        const user = await dataSources.cognito.signUp(input.email);
-        if (user) {
-          // add the user to the database
-        }
-      } catch (error) {
-        console.log("error: ", error);
-      }
     }
   },
   GroceryList: {
