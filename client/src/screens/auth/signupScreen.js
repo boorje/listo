@@ -1,5 +1,7 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
+import {Auth} from 'aws-amplify';
+
 import * as colors from '../../styles/colors';
 
 // -- Components --
@@ -11,6 +13,13 @@ import Logo from '../../components/logo';
 // -- Helpers --
 import validateValues from '../../helpers/validateFormValues';
 
+// TODO: use crypto-browserify
+function getRandomString(bytes) {
+  return Math.random()
+    .toString(bytes)
+    .slice(-8);
+}
+
 class SignupScreen extends React.Component {
   state = {
     signupError: '',
@@ -19,11 +28,19 @@ class SignupScreen extends React.Component {
   };
 
   handleSubmit = async values => {
-    const {email, password} = values;
     this.setState({loading: true});
+    const params = {
+      username: 'ericborjesson123@gmail.com',
+      password: getRandomString(30),
+    };
     try {
-      await validateValues(values);
+      //await validateValues(values);
+      const res = await Auth.signUp(params);
+      // TODO: userSub should be added to db.
+      await Auth.signIn(params);
+      //this.props.navigation.navigate('Home');
     } catch (error) {
+      console.log(error);
       this.setState({loading: false});
       switch (error.code) {
         case 'ValidationError':

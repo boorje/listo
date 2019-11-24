@@ -1,7 +1,9 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {SafeAreaView, StyleSheet, View} from 'react-native';
 import {useMutation} from '@apollo/react-hooks';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import {Auth} from 'aws-amplify';
+
 // components
 import GroceryListsContainer from '../components/groceryListsContainer';
 import AddGroceryListModal from '../components/modals/AddGroceryListModal';
@@ -15,7 +17,7 @@ import * as colors from '../styles/colors';
 
 export default function HomeScreen(props) {
   // TODO: Add to cache on signup
-  const [user] = useState({
+  const [user, setUser] = useState({
     id: '9cd866c9-02cc-4d93-aef6-28dfc28392a3',
     email: 'eric.borjesson@hotmail.com',
   });
@@ -48,6 +50,18 @@ export default function HomeScreen(props) {
       toggleMessage(true);
     },
   });
+
+  useEffect(() => {
+    async function getUser() {
+      try {
+        const user = await Auth.currentSession();
+        console.log('USER: ', user);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    getUser();
+  }, []);
 
   if (mutationLoading) console.log('loading');
   //if (mutationError) console.log('error: ', mutationError);

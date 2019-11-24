@@ -23,3 +23,9 @@ export const GET_GROCERY_LIST_ITEMS = gql`
     }
   }
 `;
+
+export const GET_USER_TOKEN = gql`
+  query userToken {
+    userToken @client
+  }
+`;
