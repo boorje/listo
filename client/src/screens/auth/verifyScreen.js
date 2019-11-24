@@ -1,5 +1,6 @@
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
+import {Auth} from 'aws-amplify';
 
 // -- Components --
 import CodeForm from '../../components/forms/codeForm';
@@ -12,9 +13,8 @@ import * as colors from '../../styles/colors';
 class VerifyScreen extends React.Component {
   state = {
     verificationError: '',
-    user: this.props.navigation.getParam('user', null),
+    cognitoUser: this.props.navigation.getParam('cognitoUser', null),
     loading: false,
-    cognitoUser: {},
     messageOpen: false,
   };
 
@@ -34,8 +34,15 @@ class VerifyScreen extends React.Component {
     try {
       this.setState({loading: true});
       await this._validateCode(code);
+      const cognitoUser = await Auth.sendCustomChallengeAnswer(
+        this.state.cognitoUser,
+        code,
+      );
+      await Auth.currentSession(); // checks if the user has entered the correct code
+      this.props.navigation.navigate('Home');
       this.setState({loading: false});
     } catch (error) {
+      console.log('Error: ', error);
       this.setState({loading: false});
       switch (error.code) {
         case 'ValidationError':
@@ -73,27 +80,27 @@ class VerifyScreen extends React.Component {
   render() {
     const {loading, verificationError, user, messageOpen} = this.state;
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         {verificationError.length > 0 && messageOpen && (
           <Message
             messageOpen={() => this.toggleMessage()}
             message={verificationError}
           />
         )}
-        <Logo />
+        {/* <Logo /> */}
         <CodeForm
           handleSubmit={this.confirmSignup}
           loading={loading}
           submitTitle="VERIFY CODE"
         />
 
-        {user.username && (
+        {user && user.username && (
           <Text style={styles.textInfo}>
             A verification code has been sent to{' '}
             <Text style={styles.email}>{user.username}</Text>.
           </Text>
         )}
-      </View>
+      </SafeAreaView>
     );
   }
 }

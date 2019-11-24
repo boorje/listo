@@ -12,18 +12,18 @@ import textStyles from '../../styles/textStyles';
 const LoginForm = props => (
   <View style={styles.container}>
     <Formik
-      initialValues={{email: '', password: ''}}
-      initialStatus={{hidePassword: true}}
+      initialValues={{email: ''}}
+      // initialStatus={{hidePassword: true}}
       onSubmit={values => props.handleSubmit(values)}
       validationSchema={yup.object().shape({
         email: yup
           .string()
           .email()
           .required(),
-        password: yup
-          .string()
-          .min(8)
-          .required(),
+        // password: yup
+        //   .string()
+        //   .min(8)
+        //   .required(),
       })}>
       {({
         setStatus,
@@ -53,6 +53,7 @@ const LoginForm = props => (
                 returnKeyType="done"
                 placeholderTextColor="white"
                 autoCapitalize="none"
+                autoCorrect="none"
                 autoFocus={false}
                 style={styles.textInput}
               />
@@ -66,7 +67,7 @@ const LoginForm = props => (
                 {errors.email}
               </Text>
             </View>
-            <View style={styles.textBox}>
+            {/* <View style={styles.textBox}>
               <Icon
                 size={20}
                 name={'lock'}
@@ -86,8 +87,8 @@ const LoginForm = props => (
                 secureTextEntry={status.hidePassword}
                 style={styles.textInput}
               />
-            </View>
-            <View style={styles.inputErrorView}>
+            </View> */}
+            {/* <View style={styles.inputErrorView}>
               <Text
                 style={[
                   formStyles.inputError,
@@ -95,15 +96,15 @@ const LoginForm = props => (
                 ]}>
                 {errors.password}
               </Text>
-            </View>
+            </View> */}
           </View>
-          <View style={styles.forgotPassword}>
+          {/* <View style={styles.forgotPassword}>
             <Text
               onPress={() => props.forgotPassword()}
               style={[textStyles.smallText, {color: 'white'}]}>
               Forgot password?
             </Text>
-          </View>
+          </View> */}
 
           <View style={styles.button}>
             <SubmitButton
@@ -176,6 +177,7 @@ const styles = StyleSheet.create({
     marginTop: '5%',
   },
 });
+
 LoginForm.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,

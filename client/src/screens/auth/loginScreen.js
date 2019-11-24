@@ -1,6 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {StyleSheet, View, Dimensions, Animated} from 'react-native';
+import {Auth} from 'aws-amplify';
 
 // -- Components --
 import LoginForm from '../../components/forms/loginForm';
@@ -30,10 +31,13 @@ class LoginScreen extends React.Component {
   };
 
   handleLogin = async values => {
-    const {email, password} = values;
+    // const {email} = values;
+    const email = 'eric.borjesson@hotmail.com'; // TODO
     this.setState({loading: true});
     try {
-      await validateValues(values);
+      //TODO: add email validation - await validateValues(values);
+      const cognitoUser = await Auth.signIn(email);
+      this.props.navigation.navigate('Verify', {cognitoUser});
     } catch (error) {
       this.setState({loading: false});
       switch (error.code) {

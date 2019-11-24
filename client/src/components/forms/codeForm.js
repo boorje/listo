@@ -16,9 +16,8 @@ const CodeForm = props => {
         onSubmit={values => props.handleSubmit(values)}
         validationSchema={yup.object().shape({
           code: yup
-            .number()
-            .positive()
-            .integer()
+            .string()
+            .min(6)
             .required(),
         })}>
         {({
@@ -31,16 +30,17 @@ const CodeForm = props => {
           handleSubmit,
         }) => (
           <React.Fragment>
-            <TextInput
-              value={values.code}
-              onChangeText={handleChange('code')}
-              onSubmitEditing={() => setFieldTouched('code')}
-              returnKeyType="done"
-              placeholder="Your verification code"
-              keyboardType="number-pad"
-              autoFocus={false}
-              style={styles.textInput}
-            />
+            <View style={styles.textBox}>
+              <TextInput
+                value={values.code}
+                onChangeText={handleChange('code')}
+                onSubmitEditing={() => setFieldTouched('code')}
+                returnKeyType="done"
+                placeholder="Your verification code"
+                autoFocus={false}
+                style={styles.textInput}
+              />
+            </View>
             {touched.code && errors.code && (
               <Text style={formStyles.inputError}>{errors.code}</Text>
             )}
@@ -63,6 +63,7 @@ export default CodeForm;
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
+    marginTop: '11%',
   },
   loginForm: {width: '100%', alignItems: 'center'},
   textBox: {
@@ -80,6 +81,7 @@ const styles = StyleSheet.create({
     padding: 15,
     paddingLeft: '12%',
   },
+
   icon: {
     position: 'absolute',
     left: '2%',
