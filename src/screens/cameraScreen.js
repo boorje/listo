@@ -43,10 +43,6 @@ function CameraScreen(props) {
   // ANIMATED VALUES - USED FOR CROP VIEW
   const cropWidth = new Value(initialWidth);
   const cropHeight = new Value(initialHeight);
-  const [cropLeft] = useState(new Value(0));
-  const [cropRight] = useState(new Value(0));
-  const [cropTop] = useState(new Value(0));
-  const [cropBottom] = useState(new Value(0));
   const [blurWidthLeft] = useState(new Value(0));
   const [blurWidthRight] = useState(new Value(0));
   const [blurHeightTop] = useState(new Value(0));
@@ -127,10 +123,6 @@ function CameraScreen(props) {
     blurWidthRight.setValue(0);
     blurHeightTop.setValue(0);
     blurHeightBottom.setValue(0);
-    cropLeft.setValue(0);
-    cropRight.setValue(0);
-    cropTop.setValue(0);
-    cropBottom.setValue(0);
   }
 
   function toggleOffsets() {
@@ -186,14 +178,17 @@ function CameraScreen(props) {
       toggleOffsets();
     },
     onPanResponderMove: (evt, gestureState) => {
-      Animated.event([null, {dx: topLeftPos.x, dy: topLeftPos.y}])(
-        evt,
-        gestureState,
-      );
-      Animated.event([null, {dx: blurWidthLeft, dy: blurHeightTop}])(
-        evt,
-        gestureState,
-      );
+      if (gestureState.moveX >= width * 0.05) {
+        //! Find out how to save initial corner coordinates.
+        Animated.event([null, {dx: topLeftPos.x, dy: topLeftPos.y}])(
+          evt,
+          gestureState,
+        );
+        Animated.event([null, {dx: blurWidthLeft, dy: blurHeightTop}])(
+          evt,
+          gestureState,
+        );
+      }
 
       if (Math.abs(gestureState.dx) > 0) {
         Animated.event([null, {dx: bottomLeftPos.x, dy: 0}])(evt, gestureState);
@@ -208,8 +203,6 @@ function CameraScreen(props) {
         Math.abs(topLeftPos.y._value - bottomLeftPos.y._value),
       );
       cropWidth.setValue(Math.abs(topLeftPos.x._value - topRightPos.x._value));
-      cropLeft.setValue(topLeftPos.x._value + handleSize / 2);
-      cropTop.setValue(topLeftPos.y._value + handleSize / 2);
     },
   });
 
@@ -247,8 +240,6 @@ function CameraScreen(props) {
         Math.abs(topRightPos.y._value - bottomRightPos.y._value),
       );
       cropWidth.setValue(Math.abs(topRightPos.x._value - topLeftPos.x._value));
-      cropRight.setValue(topRightPos.x._value + handleSize / 2);
-      cropTop.setValue(topRightPos.y._value + handleSize / 2);
     },
   });
 
@@ -287,8 +278,6 @@ function CameraScreen(props) {
       cropWidth.setValue(
         Math.abs(bottomLeftPos.x._value - bottomRightPos.x._value),
       );
-      cropBottom.setValue(bottomLeftPos.y._value + handleSize / 2);
-      cropLeft.setValue(bottomLeftPos.x._value + handleSize / 2);
     },
   });
 
@@ -330,8 +319,6 @@ function CameraScreen(props) {
       cropWidth.setValue(
         Math.abs(bottomRightPos.x._value - bottomLeftPos.x._value),
       );
-      cropRight.setValue(bottomRightPos.x._value + handleSize / 2);
-      cropBottom.setValue(bottomRightPos.y._value + handleSize / 2);
     },
   });
 
