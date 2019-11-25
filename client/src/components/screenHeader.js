@@ -1,50 +1,101 @@
-import React from 'react';
-import {StyleSheet, Dimensions, View, Text} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {
+  StyleSheet,
+  TextInput,
+  View,
+  Text,
+  TouchableHighlight,
+} from 'react-native';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 import textStyles from '../styles/textStyles';
 import PropTypes from 'prop-types';
 import * as colors from '../styles/colors';
 
-const {height, width} = Dimensions.get('window');
+function ScreenHeader(props) {
+  const [textInputActive, setTextInputActive] = useState(false);
+  const [textInputValue, setTextInputValue] = useState(props.headerTitle);
+  const [user, setUser] = useState(props.user || {});
+  const [groceryList, setGroceryList] = useState(props.groceryList || {});
 
-const ScreenHeader = props => (
-  <View style={styles.container}>
-    <View style={styles.container2}>
-      <View style={{flex: 1}}>
-        <IoniconsIcon
-          style={styles.iconStyle}
-          size={50}
-          color={'white'}
-          name={props.leftIcon}
-          onPress={() => props.leftIconPress()}
-        />
-      </View>
-      <View style={styles.headerTitle}>
-        <Text style={[textStyles.listTitle]}>{props.headerTitle}</Text>
-      </View>
-      <View style={styles.rightIcons}>
-        {props.rightIcon1 && (
-          <IoniconsIcon
-            style={[styles.iconStyle, {paddingRight: '15%'}]}
-            size={35}
-            color={'white'}
-            name={props.rightIcon1}
-            onPress={() => props.rightIcon1Press()}
-          />
-        )}
-        {props.rightIcon2 && (
+  useEffect(() => {
+    setTextInputValue(props.headerTitle);
+  }, [props.headerTitle]);
+
+  useEffect(() => {
+    setUser(props.user);
+  }, [props.user]);
+
+  useEffect(() => {
+    setGroceryList(props.groceryList);
+  }, [props.groceryList]);
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.container2}>
+        <View style={{flex: 1}}>
           <IoniconsIcon
             style={styles.iconStyle}
-            size={35}
+            size={50}
             color={'white'}
-            name={props.rightIcon2}
-            onPress={() => props.rightIcon2Press()}
+            name={props.leftIcon}
+            onPress={() => props.leftIconPress()}
+          />
+        </View>
+        {!textInputActive ? (
+          <TouchableHighlight
+            underlayColor={'transparent'}
+            style={styles.headerTitle}
+            onPress={() => {
+              if (user.id === groceryList.owner) {
+                setTextInputActive(true);
+              }
+            }}>
+            <View>
+              <Text style={[textStyles.listTitle]}>{props.headerTitle}</Text>
+              {/* <Text style={[textStyles.listTitle]}>{groceryList.owner}</Text> */}
+            </View>
+          </TouchableHighlight>
+        ) : (
+          <TextInput
+            value={textInputValue}
+            onChangeText={text => setTextInputValue(text)}
+            onSubmitEditing={() => {
+              props.renameList(textInputValue);
+              setTextInputActive(false);
+            }}
+            placeholder="List name..."
+            returnKeyType="done"
+            placeholderTextColor="white"
+            autoCapitalize="none"
+            autoFocus={true}
+            style={textStyles.listTitle}
           />
         )}
+
+        <View style={styles.rightIcons}>
+          {props.rightIcon1 && (
+            <IoniconsIcon
+              style={[styles.iconStyle, {paddingRight: '15%'}]}
+              size={35}
+              color={'white'}
+              name={props.rightIcon1}
+              onPress={() => props.rightIcon1Press()}
+            />
+          )}
+          {props.rightIcon2 && (
+            <IoniconsIcon
+              style={styles.iconStyle}
+              size={35}
+              color={'white'}
+              name={props.rightIcon2}
+              onPress={() => props.rightIcon2Press()}
+            />
+          )}
+        </View>
       </View>
     </View>
-  </View>
-);
+  );
+}
 
 export default ScreenHeader;
 
