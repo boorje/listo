@@ -13,18 +13,41 @@ const store = createStore();
 /**
  * verifies and decodes the token
  * @param {String} token
- * @return - The decoded JWT token
+ * @return The decoded JWT token
  */
 function verifyAndDecodeToken(token) {
-  const pem = jwkToPem(jwks.keys[1]);
-  const verificationOpt = {
-    algorithms: ["RS256"],
-    client_id: process.env.COGNITO_CLIENT_ID,
-    issuer: process.env.COGNITO_USER_POOL_ID
-  };
-  jwt.verify(token, pem, verificationOpt, function(err, decodedToken) {
-    if (err) throw new AuthenticationError(err);
-    return decodedToken;
+  return new Promise((resolve, reject) => {
+    const pem = jwkToPem(jwks.keys[1]);
+    const verificationOpt = {
+      algorithms: ["RS256"],
+      client_id: process.env.COGNITO_CLIENT_ID,
+      issuer: process.env.COGNITO_USER_POOL_ID,
+      token_use: "access"
+    };
+    jwt.verify(token, pem, verificationOpt, function(err, decodedToken) {
+      if (err) reject(err);
+      resolve(decodedToken);
+    });
+  });
+}
+
+/**
+ * finds or creates the user in the db
+ * @param {String} id
+ * @return The user from the db.
+ */
+function findOrCreateUser(id) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const users = await store.users.findOrCreate({
+        where: { id }
+      });
+      const user = users && users[0] ? users[0] : null;
+      if (!user) throw "Could not find user.";
+      resolve(user.dataValues);
+    } catch (e) {
+      reject(e);
+    }
   });
 }
 
@@ -37,13 +60,17 @@ const server = new ApolloServer({
   context: async ({ req }) => {
     const token = req.headers.authorization || null;
     if (!token) throw new AuthenticationError();
-    const decodedToken = verifyAndDecodeToken(token);
-    const userId = decodedToken.username;
-    // const users = await store.db.users.findOrCreate({ where: { email } });
-    // const user = users && users[0] ? users[0] : null;
-    // if (!user) throw new AuthenticationError("you must be logged in");
-    // TODO: return the id and email: {user: {id, email}}
-    return { user: { id: userId } };
+    try {
+      const decodedToken = await verifyAndDecodeToken(token);
+      const userId = decodedToken.username;
+      const user = await findOrCreateUser(userId);
+      // TODO: Check if user exists instead of findorcreate.
+      //    user exists return all the models for the schema.
+      //    user doesn't exists. only return the model for User: login: () => {findOrCreateUser}
+      return { user: { id: user.id } };
+    } catch (e) {
+      throw new AuthenticationError(e);
+    }
   }
 });
 
