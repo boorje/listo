@@ -1,7 +1,5 @@
 module.exports = {
   Query: {
-    getUser: async (_, { id }, { dataSources }) =>
-      await dataSources.db.getUser({ id }),
     getUserGroceryLists: async (_, { owner }, { dataSources }) =>
       await dataSources.db.getUserGroceryLists({ owner }),
     getGroceryListItems: async (_, { list }, { dataSources }) =>
@@ -28,6 +26,16 @@ module.exports = {
       };
       return response;
     },
+    updateGroceryItem: async (_, { input }, { dataSources }) => {
+      const res = await dataSources.db.updateGroceryItem({ input });
+      const response = {
+        code: res ? 200 : 500,
+        success: res ? true : false,
+        message: "Successfully updated the item",
+        item: res
+      };
+      return response;
+    },
     deleteGroceryList: async (_, { id }, { dataSources }) => {
       const res = await dataSources.db.deleteGroceryList({ id });
       const response = {
@@ -44,16 +52,6 @@ module.exports = {
         code: res ? 200 : 500,
         success: res ? true : false,
         message: "Successfully deleted the item",
-        item: res
-      };
-      return response;
-    },
-    updateGroceryItem: async (_, { input }, { dataSources }) => {
-      const res = await dataSources.db.updateGroceryItem({ input });
-      const response = {
-        code: res ? 200 : 500,
-        success: res ? true : false,
-        message: "Successfully updated the item",
         item: res
       };
       return response;
