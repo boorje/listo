@@ -2,7 +2,9 @@ import React from 'react';
 import {AppRegistry} from 'react-native';
 import {ApolloClient} from 'apollo-client';
 import {InMemoryCache} from 'apollo-cache-inmemory';
-import {HttpLink} from 'apollo-link-http';
+import {concat} from 'apollo-link';
+import {createHttpLink} from 'apollo-link-http';
+import {setContext} from 'apollo-link-context';
 import {ApolloProvider} from '@apollo/react-hooks';
 import {resolvers} from './src/api/resolvers';
 import Amplify, {Auth} from 'aws-amplify';
@@ -14,21 +16,28 @@ import {name as appName} from './app.json';
 import awsconfig from './aws-exports';
 Amplify.configure(awsconfig);
 
+// apollo config
 const cache = new InMemoryCache();
-const link = new HttpLink({
-  uri: 'http://localhost:4000/',
-  headers: {
-    authorization: Auth.currentSession()
-      .then(res =>
-        console.log('index.js: ', res.getAccessToken().getJwtToken()),
-      )
-      .catch(() => console.log('null')),
-  },
+const GRAPHQL_API_ENDPOINT = 'http://localhost:4000/';
+const httpLink = createHttpLink({
+  uri: GRAPHQL_API_ENDPOINT,
+});
+
+const authMiddleware = setContext(async (req, {headers}) => {
+  const token = await Auth.currentSession()
+    .then(user => user.getAccessToken().getJwtToken())
+    .catch(() => null);
+  return {
+    headers: {
+      ...headers,
+      authorization: token,
+    },
+  };
 });
 
 const client = new ApolloClient({
   cache,
-  link,
+  link: concat(authMiddleware, httpLink),
   resolvers,
 });
 

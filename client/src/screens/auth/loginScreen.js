@@ -1,18 +1,14 @@
-/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {StyleSheet, View, Dimensions, Animated} from 'react-native';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {Auth} from 'aws-amplify';
-
-// -- Components --
+// -- components --
 import LoginForm from '../../components/forms/loginForm';
 import Message from '../../components/message';
-import * as colors from '../../styles/colors';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Logo from '../../components/logo';
-
-// -- Helpers --
-import validateValues from '../../helpers/validateFormValues';
-import {addUserToDB} from '../../helpers/addUserToDB';
+// -- helpers --
+import validateEmail from '../../helpers/validateEmail';
+import * as colors from '../../styles/colors';
 
 const {height} = Dimensions.get('window');
 const {Value} = Animated;
@@ -31,11 +27,10 @@ class LoginScreen extends React.Component {
   };
 
   handleLogin = async values => {
-    // const {email} = values;
-    const email = 'eric.borjesson@hotmail.com'; // TODO
+    const {email} = values;
     this.setState({loading: true});
     try {
-      //TODO: add email validation - await validateValues(values);
+      await validateEmail(email);
       const cognitoUser = await Auth.signIn(email);
       this.props.navigation.navigate('Verify', {cognitoUser});
     } catch (error) {
@@ -48,7 +43,7 @@ class LoginScreen extends React.Component {
           this.setState({signinError: 'The email does not exist.'});
           break;
         case 'NotAuthorizedException':
-          this.setState({signinError: 'Incorrect email or password.'});
+          this.setState({signinError: 'Incorrect email.'});
           break;
         default:
           this.setState({
@@ -72,6 +67,7 @@ class LoginScreen extends React.Component {
       }),
     ]).start();
   };
+
   closeLogin = () => {
     this.setState({formOpen: false});
     Animated.sequence([
@@ -85,6 +81,7 @@ class LoginScreen extends React.Component {
       }),
     ]).start();
   };
+
   toggleMessage = () => {
     this.setState(prevstate => ({
       messageOpen: prevstate.messageOpen ? false : true,
@@ -112,9 +109,6 @@ class LoginScreen extends React.Component {
             focus={this.state.textInputFocus}
             handleSubmit={this.handleLogin}
             loading={loading}
-            forgotPassword={() =>
-              this.props.navigation.navigate('ForgotPassword')
-            }
             register={() => this.props.navigation.navigate('Signup')}
           />
         </KeyboardAwareScrollView>

@@ -92,9 +92,6 @@ const styles = StyleSheet.create({
     color: 'red',
     fontFamily: 'Avenir Next',
   },
-  forgotPassword: {
-    marginTop: '5%',
-  },
   button: {
     width: '70%',
     marginTop: '5%',

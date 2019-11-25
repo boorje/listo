@@ -1,16 +1,12 @@
 import gql from 'graphql-tag';
 
 export const typeDefs = gql`
-  extend type User {
-    token: String!
-  }
-
   extend type Query {
-    userToken: String!
+    getUser: User!
   }
 
-  extend type Mutation {
-    addToken: [User]
+  extend type User {
+    email: String
   }
 `;
 

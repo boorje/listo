@@ -13,22 +13,15 @@ const LoginForm = props => (
   <View style={styles.container}>
     <Formik
       initialValues={{email: ''}}
-      // initialStatus={{hidePassword: true}}
       onSubmit={values => props.handleSubmit(values)}
       validationSchema={yup.object().shape({
         email: yup
           .string()
           .email()
           .required(),
-        // password: yup
-        //   .string()
-        //   .min(8)
-        //   .required(),
       })}>
       {({
-        setStatus,
         values,
-        status,
         handleChange,
         errors,
         setFieldTouched,
@@ -67,44 +60,7 @@ const LoginForm = props => (
                 {errors.email}
               </Text>
             </View>
-            {/* <View style={styles.textBox}>
-              <Icon
-                size={20}
-                name={'lock'}
-                color={'white'}
-                style={styles.icon}
-              />
-              <TextInput
-                value={values.password}
-                onChangeText={handleChange('password')}
-                placeholder="Password"
-                placeholderTextColor="white"
-                returnKeyType="done"
-                onSubmitEditing={() => {
-                  handleSubmit;
-                  setFieldTouched('password');
-                }}
-                secureTextEntry={status.hidePassword}
-                style={styles.textInput}
-              />
-            </View> */}
-            {/* <View style={styles.inputErrorView}>
-              <Text
-                style={[
-                  formStyles.inputError,
-                  {opacity: touched.password && errors.password ? 1 : 0},
-                ]}>
-                {errors.password}
-              </Text>
-            </View> */}
           </View>
-          {/* <View style={styles.forgotPassword}>
-            <Text
-              onPress={() => props.forgotPassword()}
-              style={[textStyles.smallText, {color: 'white'}]}>
-              Forgot password?
-            </Text>
-          </View> */}
 
           <View style={styles.button}>
             <SubmitButton
@@ -168,9 +124,6 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: 'red',
     fontFamily: 'Avenir Next',
-  },
-  forgotPassword: {
-    marginTop: '5%',
   },
   button: {
     width: '70%',

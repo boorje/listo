@@ -2,12 +2,16 @@ import React from 'react';
 import {View, StyleSheet, Text, Dimensions} from 'react-native';
 import Svg, {ClipPath, Circle, Rect} from 'react-native-svg';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import textStyles from '../styles/textStyles';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
+import {Auth} from 'aws-amplify';
+//components
 import PrimaryButton from '../components/buttons/primaryButton';
+//styles
 import * as colors from '../styles/colors';
+import textStyles from '../styles/textStyles';
 
 const {height, width} = Dimensions.get('window');
+
 class SettingsScreen extends React.Component {
   state = {
     user: {},
@@ -24,9 +28,10 @@ class SettingsScreen extends React.Component {
 
   _logout = async () => {
     try {
-      this.props.navigation.navigate('Auth');
+      await Auth.signOut();
+      this.props.navigation.navigate('Authenticator');
     } catch (error) {
-      console.log(error);
+      this.props.navigation.navigate('Authenticator');
     }
   };
 

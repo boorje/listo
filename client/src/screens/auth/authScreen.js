@@ -1,15 +1,27 @@
 import React, {useEffect} from 'react';
 import {ActivityIndicator, StyleSheet, View} from 'react-native';
 import {Auth} from 'aws-amplify';
+import {useApolloClient} from '@apollo/react-hooks';
 
-export default function AuthLoadingScreen(props) {
+export default function AuthenticatorScreen(props) {
+  const client = useApolloClient();
+
   useEffect(() => {
     async function validateUserToken() {
       try {
         await Auth.currentSession();
+        const {attributes} = await Auth.currentAuthenticatedUser();
+        client.writeData({
+          data: {
+            user: {
+              __typename: 'User',
+              id: attributes.sub,
+              email: attributes.email,
+            },
+          },
+        });
         props.navigation.navigate('Home');
       } catch (e) {
-        console.log('Authscreen::::, ', e);
         props.navigation.navigate('Login');
       }
     }
