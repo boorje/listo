@@ -1,17 +1,15 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Auth} from 'aws-amplify';
-
-import * as colors from '../../styles/colors';
-
-// -- Components --
+//components
 import SignupForm from '../../components/forms/signupForm';
 import Message from '../../components/message';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Logo from '../../components/logo';
-
-// -- Helpers --
-import validateValues from '../../helpers/validateFormValues';
+//helpers
+import validateEmail from '../../helpers/validateEmail';
+//styles
+import * as colors from '../../styles/colors';
 
 // TODO: use crypto-browserify
 function getRandomString(bytes) {
@@ -27,20 +25,19 @@ class SignupScreen extends React.Component {
     messageOpen: false,
   };
 
-  handleSubmit = async values => {
+  handleSubmit = async ({email}) => {
     this.setState({loading: true});
     const params = {
-      username: 'ericborjesson123@gmail.com',
+      username: email,
       password: getRandomString(30),
     };
     try {
-      //await validateValues(values);
+      await validateEmail(email);
       const res = await Auth.signUp(params);
       // TODO: userSub should be added to db.
       await Auth.signIn(params);
-      //this.props.navigation.navigate('Home');
+      this.props.navigation.navigate('Authenticator');
     } catch (error) {
-      console.log(error);
       this.setState({loading: false});
       switch (error.code) {
         case 'ValidationError':

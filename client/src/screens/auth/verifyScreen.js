@@ -1,13 +1,11 @@
 import React from 'react';
 import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import {Auth} from 'aws-amplify';
-
-// -- Components --
+//components
 import CodeForm from '../../components/forms/codeForm';
 import Message from '../../components/message';
 import Logo from '../../components/logo';
-
-// -- helper --
+//styles
 import * as colors from '../../styles/colors';
 
 class VerifyScreen extends React.Component {
@@ -30,7 +28,7 @@ class VerifyScreen extends React.Component {
     });
   };
 
-  confirmSignup = async ({code}) => {
+  confirmSignin = async ({code}) => {
     try {
       this.setState({loading: true});
       await this._validateCode(code);
@@ -39,10 +37,10 @@ class VerifyScreen extends React.Component {
         code,
       );
       await Auth.currentSession(); // checks if the user has entered the correct code
-      this.props.navigation.navigate('Home');
+      // Todo: findorcreate(user) in DB in BE before moving forward
+      this.props.navigation.navigate('Authenticator');
       this.setState({loading: false});
     } catch (error) {
-      console.log('Error: ', error);
       this.setState({loading: false});
       switch (error.code) {
         case 'ValidationError':
@@ -64,13 +62,6 @@ class VerifyScreen extends React.Component {
     }
   };
 
-  _signUserInAndAddToDB = async () => {
-    try {
-      const {email, password} = this.props.navigation.getParam('values', null);
-    } catch (error) {
-      this.props.navigation.navigate('Login');
-    }
-  };
   toggleMessage = () => {
     this.setState(prevstate => ({
       messageOpen: prevstate.messageOpen ? false : true,
@@ -89,7 +80,7 @@ class VerifyScreen extends React.Component {
         )}
         {/* <Logo /> */}
         <CodeForm
-          handleSubmit={this.confirmSignup}
+          handleSubmit={this.confirmSignin}
           loading={loading}
           submitTitle="VERIFY CODE"
         />

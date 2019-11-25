@@ -12,10 +12,6 @@ import AuthScreen from './src/screens/auth/authScreen';
 import LoginScreen from './src/screens/auth/loginScreen';
 import SignupScreen from './src/screens/auth/signupScreen';
 import VerifyScreen from './src/screens/auth/verifyScreen';
-import SignedupScreen from './src/screens/auth/signupFinishedScreen';
-import ForgotPasswordScreen from './src/screens/auth/forgotPasswordScreen';
-import ResetPasswordScreen from './src/screens/auth/resetPasswordScreen';
-import PasswordFinishedScreen from './src/screens/auth/passwordFinishedScreen';
 
 Icon.loadFont();
 IoniconsIcon.loadFont();
@@ -34,10 +30,6 @@ const AuthStack = createStackNavigator(
     Login: LoginScreen,
     Signup: SignupScreen,
     Verify: VerifyScreen,
-    Signedup: SignedupScreen,
-    ForgotPassword: ForgotPasswordScreen,
-    ResetPassword: ResetPasswordScreen,
-    PasswordFinished: PasswordFinishedScreen,
   },
   {headerMode: 'none'},
 );
@@ -45,12 +37,12 @@ const AuthStack = createStackNavigator(
 export default createAppContainer(
   createSwitchNavigator(
     {
-      AuthLoading: AuthScreen,
+      Authenticator: AuthScreen,
       App: MainStack,
       Auth: AuthStack,
     },
     {
-      initialRouteName: 'AuthLoading',
+      initialRouteName: 'Authenticator',
     },
   ),
 );

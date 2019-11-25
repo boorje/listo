@@ -24,8 +24,11 @@ export const GET_GROCERY_LIST_ITEMS = gql`
   }
 `;
 
-export const GET_USER_TOKEN = gql`
-  query userToken {
-    userToken @client
+export const GET_USER = gql`
+  query getUser {
+    user @client {
+      id
+      email
+    }
   }
 `;

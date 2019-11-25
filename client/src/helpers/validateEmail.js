@@ -1,6 +1,6 @@
 import * as yup from 'yup';
 
-export default async ({email, password}) => {
+export default async email => {
   return new Promise(async (resolve, reject) => {
     try {
       const schema = yup.object().shape({
@@ -8,12 +8,8 @@ export default async ({email, password}) => {
           .string()
           .email()
           .required(),
-        password: yup
-          .string()
-          .min(8)
-          .required(),
       });
-      await schema.validate({email, password});
+      await schema.validate({email});
       resolve();
     } catch (error) {
       const {message, name} = error;

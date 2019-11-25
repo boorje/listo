@@ -13,9 +13,6 @@ import * as colors from '../styles/colors';
 import PrimaryButton from '../components/buttons/primaryButton';
 import {KeyboardAwareFlatList} from 'react-native-keyboard-aware-scroll-view';
 
-// -- API helpers --
-import {createGroceryItem} from '../api/groceryListsAPI';
-
 class PreviousGroceriesContainer extends React.Component {
   state = {
     groceries: [

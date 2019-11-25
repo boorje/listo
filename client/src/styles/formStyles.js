@@ -15,11 +15,4 @@ export default StyleSheet.create({
     fontFamily: 'Avenir Next',
     position: 'absolute',
   },
-  forgotPassword: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    marginTop: 10,
-    marginBottom: 10,
-  },
 });

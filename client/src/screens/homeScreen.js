@@ -1,9 +1,7 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {SafeAreaView, StyleSheet, View} from 'react-native';
-import {useMutation} from '@apollo/react-hooks';
+import {useMutation, useQuery} from '@apollo/react-hooks';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {Auth} from 'aws-amplify';
-
 // components
 import GroceryListsContainer from '../components/groceryListsContainer';
 import AddGroceryListModal from '../components/modals/AddGroceryListModal';
@@ -16,15 +14,13 @@ import * as mutations from '../api/mutations';
 import * as colors from '../styles/colors';
 
 export default function HomeScreen(props) {
-  // TODO: Add to cache on signup
-  const [user, setUser] = useState({
-    id: '9cd866c9-02cc-4d93-aef6-28dfc28392a3',
-    email: 'eric.borjesson@hotmail.com',
-  });
   const [modalOpen, toggleModal] = useState(false);
   const [messageOpen, toggleMessage] = useState(false);
   const [apiError, setApiError] = useState('');
-
+  const {data: userData, loading: loadingUser, error: userError} = useQuery(
+    queries.GET_USER,
+  );
+  if (userError) props.navigation.navigate('Authenticator');
   const [
     newList,
     {loading: mutationLoading, error: mutationError},
@@ -32,11 +28,11 @@ export default function HomeScreen(props) {
     update(cache, {data}) {
       const {getUserGroceryLists} = cache.readQuery({
         query: queries.GET_USERS_LISTS,
-        variables: {owner: user.id},
+        variables: {owner: userData.user.id},
       });
       cache.writeQuery({
         query: queries.GET_USERS_LISTS,
-        variables: {owner: user.id},
+        variables: {owner: userData.user.id},
         data: {
           getUserGroceryLists: [
             ...getUserGroceryLists,
@@ -46,28 +42,16 @@ export default function HomeScreen(props) {
       });
     },
     onError(error) {
+      console.log(error);
       setApiError('API Error');
       toggleMessage(true);
     },
   });
-
-  useEffect(() => {
-    async function getUser() {
-      try {
-        const user = await Auth.currentSession();
-        console.log('USER: ', user);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    getUser();
-  }, []);
-
   if (mutationLoading) console.log('loading');
-  //if (mutationError) console.log('error: ', mutationError);
+  if (mutationError) console.log('error: ', mutationError);
 
   function addGroceryList(title) {
-    newList({variables: {input: {owner: user.id, title}}});
+    newList({variables: {input: {owner: userData.user.id, title}}});
   }
 
   return (
@@ -80,7 +64,9 @@ export default function HomeScreen(props) {
         />
       )}
       <HomeScreenBackground
-        openSettings={() => props.navigation.navigate('Settings', {user})}
+        openSettings={() =>
+          props.navigation.navigate('Settings', {user: userData.user})
+        }
       />
       {apiError.length > 0 && messageOpen && (
         <Message
@@ -90,7 +76,7 @@ export default function HomeScreen(props) {
       )}
       <SafeAreaView style={{flex: 5, marginTop: '3%'}}>
         <GroceryListsContainer
-          user={user}
+          user={userData.user}
           goToGroceryList={groceryList =>
             props.navigation.navigate('List', {list: groceryList})
           }
