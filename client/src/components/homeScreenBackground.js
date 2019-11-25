@@ -8,8 +8,8 @@ const HomeScreenBackground = props => {
   return (
     <View style={styles.container}>
       <View style={styles.top}>
-        <Text style={[textStyles.smallText, {color: 'white', fontSize: 20}]}>
-          Hello!
+        <Text style={[textStyles.smallText, {color: 'white', fontSize: 40}]}>
+          👋🏼
         </Text>
         <Icon
           size={30}
@@ -32,8 +32,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 2,
     alignItems: 'center',
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
+    // borderBottomLeftRadius: 30,
+    // borderBottomRightRadius: 30,
     backgroundColor: colors.primaryColor,
     shadowColor: 'black',
     shadowOffset: {width: 0, height: 1},
