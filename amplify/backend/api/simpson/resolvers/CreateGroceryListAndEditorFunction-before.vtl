@@ -1,4 +1,0 @@
-$util.qr($ctx.stash.put("title", $ctx.args.title))
-#set($owner = $util.defaultIfNull($ctx.identity.claims.get("username"), $ctx.identity.claims.get("cognito:username")))
-$util.qr($ctx.stash.put("owner", $owner))
-{}
