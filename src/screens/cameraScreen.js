@@ -41,11 +41,16 @@ function CameraScreen(props) {
   const [initialHeight, setInitialHeight] = useState(initialWidth);
 
   // ANIMATED VALUES - USED FOR CROP VIEW
+<<<<<<< HEAD
   const [cropWidth] = useState(new Value(initialWidth));
   const [cropHeight] = useState(new Value(initialHeight));
   const [blurLeft] = useState(new Value(0));
   const [blurRight] = useState(new Value(0));
   const [blurWidth, setblurWidth] = useState(new Value(0));
+=======
+  const cropWidth = new Value(initialWidth);
+  const cropHeight = new Value(initialHeight);
+>>>>>>> b3c6ad3a1204064e9a66a467a5b2d3a67234b144
   const [blurWidthLeft] = useState(new Value(0));
   const [blurWidthRight] = useState(new Value(0));
   const [blurHeightTop] = useState(new Value(0));
@@ -86,10 +91,13 @@ function CameraScreen(props) {
   }, [capture]);
 
   useEffect(() => {
+<<<<<<< HEAD
     setblurWidth(cropWidth);
   }, [cropWidth]);
 
   useEffect(() => {
+=======
+>>>>>>> b3c6ad3a1204064e9a66a467a5b2d3a67234b144
     setInitialHeight(initialWidth / (imageSize.w / imageSize.h));
   }, [imageSize.w, imageSize.h, initialWidth]);
 
@@ -130,9 +138,12 @@ function CameraScreen(props) {
     blurWidthRight.setValue(0);
     blurHeightTop.setValue(0);
     blurHeightBottom.setValue(0);
+<<<<<<< HEAD
     blurLeft.setValue(0);
     blurRight.setValue(0);
     blurWidth.setValue(0);
+=======
+>>>>>>> b3c6ad3a1204064e9a66a467a5b2d3a67234b144
   }
 
   function toggleOffsets() {
@@ -166,12 +177,15 @@ function CameraScreen(props) {
     blurWidthRight.setValue(0);
     blurHeightTop.setOffset(blurHeightTop._value);
     blurHeightTop.setValue(0);
+<<<<<<< HEAD
     blurWidth.setOffset(blurWidth._value);
     blurWidth.setValue(0);
     blurLeft.setOffset(blurLeft._value);
     blurLeft.setValue(0);
     blurRight.setOffset(blurRight._value);
     blurRight.setValue(0);
+=======
+>>>>>>> b3c6ad3a1204064e9a66a467a5b2d3a67234b144
     blurHeightBottom.setOffset(blurHeightBottom._value);
     blurHeightBottom.setValue(0);
   }
@@ -184,9 +198,12 @@ function CameraScreen(props) {
     blurWidthLeft.flattenOffset();
     blurWidthRight.flattenOffset();
     blurHeightTop.flattenOffset();
+<<<<<<< HEAD
     blurLeft.flattenOffset();
     blurRight.flattenOffset();
     blurWidth.flattenOffset();
+=======
+>>>>>>> b3c6ad3a1204064e9a66a467a5b2d3a67234b144
     blurHeightBottom.flattenOffset();
   }
 
@@ -197,6 +214,7 @@ function CameraScreen(props) {
       toggleOffsets();
     },
     onPanResponderMove: (evt, gestureState) => {
+<<<<<<< HEAD
       Animated.event([null, {dx: topLeftPos.x, dy: topLeftPos.y}])(
         evt,
         gestureState,
@@ -207,6 +225,19 @@ function CameraScreen(props) {
       );
       blurLeft.setValue(gestureState.dx);
       blurWidth.setValue(-gestureState.dx);
+=======
+      if (gestureState.moveX >= width * 0.05) {
+        //! Find out how to save initial corner coordinates.
+        Animated.event([null, {dx: topLeftPos.x, dy: topLeftPos.y}])(
+          evt,
+          gestureState,
+        );
+        Animated.event([null, {dx: blurWidthLeft, dy: blurHeightTop}])(
+          evt,
+          gestureState,
+        );
+      }
+>>>>>>> b3c6ad3a1204064e9a66a467a5b2d3a67234b144
 
       if (Math.abs(gestureState.dx) > 0) {
         Animated.event([null, {dx: bottomLeftPos.x, dy: 0}])(evt, gestureState);
@@ -238,11 +269,17 @@ function CameraScreen(props) {
       Animated.event([null, {dx: 0, dy: blurHeightTop}])(evt, gestureState);
       if (gestureState.dx < 0) {
         blurWidthRight.setValue(Math.abs(gestureState.dx));
+<<<<<<< HEAD
         blurRight.setValue(Math.abs(gestureState.dx));
       } else {
         blurWidthRight.setValue(-gestureState.dx);
       }
       blurWidth.setValue(gestureState.dx);
+=======
+      } else {
+        blurWidthRight.setValue(-gestureState.dx);
+      }
+>>>>>>> b3c6ad3a1204064e9a66a467a5b2d3a67234b144
       if (Math.abs(gestureState.dx) > 0) {
         Animated.event([null, {dx: bottomRightPos.x, dy: 0}])(
           evt,
@@ -275,8 +312,11 @@ function CameraScreen(props) {
         gestureState,
       );
       Animated.event([null, {dx: blurWidthLeft}])(evt, gestureState);
+<<<<<<< HEAD
       blurLeft.setValue(gestureState.dx);
       blurWidth.setValue(-gestureState.dx);
+=======
+>>>>>>> b3c6ad3a1204064e9a66a467a5b2d3a67234b144
       if (gestureState.dy < 0) {
         blurHeightBottom.setValue(Math.abs(gestureState.dy));
       } else {
@@ -318,11 +358,17 @@ function CameraScreen(props) {
 
       if (gestureState.dx < 0) {
         blurWidthRight.setValue(Math.abs(gestureState.dx));
+<<<<<<< HEAD
         blurRight.setValue(Math.abs(gestureState.dx));
       } else {
         blurWidthRight.setValue(-gestureState.dx);
       }
       blurWidth.setValue(gestureState.dx);
+=======
+      } else {
+        blurWidthRight.setValue(-gestureState.dx);
+      }
+>>>>>>> b3c6ad3a1204064e9a66a467a5b2d3a67234b144
       if (gestureState.dy < 0) {
         blurHeightBottom.setValue(Math.abs(gestureState.dy));
       } else {
@@ -425,10 +471,16 @@ function CameraScreen(props) {
             styles.blur,
             {
               height: blurHeightTop,
+<<<<<<< HEAD
               width: blurWidth,
               left: blurLeft,
               right: blurRight,
               top: 0,
+=======
+              width: initialWidth,
+              left: topLeftPos.x._value + 10,
+              top: topLeftPos.y._value + 10,
+>>>>>>> b3c6ad3a1204064e9a66a467a5b2d3a67234b144
             },
           ]}
         />
@@ -442,9 +494,14 @@ function CameraScreen(props) {
             styles.blur,
             {
               height: blurHeightBottom,
+<<<<<<< HEAD
               width: blurWidth,
               left: blurLeft,
               right: blurRight,
+=======
+              width: initialWidth,
+              left: bottomLeftPos.x._value + 10,
+>>>>>>> b3c6ad3a1204064e9a66a467a5b2d3a67234b144
               bottom: 0,
               marginTop: blurHeightBottom,
             },
@@ -529,7 +586,11 @@ function CameraScreen(props) {
             <Animated.Image
               style={{
                 width: initialWidth,
+<<<<<<< HEAD
                 height: !cropped ? initialHeight : height * 0.6,
+=======
+                height: !cropped ? initialHeight : height * 0.5,
+>>>>>>> b3c6ad3a1204064e9a66a467a5b2d3a67234b144
               }}
               source={{uri: capture}}
               resizeMode="contain"
