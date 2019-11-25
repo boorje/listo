@@ -8,6 +8,7 @@ import {setContext} from 'apollo-link-context';
 import {ApolloProvider} from '@apollo/react-hooks';
 import {resolvers} from './src/api/resolvers';
 import Amplify, {Auth} from 'aws-amplify';
+import env from 'react-native-config';
 
 import App from './App';
 import {name as appName} from './app.json';
@@ -18,9 +19,8 @@ Amplify.configure(awsconfig);
 
 // apollo config
 const cache = new InMemoryCache();
-const GRAPHQL_API_ENDPOINT = 'http://localhost:4000/';
 const httpLink = createHttpLink({
-  uri: GRAPHQL_API_ENDPOINT,
+  uri: env.GRAPHQL_API_ENDPOINT,
 });
 
 const authMiddleware = setContext(async (req, {headers}) => {
