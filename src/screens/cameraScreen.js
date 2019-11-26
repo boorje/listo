@@ -26,12 +26,12 @@ const exImageW =
   'https://images.unsplash.com/photo-1512397739299-fe5a4327d192?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80';
 
 const {Value, ValueXY} = Animated;
-const handleSize = 20;
+const handleSize = 30;
 
 function CameraScreen(props) {
   // STATES
   const [cameraActive, setCamera] = useState(false); //! Set to true
-  const [capture, setCapture] = useState(props.imageUri || exImageH);
+  const [capture, setCapture] = useState(props.imageUri || exImageW);
   const [cropped, setCropped] = useState(false);
 
   // STATES - DIMENSIONS
@@ -39,18 +39,14 @@ function CameraScreen(props) {
   const [initialWidth] = useState(width * 0.9);
   const [imageSize, setImageSize] = useState({});
   const [initialHeight, setInitialHeight] = useState(initialWidth);
+  const [leftCorner, setLeftCorner] = useState({});
 
   // ANIMATED VALUES - USED FOR CROP VIEW
-<<<<<<< HEAD
   const [cropWidth] = useState(new Value(initialWidth));
   const [cropHeight] = useState(new Value(initialHeight));
   const [blurLeft] = useState(new Value(0));
   const [blurRight] = useState(new Value(0));
   const [blurWidth, setblurWidth] = useState(new Value(0));
-=======
-  const cropWidth = new Value(initialWidth);
-  const cropHeight = new Value(initialHeight);
->>>>>>> b3c6ad3a1204064e9a66a467a5b2d3a67234b144
   const [blurWidthLeft] = useState(new Value(0));
   const [blurWidthRight] = useState(new Value(0));
   const [blurHeightTop] = useState(new Value(0));
@@ -88,16 +84,14 @@ function CameraScreen(props) {
       },
       err => console.log(err),
     );
-  }, [capture]);
+    setLeftCorner(leftCorner);
+  }, [capture, leftCorner]);
 
   useEffect(() => {
-<<<<<<< HEAD
     setblurWidth(cropWidth);
   }, [cropWidth]);
 
   useEffect(() => {
-=======
->>>>>>> b3c6ad3a1204064e9a66a467a5b2d3a67234b144
     setInitialHeight(initialWidth / (imageSize.w / imageSize.h));
   }, [imageSize.w, imageSize.h, initialWidth]);
 
@@ -120,7 +114,7 @@ function CameraScreen(props) {
   }, [imageSize.w, imageSize.h, initialWidth]);
 
   function resetImageAndPositions() {
-    setCapture(props.imageUri || exImageH);
+    setCapture(props.imageUri || exImageW);
     topLeftPos.setValue({x: -handleSize / 2, y: -handleSize / 2});
     topRightPos.setValue({
       x: initialWidth - handleSize / 2,
@@ -138,12 +132,9 @@ function CameraScreen(props) {
     blurWidthRight.setValue(0);
     blurHeightTop.setValue(0);
     blurHeightBottom.setValue(0);
-<<<<<<< HEAD
     blurLeft.setValue(0);
     blurRight.setValue(0);
     blurWidth.setValue(0);
-=======
->>>>>>> b3c6ad3a1204064e9a66a467a5b2d3a67234b144
   }
 
   function toggleOffsets() {
@@ -177,15 +168,12 @@ function CameraScreen(props) {
     blurWidthRight.setValue(0);
     blurHeightTop.setOffset(blurHeightTop._value);
     blurHeightTop.setValue(0);
-<<<<<<< HEAD
     blurWidth.setOffset(blurWidth._value);
     blurWidth.setValue(0);
     blurLeft.setOffset(blurLeft._value);
     blurLeft.setValue(0);
     blurRight.setOffset(blurRight._value);
     blurRight.setValue(0);
-=======
->>>>>>> b3c6ad3a1204064e9a66a467a5b2d3a67234b144
     blurHeightBottom.setOffset(blurHeightBottom._value);
     blurHeightBottom.setValue(0);
   }
@@ -198,12 +186,9 @@ function CameraScreen(props) {
     blurWidthLeft.flattenOffset();
     blurWidthRight.flattenOffset();
     blurHeightTop.flattenOffset();
-<<<<<<< HEAD
     blurLeft.flattenOffset();
     blurRight.flattenOffset();
     blurWidth.flattenOffset();
-=======
->>>>>>> b3c6ad3a1204064e9a66a467a5b2d3a67234b144
     blurHeightBottom.flattenOffset();
   }
 
@@ -214,20 +199,10 @@ function CameraScreen(props) {
       toggleOffsets();
     },
     onPanResponderMove: (evt, gestureState) => {
-<<<<<<< HEAD
-      Animated.event([null, {dx: topLeftPos.x, dy: topLeftPos.y}])(
-        evt,
-        gestureState,
-      );
-      Animated.event([null, {dx: blurWidthLeft, dy: blurHeightTop}])(
-        evt,
-        gestureState,
-      );
-      blurLeft.setValue(gestureState.dx);
-      blurWidth.setValue(-gestureState.dx);
-=======
-      if (gestureState.moveX >= width * 0.05) {
-        //! Find out how to save initial corner coordinates.
+      if (
+        gestureState.moveX >= leftCorner.x &&
+        gestureState.moveY >= leftCorner.y
+      ) {
         Animated.event([null, {dx: topLeftPos.x, dy: topLeftPos.y}])(
           evt,
           gestureState,
@@ -236,14 +211,18 @@ function CameraScreen(props) {
           evt,
           gestureState,
         );
-      }
->>>>>>> b3c6ad3a1204064e9a66a467a5b2d3a67234b144
+        blurLeft.setValue(gestureState.dx);
+        blurWidth.setValue(-gestureState.dx);
 
-      if (Math.abs(gestureState.dx) > 0) {
-        Animated.event([null, {dx: bottomLeftPos.x, dy: 0}])(evt, gestureState);
-      }
-      if (Math.abs(gestureState.dy) > 0) {
-        Animated.event([null, {dx: 0, dy: topRightPos.y}])(evt, gestureState);
+        if (Math.abs(gestureState.dx) > 0) {
+          Animated.event([null, {dx: bottomLeftPos.x, dy: 0}])(
+            evt,
+            gestureState,
+          );
+        }
+        if (Math.abs(gestureState.dy) > 0) {
+          Animated.event([null, {dx: 0, dy: topRightPos.y}])(evt, gestureState);
+        }
       }
     },
     onPanResponderRelease: (evt, gestureState) => {
@@ -262,32 +241,31 @@ function CameraScreen(props) {
       toggleOffsets();
     },
     onPanResponderMove: (evt, gestureState) => {
-      Animated.event([null, {dx: topRightPos.x, dy: topRightPos.y}])(
-        evt,
-        gestureState,
-      );
-      Animated.event([null, {dx: 0, dy: blurHeightTop}])(evt, gestureState);
-      if (gestureState.dx < 0) {
-        blurWidthRight.setValue(Math.abs(gestureState.dx));
-<<<<<<< HEAD
-        blurRight.setValue(Math.abs(gestureState.dx));
-      } else {
-        blurWidthRight.setValue(-gestureState.dx);
-      }
-      blurWidth.setValue(gestureState.dx);
-=======
-      } else {
-        blurWidthRight.setValue(-gestureState.dx);
-      }
->>>>>>> b3c6ad3a1204064e9a66a467a5b2d3a67234b144
-      if (Math.abs(gestureState.dx) > 0) {
-        Animated.event([null, {dx: bottomRightPos.x, dy: 0}])(
+      if (
+        gestureState.moveX <= leftCorner.x + initialWidth &&
+        gestureState.moveY >= leftCorner.y
+      ) {
+        Animated.event([null, {dx: topRightPos.x, dy: topRightPos.y}])(
           evt,
           gestureState,
         );
-      }
-      if (Math.abs(gestureState.dy) > 0) {
-        Animated.event([null, {dx: 0, dy: topLeftPos.y}])(evt, gestureState);
+        Animated.event([null, {dx: 0, dy: blurHeightTop}])(evt, gestureState);
+        if (gestureState.dx < 0) {
+          blurWidthRight.setValue(Math.abs(gestureState.dx));
+          blurRight.setValue(Math.abs(gestureState.dx));
+        } else {
+          blurWidthRight.setValue(-gestureState.dx);
+        }
+        blurWidth.setValue(gestureState.dx);
+        if (Math.abs(gestureState.dx) > 0) {
+          Animated.event([null, {dx: bottomRightPos.x, dy: 0}])(
+            evt,
+            gestureState,
+          );
+        }
+        if (Math.abs(gestureState.dy) > 0) {
+          Animated.event([null, {dx: 0, dy: topLeftPos.y}])(evt, gestureState);
+        }
       }
     },
 
@@ -307,29 +285,31 @@ function CameraScreen(props) {
       toggleOffsets();
     },
     onPanResponderMove: (evt, gestureState) => {
-      Animated.event([null, {dx: bottomLeftPos.x, dy: bottomLeftPos.y}])(
-        evt,
-        gestureState,
-      );
-      Animated.event([null, {dx: blurWidthLeft}])(evt, gestureState);
-<<<<<<< HEAD
-      blurLeft.setValue(gestureState.dx);
-      blurWidth.setValue(-gestureState.dx);
-=======
->>>>>>> b3c6ad3a1204064e9a66a467a5b2d3a67234b144
-      if (gestureState.dy < 0) {
-        blurHeightBottom.setValue(Math.abs(gestureState.dy));
-      } else {
-        blurHeightBottom.setValue(-gestureState.dy);
-      }
-      if (Math.abs(gestureState.dx) > 0) {
-        Animated.event([null, {dx: topLeftPos.x, dy: 0}])(evt, gestureState);
-      }
-      if (Math.abs(gestureState.dy) > 0) {
-        Animated.event([null, {dx: 0, dy: bottomRightPos.y}])(
+      if (
+        gestureState.moveX >= leftCorner.x &&
+        gestureState.moveY <= leftCorner.y + initialHeight
+      ) {
+        Animated.event([null, {dx: bottomLeftPos.x, dy: bottomLeftPos.y}])(
           evt,
           gestureState,
         );
+        Animated.event([null, {dx: blurWidthLeft}])(evt, gestureState);
+        blurLeft.setValue(gestureState.dx);
+        blurWidth.setValue(-gestureState.dx);
+        if (gestureState.dy < 0) {
+          blurHeightBottom.setValue(Math.abs(gestureState.dy));
+        } else {
+          blurHeightBottom.setValue(-gestureState.dy);
+        }
+        if (Math.abs(gestureState.dx) > 0) {
+          Animated.event([null, {dx: topLeftPos.x, dy: 0}])(evt, gestureState);
+        }
+        if (Math.abs(gestureState.dy) > 0) {
+          Animated.event([null, {dx: 0, dy: bottomRightPos.y}])(
+            evt,
+            gestureState,
+          );
+        }
       }
     },
     onPanResponderRelease: (evt, gestureState) => {
@@ -351,34 +331,36 @@ function CameraScreen(props) {
       toggleOffsets();
     },
     onPanResponderMove: (evt, gestureState) => {
-      Animated.event([null, {dx: bottomRightPos.x, dy: bottomRightPos.y}])(
-        evt,
-        gestureState,
-      );
+      if (
+        gestureState.moveX <= leftCorner.x + initialWidth &&
+        gestureState.moveY <= leftCorner.y + initialHeight
+      ) {
+        Animated.event([null, {dx: bottomRightPos.x, dy: bottomRightPos.y}])(
+          evt,
+          gestureState,
+        );
 
-      if (gestureState.dx < 0) {
-        blurWidthRight.setValue(Math.abs(gestureState.dx));
-<<<<<<< HEAD
-        blurRight.setValue(Math.abs(gestureState.dx));
-      } else {
-        blurWidthRight.setValue(-gestureState.dx);
-      }
-      blurWidth.setValue(gestureState.dx);
-=======
-      } else {
-        blurWidthRight.setValue(-gestureState.dx);
-      }
->>>>>>> b3c6ad3a1204064e9a66a467a5b2d3a67234b144
-      if (gestureState.dy < 0) {
-        blurHeightBottom.setValue(Math.abs(gestureState.dy));
-      } else {
-        blurHeightBottom.setValue(-gestureState.dy);
-      }
-      if (Math.abs(gestureState.dx) > 0) {
-        Animated.event([null, {dx: topRightPos.x, dy: 0}])(evt, gestureState);
-      }
-      if (Math.abs(gestureState.dy) > 0) {
-        Animated.event([null, {dx: 0, dy: bottomLeftPos.y}])(evt, gestureState);
+        if (gestureState.dx < 0) {
+          blurWidthRight.setValue(Math.abs(gestureState.dx));
+          blurRight.setValue(Math.abs(gestureState.dx));
+        } else {
+          blurWidthRight.setValue(-gestureState.dx);
+        }
+        blurWidth.setValue(gestureState.dx);
+        if (gestureState.dy < 0) {
+          blurHeightBottom.setValue(Math.abs(gestureState.dy));
+        } else {
+          blurHeightBottom.setValue(-gestureState.dy);
+        }
+        if (Math.abs(gestureState.dx) > 0) {
+          Animated.event([null, {dx: topRightPos.x, dy: 0}])(evt, gestureState);
+        }
+        if (Math.abs(gestureState.dy) > 0) {
+          Animated.event([null, {dx: 0, dy: bottomLeftPos.y}])(
+            evt,
+            gestureState,
+          );
+        }
       }
     },
     onPanResponderRelease: (evt, gestureState) => {
@@ -471,16 +453,10 @@ function CameraScreen(props) {
             styles.blur,
             {
               height: blurHeightTop,
-<<<<<<< HEAD
               width: blurWidth,
               left: blurLeft,
               right: blurRight,
               top: 0,
-=======
-              width: initialWidth,
-              left: topLeftPos.x._value + 10,
-              top: topLeftPos.y._value + 10,
->>>>>>> b3c6ad3a1204064e9a66a467a5b2d3a67234b144
             },
           ]}
         />
@@ -494,14 +470,9 @@ function CameraScreen(props) {
             styles.blur,
             {
               height: blurHeightBottom,
-<<<<<<< HEAD
               width: blurWidth,
               left: blurLeft,
               right: blurRight,
-=======
-              width: initialWidth,
-              left: bottomLeftPos.x._value + 10,
->>>>>>> b3c6ad3a1204064e9a66a467a5b2d3a67234b144
               bottom: 0,
               marginTop: blurHeightBottom,
             },
@@ -578,6 +549,12 @@ function CameraScreen(props) {
         </TouchableHighlight>
       ) : initialHeight ? (
         <View
+          onLayout={e => {
+            setLeftCorner({
+              x: e.nativeEvent.layout.x,
+              y: e.nativeEvent.layout.y,
+            });
+          }}
           style={{
             justifyContent: 'center',
             alignItems: 'center',
@@ -586,11 +563,7 @@ function CameraScreen(props) {
             <Animated.Image
               style={{
                 width: initialWidth,
-<<<<<<< HEAD
                 height: !cropped ? initialHeight : height * 0.6,
-=======
-                height: !cropped ? initialHeight : height * 0.5,
->>>>>>> b3c6ad3a1204064e9a66a467a5b2d3a67234b144
               }}
               source={{uri: capture}}
               resizeMode="contain"
@@ -635,7 +608,7 @@ function CameraScreen(props) {
                 <PrimaryButton
                   disabled={false}
                   title={'Use image'}
-                  onPress={() => {}}
+                  onPress={() => props.useImage()}
                 />
               </View>
             </View>
