@@ -20,6 +20,7 @@ import PrimaryButton from '../components/buttons/primaryButton';
 import * as colors from '../styles/colors';
 import textStyles from '../styles/textStyles';
 import {a} from '@aws-amplify/ui';
+import {validateYupSchema} from 'formik';
 
 const exImageH =
   'https://images.unsplash.com/photo-1539108842340-ae72fbf39857?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=700&q=80';
@@ -37,16 +38,15 @@ function CameraScreen(props) {
 
   // STATES - DIMENSIONS
   const {height, width} = Dimensions.get('window');
-  const [initialWidth] = useState(width * 0.8);
+  const [initialWidth] = useState(width * 0.8); //! Why is it not working with e.g. 0.7?
   const [imageSize, setImageSize] = useState({});
   const [initialHeight, setInitialHeight] = useState(initialWidth);
-  const [leftCorner, setLeftCorner] = useState({});
 
   // ANIMATED VALUES - USED FOR CROP VIEW
   const [cropWidth] = useState(new Value(initialWidth));
-  const [cropHeight] = useState(new Value(initialHeight));
-  const [blurLeft] = useState(new Value(0));
-  const [blurRight] = useState(new Value(0));
+  const [cropHeight, setCropHeight] = useState(new Value(0));
+  const [blurLeft, setBlurLeft] = useState(new Value(0));
+  const [blurRight, setBlurRight] = useState(new Value(0));
   const [blurWidth, setBlurWidth] = useState(new Value(0));
   const [blurWidthLeft] = useState(new Value(0));
   const [blurWidthRight] = useState(new Value(0));
@@ -54,33 +54,14 @@ function CameraScreen(props) {
   const [blurHeightBottom] = useState(new Value(0));
 
   //HANDLE POSITIONS
-  const [topLeftPos] = useState(
-    new ValueXY({x: -handleSize / 2, y: -handleSize / 2}),
-  );
-
-  const [topRightPos] = useState(
-    new ValueXY({
-      x: initialWidth - handleSize / 2,
-      y: -handleSize / 2,
-    }),
-  );
-
-  const [bottomLeftPos, setBottomLeftPos] = useState(
-    new ValueXY({
-      x: -handleSize / 2,
-      y: initialHeight - handleSize / 2,
-    }),
-  );
-
+  const [topLeftPos, setTopLeftPos] = useState(new ValueXY({x: 0, y: 0}));
+  const [topRightPos, setTopRightPos] = useState(new ValueXY({x: 0, y: 0}));
+  const [bottomLeftPos, setBottomLeftPos] = useState(new ValueXY({x: 0, y: 0}));
   const [bottomRightPos, setBottomRightPos] = useState(
-    new ValueXY({
-      x: initialWidth - handleSize / 2,
-      y: initialHeight - handleSize / 2,
-    }),
+    new ValueXY({x: 0, y: 0}),
   );
 
   // USE EFFECTS
-
   useEffect(() => {
     Image.getSize(
       capture,
@@ -89,8 +70,7 @@ function CameraScreen(props) {
       },
       err => console.log(err),
     );
-    setLeftCorner(leftCorner);
-  }, [capture, leftCorner]);
+  }, [capture]);
 
   useEffect(() => {
     setBlurWidth(cropWidth);
@@ -98,21 +78,23 @@ function CameraScreen(props) {
 
   useEffect(() => {
     setInitialHeight(initialWidth / (imageSize.w / imageSize.h));
-  }, [imageSize.w, imageSize.h, initialWidth]);
-
-  useEffect(() => {
-    setBottomLeftPos(
+    setCropHeight(new Value(initialWidth / (imageSize.w / imageSize.h)));
+    setTopLeftPos(new ValueXY({x: -handleSize / 2, y: -handleSize / 2}));
+    setTopRightPos(
       new ValueXY({
-        x: -handleSize / 2,
-        y: initialWidth / (imageSize.w / imageSize.h) - handleSize / 2,
+        x: initialWidth - handleSize / 2,
+        y: -handleSize / 2,
       }),
     );
-  }, [imageSize.w, imageSize.h, initialWidth]);
-
-  useEffect(() => {
     setBottomRightPos(
       new ValueXY({
         x: initialWidth - handleSize / 2,
+        y: initialWidth / (imageSize.w / imageSize.h) - handleSize / 2,
+      }),
+    );
+    setBottomLeftPos(
+      new ValueXY({
+        x: -handleSize / 2,
         y: initialWidth / (imageSize.w / imageSize.h) - handleSize / 2,
       }),
     );
@@ -139,7 +121,7 @@ function CameraScreen(props) {
     blurHeightBottom.setValue(0);
     blurLeft.setValue(0);
     blurRight.setValue(0);
-    blurWidth.setValue(0);
+    blurWidth.setValue(initialWidth);
   }
 
   function toggleOffsets() {
@@ -204,6 +186,7 @@ function CameraScreen(props) {
       toggleOffsets();
     },
     onPanResponderMove: (evt, gestureState) => {
+      console.log(cropHeight);
       topLeftPos.setValue({x: gestureState.dx, y: gestureState.dy});
       bottomLeftPos.setValue({x: gestureState.dx, y: 0});
       topRightPos.setValue({x: 0, y: gestureState.dy});
@@ -401,6 +384,26 @@ function CameraScreen(props) {
   }
 
   function blur(pos) {
+    const transformWidth = cropWidth.interpolate({
+      inputRange: [0, initialWidth],
+      outputRange: [0, initialWidth],
+      extrapolate: 'clamp',
+    });
+    const transformHeight = cropHeight.interpolate({
+      inputRange: [0, initialHeight],
+      outputRange: [0, initialHeight],
+      extrapolate: 'clamp',
+    });
+    const transformLeft = cropWidth.interpolate({
+      inputRange: [0, initialWidth],
+      outputRange: [initialWidth, 0],
+      extrapolate: 'clamp',
+    });
+    const transformRight = cropWidth.interpolate({
+      inputRange: [0, initialWidth],
+      outputRange: [initialWidth, 0],
+      extrapolate: 'clamp',
+    });
     if (!cropped) {
       if (pos === 'leftBlur') {
         return (
@@ -442,7 +445,7 @@ function CameraScreen(props) {
               styles.blur,
               {
                 height: blurHeightTop,
-                width: blurWidth,
+                width: transformWidth,
                 left: blurLeft,
                 right: blurRight,
                 top: 0,
@@ -459,7 +462,7 @@ function CameraScreen(props) {
               styles.blur,
               {
                 height: blurHeightBottom,
-                width: blurWidth,
+                width: transformWidth,
                 left: blurLeft,
                 right: blurRight,
                 bottom: 0,
@@ -524,6 +527,11 @@ function CameraScreen(props) {
       console.log('cropError: ' + cropError);
     }
   }
+  // const test = cropHeight.interpolate({
+  //   inputRange: [0, initialWidth],
+  //   outputRange: [initialWidth, 0],
+  //   extrapolate: 'clamp',
+  // });
 
   return (
     <View style={styles.container}>
@@ -539,12 +547,6 @@ function CameraScreen(props) {
         </TouchableHighlight>
       ) : initialHeight ? (
         <View
-          onLayout={e => {
-            setLeftCorner({
-              x: e.nativeEvent.layout.x,
-              y: e.nativeEvent.layout.y,
-            });
-          }}
           style={{
             justifyContent: 'center',
             alignItems: 'center',
@@ -558,6 +560,18 @@ function CameraScreen(props) {
               source={{uri: capture}}
               resizeMode="contain"
             />
+            {!cropped && (
+              <Animated.View
+                style={{
+                  position: 'absolute',
+                  height: cropHeight,
+                  width: cropWidth,
+                  backgroundColor: 'transparent',
+                  borderWidth: 1,
+                  borderColor: 'red',
+                }}
+              />
+            )}
 
             {blur('leftBlur')}
             {blur('rightBlur')}
@@ -616,7 +630,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'black',
+    backgroundColor: 'white',
   },
   camera: {
     flex: 1,
@@ -632,7 +646,7 @@ const styles = StyleSheet.create({
     width: handleSize,
     height: handleSize,
     borderRadius: 50,
-    backgroundColor: 'white',
+    backgroundColor: 'black',
   },
   blur: {
     backgroundColor: 'black',
