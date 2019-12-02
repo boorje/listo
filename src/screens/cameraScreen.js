@@ -32,7 +32,7 @@ const handleSize = 30;
 
 function CameraScreen(props) {
   // STATES
-  const [cameraActive, setCamera] = useState(props.cameraActive || true);
+  const [cameraActive, setCamera] = useState(props.cameraActive || false);
   const [capture, setCapture] = useState(props.imageUri || exImageH);
   const [cropped, setCropped] = useState(false);
   const [cropActive, setCropActive] = useState(false);
