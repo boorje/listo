@@ -28,24 +28,24 @@ const exImageW =
   'https://images.unsplash.com/photo-1512397739299-fe5a4327d192?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80';
 
 const {Value, ValueXY} = Animated;
-const handleSize = 20;
+const handleSize = 30;
 
 function CameraScreen(props) {
   // STATES
-  const [cameraActive, setCamera] = useState(props.cameraActive || false);
+  const [cameraActive, setCamera] = useState(props.cameraActive || true);
   const [capture, setCapture] = useState(props.imageUri || exImageH);
   const [cropped, setCropped] = useState(false);
+  const [cropActive, setCropActive] = useState(false);
 
   // STATES - DIMENSIONS
   const {height, width} = Dimensions.get('window');
-  const [initialWidth] = useState(width * 0.8); //! Why is it not working with e.g. 0.7?
+  const [initialWidth] = useState(width * 0.73); //! Why is it not working with e.g. 0.7?
   const [imageSize, setImageSize] = useState({});
   const [initialHeight, setInitialHeight] = useState(initialWidth);
 
   // ANIMATED VALUES - USED FOR CROP VIEW
   const [cropWidth] = useState(new Value(initialWidth));
   const [cropHeight, setCropHeight] = useState(new Value(0));
-  const [blurTopLeft] = useState(new Value(0));
 
   //HANDLE POSITIONS
   const [topLeftPos, setTopLeftPos] = useState(new ValueXY({x: 0, y: 0}));
@@ -69,41 +69,44 @@ function CameraScreen(props) {
   useEffect(() => {
     setInitialHeight(initialWidth / (imageSize.w / imageSize.h));
     setCropHeight(new Value(initialWidth / (imageSize.w / imageSize.h)));
-    setTopLeftPos(new ValueXY({x: -handleSize / 2, y: -handleSize / 2}));
+    setTopLeftPos(new ValueXY({x: 0, y: 0}));
     setTopRightPos(
       new ValueXY({
-        x: initialWidth - handleSize / 2,
-        y: -handleSize / 2,
+        x: initialWidth - handleSize,
+        y: 0,
       }),
     );
     setBottomRightPos(
       new ValueXY({
-        x: initialWidth - handleSize / 2,
-        y: initialWidth / (imageSize.w / imageSize.h) - handleSize / 2,
+        x: initialWidth - handleSize,
+        y: initialWidth / (imageSize.w / imageSize.h) - handleSize,
       }),
     );
     setBottomLeftPos(
       new ValueXY({
-        x: -handleSize / 2,
-        y: initialWidth / (imageSize.w / imageSize.h) - handleSize / 2,
+        x: 0,
+        y: initialWidth / (imageSize.w / imageSize.h) - handleSize,
       }),
     );
   }, [imageSize.w, imageSize.h, initialWidth]);
 
   function resetImageAndPositions() {
+    setCropActive(false);
     setCapture(props.imageUri || exImageH);
-    topLeftPos.setValue({x: -handleSize / 2, y: -handleSize / 2});
+    cropHeight.setValue(initialHeight);
+    cropWidth.setValue(initialWidth);
+    topLeftPos.setValue({x: 0, y: 0});
     topRightPos.setValue({
-      x: initialWidth - handleSize / 2,
-      y: -handleSize / 2,
+      x: initialWidth - handleSize,
+      y: 0,
     });
     bottomLeftPos.setValue({
-      x: -handleSize / 2,
-      y: initialHeight - handleSize / 2,
+      x: 0,
+      y: initialHeight - handleSize,
     });
     bottomRightPos.setValue({
-      x: initialWidth - handleSize / 2,
-      y: initialHeight - handleSize / 2,
+      x: initialWidth - handleSize,
+      y: initialHeight - handleSize,
     });
   }
 
@@ -144,6 +147,7 @@ function CameraScreen(props) {
     onMoveShouldSetPanResponder: (evt, gestureState) => true,
     onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
     onPanResponderGrant: (evt, gestureState) => {
+      setCropActive(true);
       toggleOffsets();
     },
     onPanResponderMove: (evt, gestureState) => {
@@ -161,6 +165,7 @@ function CameraScreen(props) {
         topLeftPos.setValue({x: topLeftPos.x._value, y: -10});
         topRightPos.setValue({x: topRightPos.x._value, y: -10});
       }
+
       cropHeight.setValue(
         Math.abs(topLeftPos.y._value - bottomLeftPos.y._value),
       );
@@ -172,6 +177,7 @@ function CameraScreen(props) {
     onMoveShouldSetPanResponder: (evt, gestureState) => true,
     onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
     onPanResponderGrant: (evt, gestureState) => {
+      setCropActive(true);
       toggleOffsets();
     },
     onPanResponderMove: (evt, gestureState) => {
@@ -181,13 +187,13 @@ function CameraScreen(props) {
     },
     onPanResponderRelease: (evt, gestureState) => {
       flattenOffsets();
-      if (topRightPos.x._value > initialWidth - handleSize / 2) {
+      if (topRightPos.x._value > initialWidth - handleSize) {
         topRightPos.setValue({
-          x: initialWidth - handleSize / 2,
+          x: initialWidth - handleSize,
           y: topRightPos.y._value,
         });
         bottomRightPos.setValue({
-          x: initialWidth - handleSize / 2,
+          x: initialWidth - handleSize,
           y: bottomLeftPos.y._value,
         });
       }
@@ -206,6 +212,7 @@ function CameraScreen(props) {
     onMoveShouldSetPanResponder: (evt, gestureState) => true,
     onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
     onPanResponderGrant: (evt, gestureState) => {
+      setCropActive(true);
       toggleOffsets();
     },
     onPanResponderMove: (evt, gestureState) => {
@@ -225,14 +232,14 @@ function CameraScreen(props) {
           y: topLeftPos.y._value,
         });
       }
-      if (bottomLeftPos.y._value > initialHeight - handleSize / 2) {
+      if (bottomLeftPos.y._value > initialHeight - handleSize) {
         bottomLeftPos.setValue({
           x: bottomLeftPos.x._value,
-          y: initialHeight - handleSize / 2,
+          y: initialHeight - handleSize,
         });
         bottomRightPos.setValue({
           x: bottomRightPos.x._value,
-          y: initialHeight - handleSize / 2,
+          y: initialHeight - handleSize,
         });
       }
       cropHeight.setValue(
@@ -249,6 +256,7 @@ function CameraScreen(props) {
     onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
 
     onPanResponderGrant: (evt, gestureState) => {
+      setCropActive(true);
       toggleOffsets();
     },
     onPanResponderMove: (evt, gestureState) => {
@@ -258,24 +266,24 @@ function CameraScreen(props) {
     },
     onPanResponderRelease: (evt, gestureState) => {
       flattenOffsets();
-      if (bottomRightPos.x._value > initialWidth - handleSize / 2) {
+      if (bottomRightPos.x._value > initialWidth - handleSize) {
         bottomRightPos.setValue({
-          x: initialWidth - handleSize / 2,
+          x: initialWidth - handleSize,
           y: bottomRightPos.y._value,
         });
         topRightPos.setValue({
-          x: initialWidth - handleSize / 2,
+          x: initialWidth - handleSize,
           y: topRightPos.y._value,
         });
       }
-      if (bottomRightPos.y._value > initialHeight - handleSize / 2) {
+      if (bottomRightPos.y._value > initialHeight - handleSize) {
         bottomRightPos.setValue({
           x: bottomRightPos.x._value,
-          y: initialHeight - handleSize / 2,
+          y: initialHeight - handleSize,
         });
         bottomLeftPos.setValue({
           x: bottomLeftPos.x._value,
-          y: initialHeight - handleSize / 2,
+          y: initialHeight - handleSize,
         });
       }
       cropHeight.setValue(
@@ -289,23 +297,23 @@ function CameraScreen(props) {
 
   function handle(pos) {
     const boundLeftX = topLeftPos.x.interpolate({
-      inputRange: [-handleSize / 2, initialWidth],
-      outputRange: [-handleSize / 2, initialWidth],
+      inputRange: [0, initialWidth],
+      outputRange: [0, initialWidth],
       extrapolate: 'clamp',
     });
     const boundRightX = topRightPos.x.interpolate({
-      inputRange: [-handleSize / 2, initialWidth - handleSize / 2],
-      outputRange: [-handleSize / 2, initialWidth - handleSize / 2],
+      inputRange: [0, initialWidth - handleSize],
+      outputRange: [0, initialWidth - handleSize],
       extrapolate: 'clamp',
     });
     const boundTopY = topLeftPos.y.interpolate({
-      inputRange: [-handleSize / 2, initialHeight],
-      outputRange: [-handleSize / 2, initialHeight],
+      inputRange: [0, initialHeight],
+      outputRange: [0, initialHeight],
       extrapolate: 'clamp',
     });
     const boundBottomY = bottomLeftPos.y.interpolate({
-      inputRange: [-handleSize / 2, initialHeight - handleSize / 2],
-      outputRange: [-handleSize / 2, initialHeight - handleSize / 2],
+      inputRange: [0, initialHeight - handleSize],
+      outputRange: [0, initialHeight - handleSize],
       extrapolate: 'clamp',
     });
     if (!cropped) {
@@ -315,6 +323,8 @@ function CameraScreen(props) {
             style={[
               styles.handle,
               {
+                borderTopWidth: 3,
+                borderLeftWidth: 3,
                 transform: [{translateX: boundLeftX}, {translateY: boundTopY}],
               },
             ]}
@@ -328,6 +338,8 @@ function CameraScreen(props) {
             style={[
               styles.handle,
               {
+                borderTopWidth: 3,
+                borderRightWidth: 3,
                 transform: [{translateX: boundRightX}, {translateY: boundTopY}],
               },
             ]}
@@ -341,6 +353,8 @@ function CameraScreen(props) {
             style={[
               styles.handle,
               {
+                borderBottomWidth: 3,
+                borderLeftWidth: 3,
                 transform: [
                   {translateX: boundLeftX},
                   {translateY: boundBottomY},
@@ -357,6 +371,8 @@ function CameraScreen(props) {
             style={[
               styles.handle,
               {
+                borderBottomWidth: 3,
+                borderRightWidth: 3,
                 transform: [
                   {translateX: boundRightX},
                   {translateY: boundBottomY},
@@ -372,42 +388,42 @@ function CameraScreen(props) {
 
   function blur(pos) {
     const topLeftBlurWidth = topRightPos.x.interpolate({
-      inputRange: [-handleSize / 2, initialWidth - handleSize / 2],
-      outputRange: [0, initialWidth],
+      inputRange: [0, initialWidth],
+      outputRange: [handleSize, initialWidth + handleSize],
       extrapolate: 'clamp',
     });
     const topLeftBlurHeight = topLeftPos.y.interpolate({
-      inputRange: [-handleSize / 2, initialHeight - handleSize / 2],
+      inputRange: [0, initialHeight],
       outputRange: [0, initialHeight],
       extrapolate: 'clamp',
     });
     const topRightBlurWidth = topRightPos.x.interpolate({
-      inputRange: [-handleSize / 2, initialWidth - handleSize / 2],
+      inputRange: [-handleSize, initialWidth - handleSize],
       outputRange: [initialWidth, 0],
       extrapolate: 'clamp',
     });
     const topRightBlurHeight = bottomRightPos.y.interpolate({
-      inputRange: [-handleSize / 2, initialHeight - handleSize / 2],
+      inputRange: [-handleSize, initialHeight - handleSize],
       outputRange: [0, initialHeight],
       extrapolate: 'clamp',
     });
     const bottomLeftBlurWidth = bottomLeftPos.x.interpolate({
-      inputRange: [-handleSize / 2, initialWidth - handleSize / 2],
+      inputRange: [0, initialWidth],
       outputRange: [0, initialWidth],
       extrapolate: 'clamp',
     });
     const bottomLeftBlurHeight = topLeftPos.y.interpolate({
-      inputRange: [-handleSize / 2, initialHeight - handleSize / 2],
+      inputRange: [0, initialHeight],
       outputRange: [initialHeight, 0],
       extrapolate: 'clamp',
     });
     const bottomRightBlurWidth = bottomLeftPos.x.interpolate({
-      inputRange: [-handleSize / 2, initialWidth - handleSize / 2],
+      inputRange: [0, initialWidth],
       outputRange: [initialWidth, 0],
       extrapolate: 'clamp',
     });
     const bottomRightBlurHeight = bottomRightPos.y.interpolate({
-      inputRange: [-handleSize / 2, initialHeight - handleSize / 2],
+      inputRange: [-handleSize, initialHeight - handleSize],
       outputRange: [initialHeight, 0],
       extrapolate: 'clamp',
     });
@@ -510,12 +526,12 @@ function CameraScreen(props) {
       const ratioH = h / (initialWidth / ratioImage);
       const cropData = {
         offset: {
-          x: (topLeftPos.x._value + handleSize / 2) * ratioW,
-          y: (topLeftPos.y._value + handleSize / 2) * ratioH,
+          x: topLeftPos.x._value * ratioW,
+          y: topLeftPos.y._value * ratioH,
         },
         size: {
-          width: cropWidth._value * ratioW,
-          height: cropHeight._value * ratioH,
+          width: (cropWidth._value + handleSize) * ratioW,
+          height: (cropHeight._value + handleSize) * ratioH,
         },
         resizeMode: 'contain',
       };
@@ -528,6 +544,28 @@ function CameraScreen(props) {
     } catch (cropError) {
       console.log('cropError: ' + cropError);
     }
+  }
+
+  function icon(name) {
+    return (
+      <TouchableOpacity
+        style={styles.icon}
+        onPress={() => {
+          name === 'crop'
+            ? cropActive
+              ? cropImage()
+              : props.useImage()
+            : null;
+          name === 'arrow-forward' && props.useImage();
+          if (name === 'refresh') {
+            LayoutAnimation.configureNext(animations.default);
+            setCropped(false);
+            resetImageAndPositions();
+          }
+        }}>
+        <Icon size={30} color={'white'} name={name} />
+      </TouchableOpacity>
+    );
   }
 
   return (
@@ -568,41 +606,18 @@ function CameraScreen(props) {
             {handle('bottomLeft')}
             {handle('bottomRight')}
           </View>
-          {!cropped ? (
-            <TouchableOpacity
-              style={styles.cropButton}
-              onPress={() => {
-                cropImage();
-              }}>
-              <Icon size={30} color={'white'} name={'crop'} />
-              <Text style={[textStyles.button, {fontWeight: '500'}]}>Crop</Text>
-            </TouchableOpacity>
-          ) : (
-            <View
-              style={{
-                top: 50,
-                alignItems: 'center',
-              }}>
-              <IoniconsIcon
-                style={{paddingHorizontal: 50}}
-                size={50}
-                color={'white'}
-                name={'ios-refresh'}
-                onPress={() => {
-                  LayoutAnimation.configureNext(animations.default);
-                  setCropped(false);
-                  resetImageAndPositions();
-                }}
-              />
-              <View style={{width: 200, marginTop: 20}}>
-                <PrimaryButton
-                  disabled={false}
-                  title={'Use image'}
-                  onPress={() => props.useImage()}
-                />
-              </View>
-            </View>
-          )}
+
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginTop: 20,
+            }}>
+            {!cropped && icon('crop')}
+            {cropped && icon('refresh')}
+            {cropped && icon('arrow-forward')}
+          </View>
         </View>
       ) : null}
     </View>
@@ -616,37 +631,29 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'white',
+    backgroundColor: 'black',
   },
   camera: {
     flex: 1,
     width: '100%',
     height: '100%',
   },
-  cropView: {
-    backgroundColor: 'black',
-    borderColor: 'white',
-  },
   handle: {
     position: 'absolute',
     width: handleSize,
     height: handleSize,
-    borderRadius: 50,
-    backgroundColor: 'black',
+    borderColor: 'white',
+    backgroundColor: 'transparent',
   },
   blur: {
     backgroundColor: 'black',
-    opacity: 0.8,
+    opacity: 0.6,
     position: 'absolute',
   },
-  cropButton: {
-    marginTop: 50,
+  icon: {
     borderRadius: 50,
     padding: 10,
-    width: 150,
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    alignItems: 'center',
+    marginHorizontal: 10,
     backgroundColor: colors.primaryColor,
   },
 });
