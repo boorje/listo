@@ -45,13 +45,7 @@ function CameraScreen(props) {
   // ANIMATED VALUES - USED FOR CROP VIEW
   const [cropWidth] = useState(new Value(initialWidth));
   const [cropHeight, setCropHeight] = useState(new Value(0));
-  const [blurLeft, setBlurLeft] = useState(new Value(0));
-  const [blurRight, setBlurRight] = useState(new Value(0));
-  const [blurWidth, setBlurWidth] = useState(new Value(0));
-  const [blurWidthLeft] = useState(new Value(0));
-  const [blurWidthRight] = useState(new Value(0));
-  const [blurHeightTop] = useState(new Value(0));
-  const [blurHeightBottom] = useState(new Value(0));
+  const [blurTopLeft] = useState(new Value(0));
 
   //HANDLE POSITIONS
   const [topLeftPos, setTopLeftPos] = useState(new ValueXY({x: 0, y: 0}));
@@ -71,10 +65,6 @@ function CameraScreen(props) {
       err => console.log(err),
     );
   }, [capture]);
-
-  useEffect(() => {
-    setBlurWidth(cropWidth);
-  }, [cropWidth]);
 
   useEffect(() => {
     setInitialHeight(initialWidth / (imageSize.w / imageSize.h));
@@ -115,13 +105,6 @@ function CameraScreen(props) {
       x: initialWidth - handleSize / 2,
       y: initialHeight - handleSize / 2,
     });
-    blurWidthLeft.setValue(0);
-    blurWidthRight.setValue(0);
-    blurHeightTop.setValue(0);
-    blurHeightBottom.setValue(0);
-    blurLeft.setValue(0);
-    blurRight.setValue(0);
-    blurWidth.setValue(initialWidth);
   }
 
   function toggleOffsets() {
@@ -148,21 +131,6 @@ function CameraScreen(props) {
       y: bottomRightPos.y._value,
     });
     bottomRightPos.setValue({x: 0, y: 0});
-
-    blurWidthLeft.setOffset(blurWidthLeft._value);
-    blurWidthLeft.setValue(0);
-    blurWidthRight.setOffset(blurWidthRight._value);
-    blurWidthRight.setValue(0);
-    blurHeightTop.setOffset(blurHeightTop._value);
-    blurHeightTop.setValue(0);
-    blurWidth.setOffset(blurWidth._value);
-    blurWidth.setValue(0);
-    blurLeft.setOffset(blurLeft._value);
-    blurLeft.setValue(0);
-    blurRight.setOffset(blurRight._value);
-    blurRight.setValue(0);
-    blurHeightBottom.setOffset(blurHeightBottom._value);
-    blurHeightBottom.setValue(0);
   }
 
   function flattenOffsets() {
@@ -170,13 +138,6 @@ function CameraScreen(props) {
     topRightPos.flattenOffset();
     bottomLeftPos.flattenOffset();
     bottomRightPos.flattenOffset();
-    blurWidthLeft.flattenOffset();
-    blurWidthRight.flattenOffset();
-    blurHeightTop.flattenOffset();
-    blurLeft.flattenOffset();
-    blurRight.flattenOffset();
-    blurWidth.flattenOffset();
-    blurHeightBottom.flattenOffset();
   }
 
   const _panResponderTopLeft = PanResponder.create({
@@ -186,17 +147,20 @@ function CameraScreen(props) {
       toggleOffsets();
     },
     onPanResponderMove: (evt, gestureState) => {
-      console.log(cropHeight);
       topLeftPos.setValue({x: gestureState.dx, y: gestureState.dy});
       bottomLeftPos.setValue({x: gestureState.dx, y: 0});
       topRightPos.setValue({x: 0, y: gestureState.dy});
-      blurWidthLeft.setValue(gestureState.dx);
-      blurHeightTop.setValue(gestureState.dy);
-      blurLeft.setValue(gestureState.dx);
-      blurWidth.setValue(-gestureState.dx);
     },
     onPanResponderRelease: (evt, gestureState) => {
       flattenOffsets();
+      if (topLeftPos.x._value < -10) {
+        topLeftPos.setValue({x: -10, y: topLeftPos.y._value});
+        bottomLeftPos.setValue({x: -10, y: bottomLeftPos.y._value});
+      }
+      if (topLeftPos.y._value < -10) {
+        topLeftPos.setValue({x: topLeftPos.x._value, y: -10});
+        topRightPos.setValue({x: topRightPos.x._value, y: -10});
+      }
       cropHeight.setValue(
         Math.abs(topLeftPos.y._value - bottomLeftPos.y._value),
       );
@@ -214,18 +178,23 @@ function CameraScreen(props) {
       topRightPos.setValue({x: gestureState.dx, y: gestureState.dy});
       topLeftPos.setValue({x: 0, y: gestureState.dy});
       bottomRightPos.setValue({x: gestureState.dx, y: 0});
-      blurHeightTop.setValue(gestureState.dy);
-      blurWidth.setValue(gestureState.dx);
-
-      if (gestureState.dx < 0) {
-        blurWidthRight.setValue(Math.abs(gestureState.dx));
-        blurRight.setValue(Math.abs(gestureState.dx));
-      } else {
-        blurWidthRight.setValue(-gestureState.dx);
-      }
     },
     onPanResponderRelease: (evt, gestureState) => {
       flattenOffsets();
+      if (topRightPos.x._value > initialWidth - handleSize / 2) {
+        topRightPos.setValue({
+          x: initialWidth - handleSize / 2,
+          y: topRightPos.y._value,
+        });
+        bottomRightPos.setValue({
+          x: initialWidth - handleSize / 2,
+          y: bottomLeftPos.y._value,
+        });
+      }
+      if (topRightPos.y._value < -10) {
+        topRightPos.setValue({x: topRightPos.x._value, y: -10});
+        topLeftPos.setValue({x: topLeftPos.x._value, y: -10});
+      }
       cropHeight.setValue(
         Math.abs(topRightPos.y._value - bottomRightPos.y._value),
       );
@@ -243,17 +212,29 @@ function CameraScreen(props) {
       bottomLeftPos.setValue({x: gestureState.dx, y: gestureState.dy});
       topLeftPos.setValue({x: gestureState.dx, y: 0});
       bottomRightPos.setValue({x: 0, y: gestureState.dy});
-      blurLeft.setValue(gestureState.dx);
-      blurWidthLeft.setValue(gestureState.dx);
-      blurWidth.setValue(-gestureState.dx);
-      if (gestureState.dy < 0) {
-        blurHeightBottom.setValue(Math.abs(gestureState.dy));
-      } else {
-        blurHeightBottom.setValue(-gestureState.dy);
-      }
     },
     onPanResponderRelease: (evt, gestureState) => {
       flattenOffsets();
+      if (bottomLeftPos.x._value < -10) {
+        bottomLeftPos.setValue({
+          x: -10,
+          y: bottomLeftPos.y._value,
+        });
+        topLeftPos.setValue({
+          x: -10,
+          y: topLeftPos.y._value,
+        });
+      }
+      if (bottomLeftPos.y._value > initialHeight - handleSize / 2) {
+        bottomLeftPos.setValue({
+          x: bottomLeftPos.x._value,
+          y: initialHeight - handleSize / 2,
+        });
+        bottomRightPos.setValue({
+          x: bottomRightPos.x._value,
+          y: initialHeight - handleSize / 2,
+        });
+      }
       cropHeight.setValue(
         Math.abs(bottomLeftPos.y._value - topLeftPos.y._value),
       );
@@ -274,23 +255,29 @@ function CameraScreen(props) {
       bottomRightPos.setValue({x: gestureState.dx, y: gestureState.dy});
       topRightPos.setValue({x: gestureState.dx, y: 0});
       bottomLeftPos.setValue({x: 0, y: gestureState.dy});
-      blurWidth.setValue(gestureState.dx);
-
-      if (gestureState.dx < 0) {
-        blurWidthRight.setValue(Math.abs(gestureState.dx));
-        blurRight.setValue(Math.abs(gestureState.dx));
-      } else {
-        blurWidthRight.setValue(-gestureState.dx);
-      }
-
-      if (gestureState.dy < 0) {
-        blurHeightBottom.setValue(Math.abs(gestureState.dy));
-      } else {
-        blurHeightBottom.setValue(-gestureState.dy);
-      }
     },
     onPanResponderRelease: (evt, gestureState) => {
       flattenOffsets();
+      if (bottomRightPos.x._value > initialWidth - handleSize / 2) {
+        bottomRightPos.setValue({
+          x: initialWidth - handleSize / 2,
+          y: bottomRightPos.y._value,
+        });
+        topRightPos.setValue({
+          x: initialWidth - handleSize / 2,
+          y: topRightPos.y._value,
+        });
+      }
+      if (bottomRightPos.y._value > initialHeight - handleSize / 2) {
+        bottomRightPos.setValue({
+          x: bottomRightPos.x._value,
+          y: initialHeight - handleSize / 2,
+        });
+        bottomLeftPos.setValue({
+          x: bottomLeftPos.x._value,
+          y: initialHeight - handleSize / 2,
+        });
+      }
       cropHeight.setValue(
         Math.abs(bottomRightPos.y._value - topRightPos.y._value),
       );
@@ -384,35 +371,86 @@ function CameraScreen(props) {
   }
 
   function blur(pos) {
-    const transformWidth = cropWidth.interpolate({
-      inputRange: [0, initialWidth],
+    const topLeftBlurWidth = topRightPos.x.interpolate({
+      inputRange: [-handleSize / 2, initialWidth - handleSize / 2],
       outputRange: [0, initialWidth],
       extrapolate: 'clamp',
     });
-    const transformHeight = cropHeight.interpolate({
-      inputRange: [0, initialHeight],
+    const topLeftBlurHeight = topLeftPos.y.interpolate({
+      inputRange: [-handleSize / 2, initialHeight - handleSize / 2],
       outputRange: [0, initialHeight],
       extrapolate: 'clamp',
     });
-    const transformLeft = cropWidth.interpolate({
-      inputRange: [0, initialWidth],
+    const topRightBlurWidth = topRightPos.x.interpolate({
+      inputRange: [-handleSize / 2, initialWidth - handleSize / 2],
       outputRange: [initialWidth, 0],
       extrapolate: 'clamp',
     });
-    const transformRight = cropWidth.interpolate({
-      inputRange: [0, initialWidth],
+    const topRightBlurHeight = bottomRightPos.y.interpolate({
+      inputRange: [-handleSize / 2, initialHeight - handleSize / 2],
+      outputRange: [0, initialHeight],
+      extrapolate: 'clamp',
+    });
+    const bottomLeftBlurWidth = bottomLeftPos.x.interpolate({
+      inputRange: [-handleSize / 2, initialWidth - handleSize / 2],
+      outputRange: [0, initialWidth],
+      extrapolate: 'clamp',
+    });
+    const bottomLeftBlurHeight = topLeftPos.y.interpolate({
+      inputRange: [-handleSize / 2, initialHeight - handleSize / 2],
+      outputRange: [initialHeight, 0],
+      extrapolate: 'clamp',
+    });
+    const bottomRightBlurWidth = bottomLeftPos.x.interpolate({
+      inputRange: [-handleSize / 2, initialWidth - handleSize / 2],
       outputRange: [initialWidth, 0],
       extrapolate: 'clamp',
     });
+    const bottomRightBlurHeight = bottomRightPos.y.interpolate({
+      inputRange: [-handleSize / 2, initialHeight - handleSize / 2],
+      outputRange: [initialHeight, 0],
+      extrapolate: 'clamp',
+    });
+
     if (!cropped) {
-      if (pos === 'leftBlur') {
+      if (pos === 'topLeftBlur') {
         return (
           <Animated.View
             style={[
               styles.blur,
               {
-                height: initialHeight,
-                width: blurWidthLeft,
+                height: topLeftBlurHeight,
+                width: topLeftBlurWidth,
+                left: 0,
+              },
+            ]}
+          />
+        );
+      }
+
+      if (pos === 'topRightBlur') {
+        return (
+          <Animated.View
+            style={[
+              styles.blur,
+              {
+                height: topRightBlurHeight,
+                width: topRightBlurWidth,
+                right: 0,
+              },
+            ]}
+          />
+        );
+      }
+
+      if (pos === 'bottomLeftBlur') {
+        return (
+          <Animated.View
+            style={[
+              styles.blur,
+              {
+                height: bottomLeftBlurHeight,
+                width: bottomLeftBlurWidth,
                 left: 0,
                 bottom: 0,
               },
@@ -421,52 +459,16 @@ function CameraScreen(props) {
         );
       }
 
-      if (pos === 'rightBlur') {
+      if (pos === 'bottomRightBlur') {
         return (
           <Animated.View
             style={[
               styles.blur,
               {
-                height: initialHeight,
-                width: blurWidthRight,
+                height: bottomRightBlurHeight,
+                width: bottomRightBlurWidth,
                 right: 0,
-                top: 0,
-                marginLeft: blurWidthRight,
-              },
-            ]}
-          />
-        );
-      }
-
-      if (pos === 'topBlur') {
-        return (
-          <Animated.View
-            style={[
-              styles.blur,
-              {
-                height: blurHeightTop,
-                width: transformWidth,
-                left: blurLeft,
-                right: blurRight,
-                top: 0,
-              },
-            ]}
-          />
-        );
-      }
-
-      if (pos === 'bottomBlur') {
-        return (
-          <Animated.View
-            style={[
-              styles.blur,
-              {
-                height: blurHeightBottom,
-                width: transformWidth,
-                left: blurLeft,
-                right: blurRight,
                 bottom: 0,
-                marginTop: blurHeightBottom,
               },
             ]}
           />
@@ -527,11 +529,6 @@ function CameraScreen(props) {
       console.log('cropError: ' + cropError);
     }
   }
-  // const test = cropHeight.interpolate({
-  //   inputRange: [0, initialWidth],
-  //   outputRange: [initialWidth, 0],
-  //   extrapolate: 'clamp',
-  // });
 
   return (
     <View style={styles.container}>
@@ -560,23 +557,12 @@ function CameraScreen(props) {
               source={{uri: capture}}
               resizeMode="contain"
             />
-            {!cropped && (
-              <Animated.View
-                style={{
-                  position: 'absolute',
-                  height: cropHeight,
-                  width: cropWidth,
-                  backgroundColor: 'transparent',
-                  borderWidth: 1,
-                  borderColor: 'red',
-                }}
-              />
-            )}
 
-            {blur('leftBlur')}
-            {blur('rightBlur')}
-            {blur('topBlur')}
-            {blur('bottomBlur')}
+            {blur('topLeftBlur')}
+            {blur('topRightBlur')}
+            {blur('bottomLeftBlur')}
+            {blur('bottomRightBlur')}
+
             {handle('topLeft')}
             {handle('topRight')}
             {handle('bottomLeft')}
