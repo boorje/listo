@@ -104,6 +104,7 @@ function CameraScreen(props) {
       x: 0,
       y: initialHeight - handleSize,
     });
+
     bottomRightPos.setValue({
       x: initialWidth - handleSize,
       y: initialHeight - handleSize,
@@ -614,7 +615,11 @@ function CameraScreen(props) {
               alignItems: 'center',
               marginTop: 20,
             }}>
-            {!cropped && icon('crop')}
+            {!cropped
+              ? !cropActive
+                ? icon('arrow-forward')
+                : icon('crop')
+              : null}
             {cropped && icon('refresh')}
             {cropped && icon('arrow-forward')}
           </View>
