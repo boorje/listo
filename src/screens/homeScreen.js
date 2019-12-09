@@ -16,7 +16,7 @@ import HomeScreenBackground from '../components/homeScreenBackground';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import animations from '../styles/animations';
 import * as colors from '../styles/colors';
-import CameraScreen from './cameraScreen';
+import LinearGradient from 'react-native-linear-gradient';
 
 // api
 import {
@@ -186,7 +186,7 @@ export default class HomeScreen extends React.Component {
             message={apiError}
           />
         )}
-        <SafeAreaView style={{flex: 5, marginTop: '3%'}}>
+        <View style={{flex: 5, marginTop: 2}}>
           <GroceryListsContainer
             user={user}
             groceryLists={groceryLists}
@@ -196,7 +196,7 @@ export default class HomeScreen extends React.Component {
               this.props.navigation.navigate('List', {groceryList, user})
             }
           />
-        </SafeAreaView>
+        </View>
         <View style={styles.addIcon}>
           <Icon
             size={80}

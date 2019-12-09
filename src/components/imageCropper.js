@@ -8,17 +8,13 @@ import {
   Image,
   LayoutAnimation,
   Animated,
-  Text,
   TouchableOpacity,
 } from 'react-native';
 import {RNCamera} from 'react-native-camera';
-import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ImageEditor from '@react-native-community/image-editor';
 import animations from '../styles/animations';
-import PrimaryButton from '../components/buttons/primaryButton';
 import * as colors from '../styles/colors';
-import textStyles from '../styles/textStyles';
 import {a} from '@aws-amplify/ui';
 import {validateYupSchema} from 'formik';
 
@@ -30,7 +26,7 @@ const exImageW =
 const {Value, ValueXY} = Animated;
 const handleSize = 30;
 
-function CameraScreen(props) {
+function ImageCropper(props) {
   // STATES
   const [cameraActive, setCamera] = useState(props.cameraActive || false);
   const [capture, setCapture] = useState(props.imageUri || exImageH);
@@ -629,7 +625,7 @@ function CameraScreen(props) {
   );
 }
 
-export default CameraScreen;
+export default ImageCropper;
 
 const styles = StyleSheet.create({
   container: {

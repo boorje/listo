@@ -5,11 +5,12 @@ import {
   PanResponder,
   View,
   Animated,
-  Vibration,
+  LayoutAnimation,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
+import animations from '../styles/animations';
 
 const {Value} = Animated;
 const options = {
@@ -19,6 +20,8 @@ const options = {
 class Swipeout extends React.Component {
   constructor(props) {
     super(props);
+    this.height = this.props.swipeOutHeight;
+    this.iconMargin = new Value(0);
     this.xWidth = new Value(this.state.viewWidth);
     this.xWidth2 = new Value(0);
     this._panResponder = PanResponder.create({
@@ -118,10 +121,11 @@ class Swipeout extends React.Component {
         <Animated.View
           style={[
             {
+              height: this.props.swipeOutHeight,
               width: this.state.swipeActive
                 ? this.xWidth
                 : this.state.viewWidth,
-              paddingVertical: '3%',
+              // paddingVertical: '3%',
             },
           ]}
           {...this._panResponder.panHandlers}>
@@ -131,16 +135,12 @@ class Swipeout extends React.Component {
           style={[
             styles.deleteView,
             {
+              height: this.props.swipeOutHeight,
               width: this.xWidth2,
               backgroundColor: trashActive ? 'red' : 'gray',
             },
           ]}>
-          <IoniconsIcon
-            style={styles.iconStyle}
-            size={40}
-            color={'white'}
-            name={this.state.swipeIcon}
-          />
+          <IoniconsIcon size={40} color={'white'} name={this.state.swipeIcon} />
         </Animated.View>
       </View>
     );
@@ -151,14 +151,16 @@ export default Swipeout;
 
 const styles = StyleSheet.create({
   container: {
+    //height: 150,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
   },
   deleteView: {
+    //height: 150,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: '2%',
+    //paddingVertical: '2%',
   },
   iconStyle: {
     //position: 'absolute',
