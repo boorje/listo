@@ -10,17 +10,17 @@ const HomeScreenBackground = props => {
     <View style={styles.container}>
       <View style={styles.top}>
         <Text style={[textStyles.smallText, {fontSize: 30}]}></Text>
-        {/* <Icon
+        <Icon
           size={30}
           name={'settings'}
-          color={'black'}
+          color={colors.primaryColor}
           onPress={() => props.openSettings()}
-        /> */}
-        <Text
+        />
+        {/* <Text
           onPress={() => props.openSettings()}
           style={[textStyles.smallText, {fontSize: 30}]}>
           ⚙️
-        </Text>
+        </Text> */}
       </View>
       <View style={styles.myLists}>
         <Text
@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     position: 'absolute',
     paddingHorizontal: '5%',
-    bottom: '5%',
+    bottom: '10%',
   },
   myLists: {
     position: 'absolute',

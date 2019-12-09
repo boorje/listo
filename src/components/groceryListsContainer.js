@@ -12,6 +12,7 @@ import textStyles from '../styles/textStyles';
 import {KeyboardAwareFlatList} from 'react-native-keyboard-aware-scroll-view';
 import * as colors from '../styles/colors';
 import LinearGradient from 'react-native-linear-gradient';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const listHeight = 100;
 
@@ -56,9 +57,42 @@ class GroceryListItem extends React.Component {
                   {this.props.item.title}
                 </Text>
                 <Text
-                  style={[textStyles.default, {color: 'white', fontSize: 12}]}>
-                  Created: 2019-12-24
+                  style={[
+                    textStyles.default,
+                    {
+                      marginTop: 3,
+                      color: 'white',
+                      fontWeight: '500',
+                      fontSize: 12,
+                    },
+                  ]}>
+                  Ullared
                 </Text>
+                <View
+                  style={{
+                    alignItems: 'center',
+                    flexDirection: 'row',
+                    marginTop: 3,
+                  }}>
+                  <Icon
+                    size={20}
+                    name={'people'}
+                    color={'white'}
+                    onPress={() => {}}
+                  />
+                  <Text
+                    style={[
+                      textStyles.default,
+                      {
+                        color: 'white',
+                        fontSize: 15,
+                        fontWeight: '600',
+                        marginLeft: 5,
+                      },
+                    ]}>
+                    3
+                  </Text>
+                </View>
               </View>
               <View style={styles.rightText}>
                 <Text
@@ -73,22 +107,19 @@ class GroceryListItem extends React.Component {
                   items
                 </Text>
               </View>
-
-              {/* <View
-                style={{
-                  position: 'absolute',
-                  backgroundColor: 'white',
-                  width: 60,
-                  height: 60,
-                  borderRadius: 40,
-                  right: '6%',
-                  top: '25%',
-                  zIndex: -1,
-                }}
-              /> */}
             </LinearGradient>
           </TouchableWithoutFeedback>
         </Swipeout>
+
+        <Text
+          //TODO: Only show crown when you're the owner
+          style={[
+            textStyles.default,
+            {fontSize: 25, color: 'white'},
+            styles.leftCorner,
+          ]}>
+          👑
+        </Text>
       </View>
     );
   }
@@ -149,11 +180,11 @@ const styles = StyleSheet.create({
   container2: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
     height: listHeight,
     width: '100%',
     borderTopLeftRadius: 30,
     borderBottomLeftRadius: 30,
-
     overflow: 'hidden',
   },
   swipeout: {
@@ -161,14 +192,20 @@ const styles = StyleSheet.create({
   },
   leftText: {
     position: 'absolute',
-    top: '25%',
-    left: 20,
+    padding: 20,
   },
   rightText: {
     position: 'absolute',
     top: '25%',
     right: '10%',
     alignItems: 'center',
+  },
+  leftCorner: {
+    position: 'absolute',
+    justifyContent: 'center',
+    alignItems: 'center',
+    top: -10,
+    left: -5,
   },
 });
 

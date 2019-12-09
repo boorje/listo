@@ -228,7 +228,7 @@ export default class ListSettingsModal extends React.Component {
       <OverlayModal
         expandModal={this.state.fullyOpen}
         closeModal={this.props.closeModal}
-        modalTitle="Listmedlemmar"
+        modalTitle="List members"
         textInputActive={this.state.textInputActive}>
         {apiError.length > 0 && messageOpen && (
           <Message
@@ -279,7 +279,10 @@ class UserItem extends React.Component {
                 {this.props.item.email}
               </Text>
               {this.props.item.listOwner && (
-                <Icon size={30} name={'ios-key'} color={'black'} />
+                <Text
+                  style={[textStyles.default, {fontSize: 20, color: 'white'}]}>
+                  👑
+                </Text>
               )}
             </View>
           </TouchableWithoutFeedback>
