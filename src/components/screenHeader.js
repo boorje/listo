@@ -10,6 +10,7 @@ import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 import textStyles from '../styles/textStyles';
 import PropTypes from 'prop-types';
 import * as colors from '../styles/colors';
+import LinearGradient from 'react-native-linear-gradient';
 
 function ScreenHeader(props) {
   const [textInputActive, setTextInputActive] = useState(false);
@@ -30,7 +31,7 @@ function ScreenHeader(props) {
   }, [props.groceryList]);
 
   return (
-    <View style={styles.container}>
+    <LinearGradient colors={colors.testShade} style={styles.container}>
       <View style={styles.container2}>
         <View style={{flex: 1}}>
           <IoniconsIcon
@@ -93,7 +94,7 @@ function ScreenHeader(props) {
           )}
         </View>
       </View>
-    </View>
+    </LinearGradient>
   );
 }
 

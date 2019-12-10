@@ -58,18 +58,18 @@ export default class AddGroceryFooter extends React.Component {
         {/* {!this.props.addItemOpen && (
           // TODO: Add when applicable
           <View style={styles.sideIconsView}>
-            <IoniconsIcon
-              style={styles.sideIconStyle}
-              size={50}
-              name={'ios-camera'}
-              color={'white'}
-              onPress={() => {}}
-            />
-            <IoniconsIcon
+            <Icon
               style={styles.sideIconStyle}
               size={40}
-              name={'md-images'}
-              color={'white'}
+              name={'image'}
+              color={'black'}
+              onPress={() => {}}
+            />
+            <Icon
+              style={styles.sideIconStyle}
+              size={40}
+              name={'camera'}
+              color={'black'}
               onPress={() => {}}
             />
           </View>

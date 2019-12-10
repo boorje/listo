@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    backgroundColor: colors.secondaryColor,
+    backgroundColor: 'white',
     borderTopLeftRadius: 10,
     borderBottomLeftRadius: 10,
     alignItems: 'center',
@@ -185,9 +185,10 @@ const styles = StyleSheet.create({
     marginRight: -1,
   },
   separator: {
-    height: 3,
+    height: 1,
     width: '97%',
     marginLeft: '3%',
+    backgroundColor: colors.secondaryColor,
   },
   textInfo: {
     flexDirection: 'row',

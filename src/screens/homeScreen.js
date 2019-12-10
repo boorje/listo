@@ -199,9 +199,9 @@ export default class HomeScreen extends React.Component {
         </View>
         <View style={styles.addIcon}>
           <Icon
-            size={80}
+            size={70}
             name={'add'}
-            color={'white'}
+            color={colors.primaryColor}
             onPress={() => this.toggleModal()}
           />
         </View>
@@ -218,9 +218,9 @@ const styles = StyleSheet.create({
   addIcon: {
     position: 'absolute',
     borderRadius: 50,
-    bottom: '10%',
+    bottom: '12%',
     right: '15%',
-    backgroundColor: colors.primaryColor,
+    backgroundColor: colors.secondaryColor,
     shadowColor: 'black',
     shadowOffset: {width: 0, height: 0},
     shadowRadius: 2,

@@ -166,9 +166,9 @@ export default class GroceryListsContainer extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: '97%',
+    width: '95%',
     height: listHeight,
-    marginLeft: '3%',
+    marginLeft: '5%',
     marginBottom: '5%',
     borderRadius: 30,
     alignSelf: 'center',
