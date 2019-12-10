@@ -267,6 +267,7 @@ class UserItem extends React.Component {
         }}
         style={styles.item}>
         <Swipeout
+          swipeOutHeight={80}
           user={this.props.user}
           disableScroll={() => this.props.disableScroll()}
           enableScroll={() => this.props.enableScroll()}
@@ -299,6 +300,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: '5%',
+    height: 80,
   },
   textInput: {
     alignItems: 'center',

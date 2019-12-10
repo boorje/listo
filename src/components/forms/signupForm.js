@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
     marginTop: '5%',
   },
   button: {
-    width: '70%',
+    width: '60%',
     marginTop: '5%',
   },
 });

@@ -51,6 +51,8 @@ function ImageCropper(props) {
     new ValueXY({x: 0, y: 0}),
   );
 
+  const limit = Animated.subtract(topRightPos.x, topLeftPos.x);
+
   // USE EFFECTS
   useEffect(() => {
     Image.getSize(
@@ -298,6 +300,7 @@ function ImageCropper(props) {
       outputRange: [0, initialWidth],
       extrapolate: 'clamp',
     });
+
     const boundRightX = topRightPos.x.interpolate({
       inputRange: [0, initialWidth - handleSize],
       outputRange: [0, initialWidth - handleSize],
