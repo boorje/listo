@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
   },
   leftText: {
     position: 'absolute',
-    padding: 20,
+    padding: 25,
   },
   rightText: {
     position: 'absolute',
