@@ -51,10 +51,6 @@ function GroceryListItem(props) {
 }
 
 export default function GroceryListsContainerHook(props) {
-  const [user] = useState({
-    id: '9cd866c9-02cc-4d93-aef6-28dfc28392a3',
-    email: 'eric.borjesson@hotmail.com',
-  });
   const {data, loading, error, refetch, networkStatus} = useQuery(
     queries.GET_USERS_LISTS,
     {
@@ -67,11 +63,11 @@ export default function GroceryListsContainerHook(props) {
     update(cache, {data}) {
       const {getUserGroceryLists} = cache.readQuery({
         query: queries.GET_USERS_LISTS,
-        variables: {owner: user.id},
+        variables: {owner: props.user.id},
       });
       cache.writeQuery({
         query: queries.GET_USERS_LISTS,
-        variables: {owner: user.id},
+        variables: {owner: props.user.id},
         data: {
           getUserGroceryLists: getUserGroceryLists.filter(
             list => list.id !== data.deleteGroceryList.list.id,

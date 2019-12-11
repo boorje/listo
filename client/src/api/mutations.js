@@ -69,3 +69,31 @@ export const UPDATE_GROCERY_ITEM = gql`
     }
   }
 `;
+
+export const SIGN_IN = gql`
+  mutation signin($input: CreateUserInput!) {
+    signin(input: $input) {
+      code
+      message
+      success
+      user {
+        id
+        email
+      }
+    }
+  }
+`;
+
+export const SIGN_UP = gql`
+  mutation signup($input: CreateUserInput!) {
+    signup(input: $input) {
+      code
+      success
+      message
+      user {
+        id
+        email
+      }
+    }
+  }
+`;

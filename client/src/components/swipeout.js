@@ -78,7 +78,7 @@ class Swipeout extends React.Component {
     swipeIcon: 'ios-trash',
     swipeoutEnabled: this.props.swipeoutEnabled,
   };
-
+  // TODO: Move the logic to parent. Should pass in boolean
   componentDidMount = () => {
     if (this.props.list && this.props.user) {
       this.props.list.owner === this.props.user.id

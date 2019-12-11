@@ -5,10 +5,25 @@ export const GET_USERS_LISTS = gql`
     getUserGroceryLists(owner: $owner) {
       id
       title
+      owner {
+        id
+        email
+      }
+      isOwner
+      # is items necessary here?
       items {
         id
         name
       }
+    }
+  }
+`;
+
+export const GET_LIST_EDITORS = gql`
+  query getListEditors($listid: ID!) {
+    getListEditors(listid: $listid) {
+      id
+      email
     }
   }
 `;

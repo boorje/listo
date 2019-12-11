@@ -15,7 +15,6 @@ import * as colors from '../styles/colors';
 
 export default function ListScreen(props) {
   const [list, setList] = useState({});
-  const [user] = useState({});
   const [historyOpen, toggleHistory] = useState(false);
   const [listSettingsOpen, toggleSettings] = useState(false);
   const [messageOpen, toggleMessage] = useState(false);
@@ -56,7 +55,6 @@ export default function ListScreen(props) {
       {listSettingsOpen && (
         <ListSettingsModal
           groceryList={list}
-          user={user}
           closeModal={() => toggleSettings(false)}
         />
       )}
