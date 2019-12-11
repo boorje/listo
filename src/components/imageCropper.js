@@ -547,6 +547,7 @@ function ImageCropper(props) {
                 height: topRightBlurHeight,
                 width: topRightBlurWidth,
                 right: 0,
+                top: 0,
               },
             ]}
           />
