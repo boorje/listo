@@ -11,25 +11,62 @@ class DB extends DataSource {
   }
 
   // -- READ --
-  async getUser({ id }) {
-    const user = await this.store.users.findByPk(id);
-    return user && user.dataValues ? user.dataValues : null;
-  }
-
-  async findOrCreateUser({ id }) {
-    const user = await this.store.users.findOrCreate({ where: { id } });
-    return user && user[0] ? user[0].dataValues : null;
-  }
-
   async getUserGroceryLists({ owner }) {
-    const lists = await this.store.groceryLists.findAll({
-      where: { owner }
+    const lists = await this.store.GroceryList.findAll({
+      include: [
+        {
+          as: "listEditors",
+          model: this.store.User,
+          through: { attributes: [] },
+          where: { id: owner }
+        },
+        {
+          model: this.store.User,
+          as: "listOwner"
+        },
+        {
+          model: this.store.GroceryItem,
+          as: "items"
+        }
+      ]
     });
-    return lists ? lists : null;
+    return lists
+      ? lists.map(list => {
+          list = list.get({ plain: true });
+          list.isOwner = list.owner === owner;
+          list.owner = list.listOwner;
+          return list;
+        })
+      : null;
+  }
+
+  async getListEditors({ listid }) {
+    const list = await this.store.GroceryList.findByPk(listid, {
+      include: [
+        {
+          as: "listEditors",
+          model: this.store.User,
+          through: { attributes: [] }
+        }
+      ]
+    });
+    return list ? list.get({ plain: true }).listEditors : null;
+  }
+
+  async findOrCreateUser({ id, attributes }) {
+    const [user] = await this.store.User.findOrCreate({
+      where: { id },
+      defaults: attributes
+    });
+    return user
+      ? user.get({
+          plain: true
+        })
+      : null;
   }
 
   async getGroceryListItems({ list }) {
-    const items = await this.store.groceryItems.findAll({
+    const items = await this.store.GroceryItem.findAll({
       where: { list }
     });
     return items ? items : null;
@@ -38,18 +75,28 @@ class DB extends DataSource {
   // -- CREATE --
   async createGroceryList({ input }) {
     const { title, owner } = input;
-    const res = await this.store.groceryLists.create({ title, owner });
+    const res = await this.store.GroceryList.create({ title, owner });
     return res && res.dataValues ? res.dataValues : null;
   }
 
   async createGroceryItem({ input }) {
-    const res = await this.store.groceryItems.create(input);
+    const res = await this.store.GroceryItem.create(input);
     return res && res.dataValues ? res.dataValues : null;
+  }
+
+  async createUser(input) {
+    const { id, email } = input;
+    const user = await this.store.User.create({ id, email });
+    return user
+      ? user.get({
+          plain: true
+        })
+      : null;
   }
 
   // -- UPDATE --
   async updateGroceryItem({ input }) {
-    const res = await this.store.groceryItems.update(input, {
+    const res = await this.store.GroceryItem.update(input, {
       where: { id: input.id },
       returning: true,
       plain: true
@@ -59,12 +106,12 @@ class DB extends DataSource {
 
   // -- DELETE --
   async deleteGroceryList({ id }) {
-    const res = await this.store.groceryLists.destroy({ where: { id } });
+    const res = await this.store.GroceryList.destroy({ where: { id } });
     return res && res === 1 ? { id } : null;
   }
 
   async deleteGroceryListItem({ id }) {
-    const res = await this.store.groceryItems.destroy({ where: { id } });
+    const res = await this.store.GroceryItem.destroy({ where: { id } });
     return res && res === 1 ? { id } : null;
   }
 }

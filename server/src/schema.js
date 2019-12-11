@@ -3,14 +3,15 @@ const { gql } = require("apollo-server");
 const typeDefs = gql`
   type User {
     id: ID!
-    #email: String!
+    email: String!
     lists: GroceryList
   }
 
   type GroceryList {
     id: ID!
     title: String!
-    owner: String!
+    owner: User!
+    isOwner: Boolean!
     items: [GroceryItem]
     editors: [User]
   }
@@ -26,6 +27,7 @@ const typeDefs = gql`
   type Query {
     getUserGroceryLists(owner: ID!): [GroceryList]
     getGroceryListItems(list: ID!): [GroceryItem]
+    getListEditors(listid: ID!): [User]
   }
 
   type Mutation {
@@ -40,6 +42,8 @@ const typeDefs = gql`
     ): UpdateGroceryItemMutationResponse!
     deleteGroceryList(id: ID!): DeleteGroceryListMutationResponse!
     deleteGroceryListItem(id: ID!): DeleteGroceryListItemMutationResponse!
+    signup(input: CreateUserInput!): CreateUserMutationResponse!
+    signin(input: CreateUserInput!): CreateUserMutationResponse!
   }
 
   input CreateGroceryListInput {
@@ -64,6 +68,11 @@ const typeDefs = gql`
     list: ID
   }
 
+  input CreateUserInput {
+    id: ID
+    email: String!
+  }
+
   interface MutationResponse {
     code: String!
     success: Boolean!
@@ -82,6 +91,13 @@ const typeDefs = gql`
     success: Boolean!
     message: String!
     item: GroceryItem
+  }
+
+  type CreateUserMutationResponse implements MutationResponse {
+    code: String!
+    success: Boolean!
+    message: String!
+    user: User
   }
 
   type DeleteGroceryListMutationResponse implements MutationResponse {
