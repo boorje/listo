@@ -35,7 +35,7 @@ function ImageCropper(props) {
 
   // STATES - DIMENSIONS
   const {height, width} = Dimensions.get('window');
-  const [initialWidth] = useState(width * 0.73); //! Why is it not working with e.g. 0.7?
+  const [initialWidth] = useState(width * 0.72); //! Why is it not working with e.g. 0.7?
   const [imageSize, setImageSize] = useState({});
   const [initialHeight, setInitialHeight] = useState(initialWidth);
 

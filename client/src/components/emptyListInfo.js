@@ -20,7 +20,7 @@ export default EmptyListInfo;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
     alignItems: 'center',
   },
   emoji: {fontSize: 50, marginBottom: '5%'},
