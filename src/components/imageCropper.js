@@ -159,37 +159,39 @@ function ImageCropper(props) {
       if (topLeftPos.x._value < -10) {
         topLeftPos.setValue({x: -10, y: topLeftPos.y._value});
         bottomLeftPos.setValue({x: -10, y: bottomLeftPos.y._value});
-      } else if (topLeftPos.x._value > topRightPos.x._value) {
+      } else if (
+        topLeftPos.x._value > topRightPos.x._value ||
+        topLeftPos.x._value >= initialWidth
+      ) {
         Animated.parallel([
           Animated.timing(topLeftPos.x, {
             toValue: topRightPos.x._value - 60,
-            duration: 0,
+            duration: 300,
           }),
           Animated.timing(bottomLeftPos.x, {
             toValue: topRightPos.x._value - 60,
-            duration: 0,
+            duration: 300,
           }),
         ]).start();
       }
       if (topLeftPos.y._value < -10) {
         topLeftPos.setValue({x: topLeftPos.x._value, y: -10});
         topRightPos.setValue({x: topRightPos.x._value, y: -10});
-      } else if (topLeftPos.y._value > bottomLeftPos.y._value) {
+      } else if (
+        topLeftPos.y._value > bottomLeftPos.y._value ||
+        topLeftPos.y._value >= initialHeight
+      ) {
         Animated.parallel([
           Animated.timing(topLeftPos.y, {
             toValue: bottomLeftPos.y._value - 60,
-            duration: 0,
+            duration: 300,
           }),
           Animated.timing(topRightPos.y, {
             toValue: bottomLeftPos.y._value - 60,
-            duration: 0,
+            duration: 300,
           }),
         ]).start();
       }
-      cropHeight.setValue(
-        Math.abs(topLeftPos.y._value - bottomLeftPos.y._value),
-      );
-      cropWidth.setValue(Math.abs(topLeftPos.x._value - topRightPos.x._value));
     },
   });
 
@@ -216,15 +218,18 @@ function ImageCropper(props) {
           x: initialWidth - handleSize,
           y: bottomLeftPos.y._value,
         });
-      } else if (topRightPos.x._value < topLeftPos.x._value) {
+      } else if (
+        topRightPos.x._value < topLeftPos.x._value ||
+        topRightPos.x._value <= 0
+      ) {
         Animated.parallel([
           Animated.timing(topRightPos.x, {
             toValue: topLeftPos.x._value + 60,
-            duration: 0,
+            duration: 300,
           }),
           Animated.timing(bottomRightPos.x, {
             toValue: topLeftPos.x._value + 60,
-            duration: 0,
+            duration: 300,
           }),
         ]).start();
       }
@@ -232,22 +237,21 @@ function ImageCropper(props) {
       if (topRightPos.y._value < -10) {
         topRightPos.setValue({x: topRightPos.x._value, y: -10});
         topLeftPos.setValue({x: topLeftPos.x._value, y: -10});
-      } else if (topRightPos.y._value > bottomRightPos.y._value) {
+      } else if (
+        topRightPos.y._value > bottomRightPos.y._value ||
+        topRightPos.y._value >= initialHeight
+      ) {
         Animated.parallel([
           Animated.timing(topRightPos.y, {
             toValue: bottomRightPos.y._value - 60,
-            duration: 0,
+            duration: 300,
           }),
           Animated.timing(topLeftPos.y, {
             toValue: bottomRightPos.y._value - 60,
-            duration: 0,
+            duration: 300,
           }),
         ]).start();
       }
-      cropHeight.setValue(
-        Math.abs(topRightPos.y._value - bottomRightPos.y._value),
-      );
-      cropWidth.setValue(Math.abs(topRightPos.x._value - topLeftPos.x._value));
     },
   });
 
@@ -274,15 +278,18 @@ function ImageCropper(props) {
           x: -10,
           y: topLeftPos.y._value,
         });
-      } else if (bottomLeftPos.x._value > bottomRightPos.x._value) {
+      } else if (
+        bottomLeftPos.x._value > bottomRightPos.x._value ||
+        bottomLeftPos.x._value >= initialWidth
+      ) {
         Animated.parallel([
           Animated.timing(bottomLeftPos.x, {
             toValue: bottomRightPos.x._value - 60,
-            duration: 0,
+            duration: 300,
           }),
           Animated.timing(topLeftPos.x, {
             toValue: bottomRightPos.x._value - 60,
-            duration: 0,
+            duration: 300,
           }),
         ]).start();
       }
@@ -296,24 +303,21 @@ function ImageCropper(props) {
           x: bottomRightPos.x._value,
           y: initialHeight - handleSize,
         });
-      } else if (bottomLeftPos.y._value < topLeftPos.y._value) {
+      } else if (
+        bottomLeftPos.y._value < topLeftPos.y._value ||
+        bottomLeftPos.y._value <= 0
+      ) {
         Animated.parallel([
           Animated.timing(bottomLeftPos.y, {
             toValue: topLeftPos.y._value + 60,
-            duration: 0,
+            duration: 300,
           }),
           Animated.timing(bottomRightPos.y, {
             toValue: topLeftPos.y._value + 60,
-            duration: 0,
+            duration: 300,
           }),
         ]).start();
       }
-      cropHeight.setValue(
-        Math.abs(bottomLeftPos.y._value - topLeftPos.y._value),
-      );
-      cropWidth.setValue(
-        Math.abs(bottomLeftPos.x._value - bottomRightPos.x._value),
-      );
     },
   });
 
@@ -341,15 +345,18 @@ function ImageCropper(props) {
           x: initialWidth - handleSize,
           y: topRightPos.y._value,
         });
-      } else if (bottomRightPos.x._value < bottomLeftPos.x._value) {
+      } else if (
+        bottomRightPos.x._value < bottomLeftPos.x._value ||
+        bottomRightPos.x._value <= 0
+      ) {
         Animated.parallel([
           Animated.timing(bottomRightPos.x, {
             toValue: bottomLeftPos.x._value + 60,
-            duration: 0,
+            duration: 300,
           }),
           Animated.timing(topRightPos.x, {
             toValue: bottomLeftPos.x._value + 60,
-            duration: 0,
+            duration: 300,
           }),
         ]).start();
       }
@@ -363,24 +370,21 @@ function ImageCropper(props) {
           x: bottomLeftPos.x._value,
           y: initialHeight - handleSize,
         });
-      } else if (bottomRightPos.y._value < topRightPos.y._value) {
+      } else if (
+        bottomRightPos.y._value < topRightPos.y._value ||
+        bottomRightPos.y._value <= 0
+      ) {
         Animated.parallel([
           Animated.timing(bottomRightPos.y, {
             toValue: topRightPos.y._value + 60,
-            duration: 0,
+            duration: 300,
           }),
           Animated.timing(bottomLeftPos.y, {
             toValue: topRightPos.y._value + 60,
-            duration: 0,
+            duration: 300,
           }),
         ]).start();
       }
-      cropHeight.setValue(
-        Math.abs(bottomRightPos.y._value - topRightPos.y._value),
-      );
-      cropWidth.setValue(
-        Math.abs(bottomRightPos.x._value - bottomLeftPos.x._value),
-      );
     },
   });
 
@@ -392,8 +396,8 @@ function ImageCropper(props) {
     });
 
     const boundRightX = topRightPos.x.interpolate({
-      inputRange: [0, initialWidth - handleSize],
-      outputRange: [0, initialWidth - handleSize],
+      inputRange: [-handleSize, initialWidth - handleSize],
+      outputRange: [-handleSize, initialWidth - handleSize],
       extrapolate: 'clamp',
     });
     const boundTopY = topLeftPos.y.interpolate({
@@ -402,8 +406,8 @@ function ImageCropper(props) {
       extrapolate: 'clamp',
     });
     const boundBottomY = bottomLeftPos.y.interpolate({
-      inputRange: [0, initialHeight - handleSize],
-      outputRange: [0, initialHeight - handleSize],
+      inputRange: [-handleSize, initialHeight - handleSize],
+      outputRange: [-handleSize, initialHeight - handleSize],
       extrapolate: 'clamp',
     });
     if (!cropped) {
@@ -610,6 +614,10 @@ function ImageCropper(props) {
 
   async function cropImage() {
     try {
+      cropHeight.setValue(
+        Math.abs(topLeftPos.y._value - bottomLeftPos.y._value),
+      );
+      cropWidth.setValue(Math.abs(topLeftPos.x._value - topRightPos.x._value));
       const {w, h} = await getSize();
       const ratioImage = w / h;
       const ratioW = w / initialWidth;
