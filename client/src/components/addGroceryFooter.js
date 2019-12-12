@@ -1,5 +1,6 @@
 import React from 'react';
 import {View, StyleSheet, Animated, Dimensions} from 'react-native';
+import ImagePicker from 'react-native-image-picker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import GroceryForm from './forms/groceryForm';
@@ -53,6 +54,20 @@ export default class AddGroceryFooter extends React.Component {
     this.formOpacity.setValue(0);
   };
 
+  addImage = () => {
+    const options = {
+      title: 'Select Avatar',
+      customButtons: [{name: 'fb', title: 'Choose Photo from Facebook'}],
+      storageOptions: {
+        skipBackup: true,
+        path: 'images',
+      },
+    };
+    ImagePicker.launchImageLibrary(options, response => {
+      this.props.navigation.navigate('ImageCropper', {uri: response.uri});
+    });
+  };
+
   render() {
     return (
       <View style={styles.container}>
@@ -70,7 +85,7 @@ export default class AddGroceryFooter extends React.Component {
               size={35}
               name={'ios-images'}
               color={colors.primaryColor}
-              onPress={() => {}}
+              onPress={() => this.addImage()}
             />
           </View>
         )}

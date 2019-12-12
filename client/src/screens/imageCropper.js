@@ -1,24 +1,21 @@
-import React, {PureComponent, useState, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   PanResponder,
   StyleSheet,
   Dimensions,
-  Text,
   View,
   Image,
   LayoutAnimation,
   Animated,
   TouchableOpacity,
 } from 'react-native';
-import {RNCamera} from 'react-native-camera';
+
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ImageEditor from '@react-native-community/image-editor';
 import animations from '../styles/animations';
 import ExitButton from '../components/exitButton';
-import textStyles from '../styles/textStyles';
+import PropTypes from 'prop-types';
 import * as colors from '../styles/colors';
-import {a} from '@aws-amplify/ui';
-import {validateYupSchema} from 'formik';
 
 const exImageH =
   'https://images.unsplash.com/photo-1539108842340-ae72fbf39857?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=700&q=80';
@@ -641,10 +638,8 @@ function ImageCropper(props) {
           name === 'crop'
             ? cropActive
               ? cropImage()
-              : props.useImage()
+              : props.navigation.navigate('ItemSelection')
             : null;
-          name === 'arrow-forward' &&
-            props.navigation.navigate('ItemSelection');
           if (name === 'refresh') {
             LayoutAnimation.configureNext(animations.default);
             setCropped(false);
