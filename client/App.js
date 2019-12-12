@@ -14,6 +14,7 @@ import SignupScreen from './src/screens/auth/signupScreen';
 import VerifyScreen from './src/screens/auth/verifyScreen';
 import ImageCropper from './src/screens/imageCropper';
 import CameraScreen from './src/screens/cameraScreen';
+import ItemSelection from './src/screens/itemSelection';
 
 Icon.loadFont();
 IoniconsIcon.loadFont();
@@ -25,6 +26,7 @@ const MainStack = createStackNavigator(
     Settings: SettingsScreen,
     Camera: CameraScreen,
     ImageCropper: ImageCropper,
+    ItemSelection: ItemSelection,
   },
   {headerMode: 'none'},
 );

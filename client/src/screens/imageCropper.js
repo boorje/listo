@@ -14,6 +14,7 @@ import {RNCamera} from 'react-native-camera';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ImageEditor from '@react-native-community/image-editor';
 import animations from '../styles/animations';
+import ExitButton from '../components/exitButton';
 import textStyles from '../styles/textStyles';
 import * as colors from '../styles/colors';
 import {a} from '@aws-amplify/ui';
@@ -642,13 +643,14 @@ function ImageCropper(props) {
               ? cropImage()
               : props.useImage()
             : null;
-          name === 'arrow-forward' && props.useImage();
+          name === 'arrow-forward' &&
+            props.navigation.navigate('ItemSelection');
           if (name === 'refresh') {
             LayoutAnimation.configureNext(animations.default);
             setCropped(false);
             resetImageAndPositions();
           }
-          if (name === 'camera') props.navigation.goBack();
+          if (name === 'camera-alt') props.navigation.goBack();
         }}>
         <Icon size={30} color={'white'} name={name} />
       </TouchableOpacity>
@@ -657,6 +659,7 @@ function ImageCropper(props) {
 
   return (
     <View style={styles.container}>
+      <ExitButton exit={() => props.navigation.pop(2)} color={'white'} />
       {initialHeight ? (
         <View
           style={{
@@ -691,7 +694,7 @@ function ImageCropper(props) {
               alignItems: 'center',
               marginTop: 20,
             }}>
-            {!cropped && icon('camera')}
+            {!cropped && icon('camera-alt')}
             {!cropped
               ? !cropActive
                 ? icon('arrow-forward')

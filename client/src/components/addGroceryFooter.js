@@ -1,5 +1,6 @@
 import React from 'react';
 import {View, StyleSheet, Animated, Dimensions} from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import GroceryForm from './forms/groceryForm';
 import textStyles from '../styles/textStyles';
@@ -57,19 +58,19 @@ export default class AddGroceryFooter extends React.Component {
       <View style={styles.container}>
         {!this.props.addItemOpen && (
           <View style={styles.sideIconsView}>
-            <Icon
+            <Ionicons
               style={styles.sideIconStyle}
               size={40}
-              name={'image'}
-              color={'black'}
-              onPress={() => {}}
-            />
-            <Icon
-              style={styles.sideIconStyle}
-              size={40}
-              name={'camera'}
-              color={'black'}
+              name={'ios-camera'}
+              color={colors.primaryColor}
               onPress={() => this.props.navigation.navigate('Camera')}
+            />
+            <Ionicons
+              style={styles.sideIconStyle}
+              size={35}
+              name={'ios-images'}
+              color={colors.primaryColor}
+              onPress={() => {}}
             />
           </View>
         )}

@@ -12,7 +12,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {RNCamera} from 'react-native-camera';
-import animations from '../styles/animations';
+import ExitButton from '../components/exitButton';
 import textStyles from '../styles/textStyles';
 import * as colors from '../styles/colors';
 import {a} from '@aws-amplify/ui';
@@ -34,6 +34,7 @@ export default function CameraScreen(props) {
 
   return (
     <View style={styles.container}>
+      <ExitButton exit={() => props.navigation.pop(1)} color={'white'} />
       <View style={styles.camera}>
         <RNCamera
           style={styles.camera}
