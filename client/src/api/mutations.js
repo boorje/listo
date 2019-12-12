@@ -15,14 +15,15 @@ export const CREATE_GROCERY_LIST = gql`
   }
 `;
 
-export const DELETE_GROCERY_LIST = gql`
-  mutation deleteGroceryList($id: ID!) {
-    deleteGroceryList(id: $id) {
+export const CREATE_LIST_EDITOR = gql`
+  mutation createListEditor($input: CreateListEditorInput!) {
+    createListEditor(input: $input) {
+      code
       success
       message
-      code
-      list {
+      editor {
         id
+        email
       }
     }
   }
@@ -41,6 +42,32 @@ export const CREATE_GROCERY_LIST_ITEM = gql`
   }
 `;
 
+export const DELETE_GROCERY_LIST = gql`
+  mutation deleteGroceryList($id: ID!) {
+    deleteGroceryList(id: $id) {
+      success
+      message
+      code
+      list {
+        id
+      }
+    }
+  }
+`;
+
+export const DELETE_LIST_EDITOR = gql`
+  mutation deleteListEditor($input: DeleteListEditorInput!) {
+    deleteListEditor(input: $input) {
+      code
+      success
+      message
+      editor {
+        id
+      }
+    }
+  }
+`;
+
 export const DELETE_GROCERY_LIST_ITEM = gql`
   mutation deleteGroceryListItem($id: ID!) {
     deleteGroceryListItem(id: $id) {
@@ -49,6 +76,18 @@ export const DELETE_GROCERY_LIST_ITEM = gql`
       code
       item {
         id
+      }
+    }
+  }
+`;
+
+export const UPDATE_LIST_TITLE = gql`
+  mutation updateListTitle($input: UpdateListTitleInput!) {
+    updateListTitle(input: $input) {
+      code
+      success
+      list {
+        title
       }
     }
   }

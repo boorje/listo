@@ -4,7 +4,7 @@ import * as yup from 'yup';
 import PropTypes from 'prop-types';
 import {KeyboardAwareFlatList} from 'react-native-keyboard-aware-scroll-view';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {useQuery} from '@apollo/react-hooks';
+import {useMutation, useQuery} from '@apollo/react-hooks';
 //components
 import OverlayModal from '../../components/modals/overlayModal';
 import Message from '../../components/message';
@@ -14,12 +14,14 @@ import Swipeout from '../../components/swipeout';
 import textStyles from '../../styles/textStyles';
 //api
 import * as queries from '../../api/queries';
+import * as mutations from '../../api/mutations';
 
 export default function ListSettingsModal(props) {
   const [messageOpen, toggleMessage] = useState(false);
   const [scrollEnabled, toggleScroll] = useState(false);
   const [modalExpanded, toggleModalExpand] = useState(false);
   const [viewWidth, setViewWidth] = useState(0);
+  const [apiError, setApiError] = useState('');
   const {data: userData, loading: loadingUser, error: userError} = useQuery(
     queries.GET_USER,
   );
@@ -31,7 +33,54 @@ export default function ListSettingsModal(props) {
   } = useQuery(queries.GET_LIST_EDITORS, {
     variables: {listid: props.groceryList.id},
   });
-  if (editorsError) console.log(editorsError);
+  const [
+    addListEditor,
+    {loading: mutationLoading, error: mutationError},
+  ] = useMutation(mutations.CREATE_LIST_EDITOR, {
+    update(cache, {data}) {
+      const {getListEditors} = cache.readQuery({
+        query: queries.GET_LIST_EDITORS,
+        variables: {listid: props.groceryList.id},
+      });
+      cache.writeQuery({
+        query: queries.GET_LIST_EDITORS,
+        variables: {listid: props.groceryList.id},
+        data: {
+          getListEditors: [...getListEditors, data.createListEditor.editor],
+        },
+      });
+    },
+    onError(error) {
+      setApiError('Could not add the user.');
+      toggleMessage(true);
+    },
+  });
+  const [deleteListEditor] = useMutation(mutations.DELETE_LIST_EDITOR, {
+    update(cache, {data}) {
+      const {getListEditors} = cache.readQuery({
+        query: queries.GET_LIST_EDITORS,
+        variables: {listid: props.groceryList.id},
+      });
+      cache.writeQuery({
+        query: queries.GET_LIST_EDITORS,
+        variables: {listid: props.groceryList.id},
+        data: {
+          getListEditors: getListEditors.filter(
+            user => user.id !== data.deleteListEditor.editor.id,
+          ),
+        },
+      });
+    },
+    onError(error) {
+      setApiError('Could not delete the user.');
+      toggleMessage(true);
+    },
+  });
+
+  if (loadingEditors) console.log('loading'); // TODO: add fetching loader
+  if (mutationLoading) console.log('loading'); // TODO: add mutation loader
+  if (editorsError) console.log(editorsError); // TODO: setApiError
+  // if (mutationError) console.log(); // TODO: setApiError
 
   // validates the user input
   function validateEmail(email) {
@@ -47,9 +96,30 @@ export default function ListSettingsModal(props) {
         resolve();
       } catch (error) {
         const {message} = error;
-        reject(message.charAt(0).toUpperCase() + message.slice(1));
+        setApiError(message.charAt(0).toUpperCase() + message.slice(1));
       }
     });
+  }
+
+  async function addEditor(email) {
+    try {
+      await validateEmail(email);
+      await addListEditor({
+        variables: {input: {email, listid: props.groceryList.id}},
+      });
+    } catch (error) {
+      setApiError('Could not add the editor.');
+    }
+  }
+
+  async function deleteEditor(userid) {
+    try {
+      await deleteListEditor({
+        variables: {input: {listid: props.groceryList.id, userid}},
+      });
+    } catch (error) {
+      setApiError('Could not delete the editor.');
+    }
   }
 
   function renderEditor(editor) {
@@ -66,7 +136,7 @@ export default function ListSettingsModal(props) {
           enableScroll={() => toggleScroll(true)}
           swipeoutEnabled={props.groceryList.isOwner}
           viewWidth={viewWidth}
-          delete={() => console.log('delete')}>
+          delete={() => deleteEditor(editor.id)}>
           <TouchableWithoutFeedback>
             <View style={styles.textAndIcon}>
               <Text style={[textStyles.default, {fontSize: 15}]}>
@@ -88,8 +158,8 @@ export default function ListSettingsModal(props) {
         <View style={styles.textInput}>
           <AddUser
             expandModal={() => toggleModalExpand(true)}
-            addEditor={input => {
-              // this.addEditor(input);
+            addEditor={email => {
+              addEditor(email);
               toggleModalExpand(false);
             }}
           />
@@ -103,11 +173,8 @@ export default function ListSettingsModal(props) {
       expandModal={modalExpanded}
       closeModal={props.closeModal}
       modalTitle="Listmedlemmar">
-      {editorsError && messageOpen && (
-        <Message
-          messageOpen={() => toggleMessage(true)}
-          message={editorsError}
-        />
+      {apiError.length > 0 && messageOpen && (
+        <Message messageOpen={() => toggleMessage(false)} message={apiError} />
       )}
       {editorsData && editorsData.getListEditors && (
         <KeyboardAwareFlatList

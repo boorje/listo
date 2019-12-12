@@ -48,7 +48,7 @@ export default function HomeScreen(props) {
     },
   });
   if (mutationLoading) console.log('loading');
-  if (mutationError) console.log('error: ', mutationError);
+  // if (mutationError) console.log('error: ', mutationError);
 
   function addGroceryList(title) {
     newList({variables: {input: {owner: userData.user.id, title}}});
