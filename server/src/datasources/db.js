@@ -36,7 +36,6 @@ class DB extends DataSource {
     return lists
       ? lists.map(list => {
           list = list.get({ plain: true });
-          console.log(list);
           list.isOwner = list.owner === owner;
           list.owner = list.listOwner;
           return list;
@@ -58,7 +57,7 @@ class DB extends DataSource {
     });
     const list = listItem.get({ plain: true });
     //? Append listOwner: true?
-    list.listEditors.push(list.listOwner);
+    list.listEditors.unshift(list.listOwner);
     return list ? list.listEditors : null;
   }
 
@@ -93,10 +92,10 @@ class DB extends DataSource {
       where: { email },
       attributes: ["id"]
     });
-    if (!user) return null; // TODO: error message should be that the user doesn't exist
+    if (!user) throw ""; // TODO: error message should be that the user doesn't exist
     const userid = user.get({ plain: true }).id;
     const editor = await this.store.ListEditor.create({ listid, userid });
-    return editor ? { email } : null;
+    return editor ? { id: userid, email } : null;
   }
 
   async createGroceryItem({ input }) {
@@ -145,16 +144,11 @@ class DB extends DataSource {
     return res && res === 1 ? { id } : null;
   }
 
-  async deleteListEditor({ listid, email }) {
-    const user = await this.store.User.findOne({
-      where: { email },
-      attributes: ["id"]
-    });
-    const userid = user.get({ plain: true }).id;
+  async deleteListEditor({ listid, userid }) {
     const deleted = await this.store.ListEditor.destroy({
       where: { listid, userid }
     });
-    return deleted === 1 ? { email } : null;
+    return deleted === 1 ? { id: userid } : null;
   }
 
   async deleteGroceryListItem({ id }) {

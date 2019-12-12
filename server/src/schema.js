@@ -84,7 +84,7 @@ const typeDefs = gql`
 
   input DeleteListEditorInput {
     listid: ID!
-    email: String!
+    userid: ID!
   }
 
   input CreateUserInput {
