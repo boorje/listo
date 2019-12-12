@@ -1,4 +1,4 @@
-const { ApolloServer } = require("apollo-server");
+const { ApolloServer, AuthenticationError } = require("apollo-server");
 const jwt = require("jsonwebtoken");
 const jwkToPem = require("jwk-to-pem");
 const jwks = require("../jwks");
@@ -31,26 +31,6 @@ function verifyAndDecodeToken(token) {
   });
 }
 
-/**
- * finds or creates the user in the db
- * @param {String} id
- * @return The user from the db.
- */
-function findOrCreateUser(id) {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const users = await store.users.findOrCreate({
-        where: { id }
-      });
-      const user = users && users[0] ? users[0] : null;
-      if (!user) throw "Could not find user.";
-      resolve(user.dataValues);
-    } catch (e) {
-      reject(e);
-    }
-  });
-}
-
 const server = new ApolloServer({
   typeDefs,
   resolvers,
@@ -59,17 +39,14 @@ const server = new ApolloServer({
   }),
   context: async ({ req }) => {
     const token = req.headers.authorization || null;
-    if (!token) throw new AuthenticationError();
-    try {
-      const decodedToken = await verifyAndDecodeToken(token);
-      const userId = decodedToken.username;
-      const user = await findOrCreateUser(userId);
-      // TODO: Check if user exists instead of findorcreate.
-      //    user exists return all the models for the schema.
-      //    user doesn't exists. only return the model for User: login: () => {findOrCreateUser}
-      return { user: { id: user.id } };
-    } catch (e) {
-      throw new AuthenticationError(e);
+    if (token) {
+      try {
+        const decodedToken = await verifyAndDecodeToken(token);
+        const userId = decodedToken.username;
+        return { user: { id: userId } };
+      } catch (e) {
+        //TODO: throw new AuthenticationError();
+      }
     }
   }
 });

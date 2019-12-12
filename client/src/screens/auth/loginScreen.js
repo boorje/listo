@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {StyleSheet, View, Dimensions, Animated} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {Auth} from 'aws-amplify';
@@ -13,111 +13,89 @@ import * as colors from '../../styles/colors';
 const {height} = Dimensions.get('window');
 const {Value} = Animated;
 
-class LoginScreen extends React.Component {
-  constructor(props) {
-    super(props);
-    this.backgroundY = new Value(0);
-    this.loginFormOpacity = new Value(0);
-  }
-  state = {
-    signinError: '',
-    loading: false,
-    formOpen: false,
-    openMessage: false,
-  };
+export default function LoginScreen(props) {
+  const [backgroundY] = useState(new Value(0));
+  const [loginFormOpacity] = useState(new Value(0));
+  const [signinError, setError] = useState('');
+  const [loading, toggleLoading] = useState(false);
+  const [formOpen, toggleForm] = useState(false);
+  const [messageOpen, toggleMessage] = useState(false);
 
-  handleLogin = async values => {
-    const {email} = values;
-    this.setState({loading: true});
+  async function handleLogin(values) {
     try {
+      const {email} = values;
+      toggleLoading(true);
       await validateEmail(email);
       const cognitoUser = await Auth.signIn(email);
-      this.props.navigation.navigate('Verify', {cognitoUser});
+      props.navigation.navigate('Verify', {cognitoUser});
     } catch (error) {
-      this.setState({loading: false});
       switch (error.code) {
         case 'ValidationError':
-          this.setState({signinError: error.message});
+          setError(error.message);
           break;
         case 'UserNotFoundException':
-          this.setState({signinError: 'The email does not exist.'});
+          setError('The email does not exist.');
           break;
         case 'NotAuthorizedException':
-          this.setState({signinError: 'Incorrect email.'});
+          setError('Incorrect email.');
           break;
         default:
-          this.setState({
-            signinError: 'Could not login. Please try again.',
-          });
+          setError('Could not login. Please try again.');
       }
-      this.setState({messageOpen: true});
+      toggleMessage(true);
     }
-  };
-
-  openLogin = () => {
-    this.setState({formOpen: true});
-    Animated.sequence([
-      Animated.timing(this.backgroundY, {
-        toValue: -height / 1.2,
-        duration: 500,
-      }),
-      Animated.timing(this.loginFormOpacity, {
-        toValue: 1,
-        duration: 800,
-      }),
-    ]).start();
-  };
-
-  closeLogin = () => {
-    this.setState({formOpen: false});
-    Animated.sequence([
-      Animated.timing(this.loginFormOpacity, {
-        toValue: 0,
-        duration: 100,
-      }),
-      Animated.timing(this.backgroundY, {
-        toValue: 0,
-        duration: 400,
-      }),
-    ]).start();
-  };
-
-  toggleMessage = () => {
-    this.setState(prevstate => ({
-      messageOpen: prevstate.messageOpen ? false : true,
-    }));
-  };
-
-  render() {
-    const {loading, signinError, messageOpen} = this.state;
-    return (
-      <View style={styles.container}>
-        {signinError.length > 0 && messageOpen && (
-          <Message
-            messageOpen={() => this.toggleMessage()}
-            message={signinError}
-          />
-        )}
-        <Logo />
-        <KeyboardAwareScrollView
-          scrollEnabled={false}
-          contentContainerStyle={{
-            flex: 1,
-            justifyContent: 'center',
-          }}>
-          <LoginForm
-            focus={this.state.textInputFocus}
-            handleSubmit={this.handleLogin}
-            loading={loading}
-            register={() => this.props.navigation.navigate('Signup')}
-          />
-        </KeyboardAwareScrollView>
-      </View>
-    );
+    toggleLoading(false);
   }
-}
 
-export default LoginScreen;
+  function toggleLogin() {
+    toggleForm(!formOpen);
+    const values = {
+      backgroundY: {
+        toValue: formOpen ? -height / 1.2 : 0,
+        duration: 500,
+      },
+      loginFormOpacity: {
+        toValue: formOpen ? 1 : 0,
+        duration: 800,
+      },
+    };
+    Animated.sequence([
+      Animated.timing(backgroundY, {
+        toValue: values.backgroundY.toValue,
+        duration: values.backgroundY.duration,
+      }),
+      Animated.timing(loginFormOpacity, {
+        toValue: values.loginFormOpacity.toValue,
+        duration: values.loginFormOpacity.duration,
+      }),
+    ]).start();
+  }
+
+  return (
+    <View style={styles.container}>
+      {signinError.length > 0 && messageOpen && (
+        <Message
+          messageOpen={() => toggleMessage(!messageOpen)}
+          message={signinError}
+        />
+      )}
+      <Logo />
+      <KeyboardAwareScrollView
+        scrollEnabled={false}
+        contentContainerStyle={{
+          flex: 1,
+          justifyContent: 'center',
+        }}>
+        <LoginForm
+          //focus={this.state.textInputFocus} // ! doesn't exist
+          handleSubmit={handleLogin}
+          loading={loading}
+          register={() => props.navigation.navigate('Signup')}
+        />
+      </KeyboardAwareScrollView>
+    </View>
+  );
+}
 
 const styles = StyleSheet.create({
   container: {

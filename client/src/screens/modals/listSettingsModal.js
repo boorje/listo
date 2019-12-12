@@ -1,84 +1,89 @@
-import React from 'react';
-import {
-  FlatList,
-  Text,
-  TouchableWithoutFeedback,
-  TouchableHighlight,
-  View,
-  StyleSheet,
-} from 'react-native';
+import React, {useState} from 'react';
+import {Text, TouchableWithoutFeedback, View, StyleSheet} from 'react-native';
 import * as yup from 'yup';
 import PropTypes from 'prop-types';
 import {KeyboardAwareFlatList} from 'react-native-keyboard-aware-scroll-view';
-
-// components
+import Icon from 'react-native-vector-icons/Ionicons';
+import {useMutation, useQuery} from '@apollo/react-hooks';
+//components
 import OverlayModal from '../../components/modals/overlayModal';
 import Message from '../../components/message';
 import AddUser from '../../components/addUser.js';
-import Icon from 'react-native-vector-icons/Ionicons';
 import Swipeout from '../../components/swipeout';
 //styles
 import textStyles from '../../styles/textStyles';
+//api
+import * as queries from '../../api/queries';
+import * as mutations from '../../api/mutations';
 
-/**
- * TODO:
- * Add Formik
- * Add Stylesheet
- */
-export default class ListSettingsModal extends React.Component {
-  state = {
-    groceryList: this.props.groceryList || {},
-    user: this.props.user || {},
-    editors: [],
-    apiError: '',
-    loggedInUserIsListOwner: false,
-    fullyOpen: false,
-    scrollEnabled: true,
-    messageOpen: false,
-  };
-
-  componentDidMount = async () => {
-    try {
-      await this.fetchEditors(this.state.groceryList.id);
-      const loggedInUserIsListOwner =
-        this.state.user.id === this.state.groceryList.owner;
-      this.setState({loggedInUserIsListOwner});
-    } catch (error) {
-      this.setState({
-        apiError: error ? error : 'Could not fetch editors. Please try again.',
+export default function ListSettingsModal(props) {
+  const [messageOpen, toggleMessage] = useState(false);
+  const [scrollEnabled, toggleScroll] = useState(false);
+  const [modalExpanded, toggleModalExpand] = useState(false);
+  const [viewWidth, setViewWidth] = useState(0);
+  const [apiError, setApiError] = useState('');
+  const {data: userData, loading: loadingUser, error: userError} = useQuery(
+    queries.GET_USER,
+  );
+  if (userError) props.navigation.navigate('Authenticator');
+  const {
+    data: editorsData,
+    loading: loadingEditors,
+    error: editorsError,
+  } = useQuery(queries.GET_LIST_EDITORS, {
+    variables: {listid: props.groceryList.id},
+  });
+  const [
+    addListEditor,
+    {loading: mutationLoading, error: mutationError},
+  ] = useMutation(mutations.CREATE_LIST_EDITOR, {
+    update(cache, {data}) {
+      const {getListEditors} = cache.readQuery({
+        query: queries.GET_LIST_EDITORS,
+        variables: {listid: props.groceryList.id},
       });
-      this.setState({messageOpen: true});
-    }
-  };
+      cache.writeQuery({
+        query: queries.GET_LIST_EDITORS,
+        variables: {listid: props.groceryList.id},
+        data: {
+          getListEditors: [...getListEditors, data.createListEditor.editor],
+        },
+      });
+    },
+    onError(error) {
+      setApiError('Could not add the user.');
+      toggleMessage(true);
+    },
+  });
+  const [deleteListEditor] = useMutation(mutations.DELETE_LIST_EDITOR, {
+    update(cache, {data}) {
+      const {getListEditors} = cache.readQuery({
+        query: queries.GET_LIST_EDITORS,
+        variables: {listid: props.groceryList.id},
+      });
+      cache.writeQuery({
+        query: queries.GET_LIST_EDITORS,
+        variables: {listid: props.groceryList.id},
+        data: {
+          getListEditors: getListEditors.filter(
+            user => user.id !== data.deleteListEditor.editor.id,
+          ),
+        },
+      });
+    },
+    onError(error) {
+      setApiError('Could not delete the user.');
+      toggleMessage(true);
+    },
+  });
 
-  fetchEditors = async listId => {
-    // try {
-    //   const res = await getEditors(listId);
-    //   if (!res || res === null) {
-    //     throw 'Could not fetch editors. Please try again.';
-    //   }
-    //   let editors = [];
-    //   res.editors.items.map(({user}) => {
-    //     editors.push(user);
-    //   });
-    //   editors = await this.addOwnerProp(editors);
-    //   this.setState({editors});
-    // } catch (error) {
-    //   throw 'Could not fetch editors. Please try again.';
-    // }
-  };
-
-  addOwnerProp = async editors => {
-    return await editors.map(editor => {
-      if (editor.id === this.state.groceryList.owner) {
-        editor.listOwner = true;
-      }
-      return editor;
-    });
-  };
+  if (loadingEditors) console.log('loading'); // TODO: add fetching loader
+  if (mutationLoading) console.log('loading'); // TODO: add mutation loader
+  if (editorsError) console.log(editorsError); // TODO: setApiError
+  // if (mutationError) console.log(); // TODO: setApiError
 
   // validates the user input
-  validateEmail = email => {
+  function validateEmail(email) {
     return new Promise(async (resolve, reject) => {
       try {
         const schema = yup.object().shape({
@@ -91,187 +96,59 @@ export default class ListSettingsModal extends React.Component {
         resolve();
       } catch (error) {
         const {message} = error;
-        reject(message.charAt(0).toUpperCase() + message.slice(1));
+        setApiError(message.charAt(0).toUpperCase() + message.slice(1));
       }
     });
-  };
-
-  // add editor to the list
-  addEditor = async emailInput => {
-    // try {
-    //   if (!this.state.loggedInUserIsListOwner) {
-    //     throw 'Only the owner of the list can perform add users';
-    //   } else {
-    //     // check for valid user input
-    //     const enteredEmail = emailInput;
-    //     //const enteredEmail = 'adam@olivegren.se';
-    //     await this.validateEmail(enteredEmail);
-    //     // check if the email already exists in the list
-    //     if (this.state.editors.length > 0) {
-    //       this.state.editors.map(({email}) => {
-    //         if (email === enteredEmail) {
-    //           throw 'User already has access to the list.';
-    //         }
-    //       });
-    //     }
-    //     const res = await getUserByEmail(enteredEmail);
-    //     if (!res || res === null) {
-    //       throw 'User does not exist. Please try again.';
-    //     } else if (res.items.length < 1) {
-    //       throw 'User does not exist. Please try again.';
-    //     }
-    //     // checks if the user id already exists
-    //     if (this.state.editors.length > 0) {
-    //       this.state.editors.map(editor => {
-    //         if (editor.id === res.id) {
-    //           throw 'User already has access to the list.';
-    //         }
-    //       });
-    //     }
-    //     const editor = await createEditor({
-    //       editorListId: this.state.groceryList.id,
-    //       editorUserId: res.items[0].id,
-    //     });
-    //     this.setState(prevState => ({
-    //       editors: [...prevState.editors, editor.user],
-    //       emailInput: '',
-    //     }));
-    //   }
-    // } catch (error) {
-    //   console.log(error);
-    //   this.setState({apiError: error});
-    //   this.setState({messageOpen: true});
-    // }
-  };
-
-  // delete editor from the list
-  deleteEditor = async userId => {
-    // try {
-    //   if (!this.state.loggedInUserIsListOwner) {
-    //     throw 'Only the owner of the list can remove users.';
-    //   } else if (userId === this.state.user.id) {
-    //     // ! How is this checking if it's the list owner?
-    //     throw 'The owner cannot be deleted';
-    //   }
-    //   const {editors, groceryList} = this.state;
-    //   const res = await deleteListEditor({
-    //     listId: groceryList.id,
-    //     userId,
-    //   });
-    //   if (!res || res === null) {
-    //     throw 'Could not remove user. Please try again.';
-    //   }
-    //   const newEditors = editors.filter(editor => editor.id !== userId);
-    //   this.setState({editors: newEditors});
-    // } catch (error) {
-    //   this.setState({apiError: 'Could not remove the user.'});
-    //   this.setState({messageOpen: true});
-    // }
-  };
-
-  FlatListItemSeparator = () => {
-    return <View style={styles.separator} />;
-  };
-
-  addUserTextInput = () => {
-    return (
-      this.state.loggedInUserIsListOwner && (
-        <View style={styles.textInput}>
-          <AddUser
-            expandModal={() => this.setState({fullyOpen: true})}
-            addEditor={input => {
-              this.addEditor(input);
-              this.setState({fullyOpen: false});
-            }}
-          />
-        </View>
-      )
-    );
-  };
-
-  renderList({item}) {
-    return (
-      <UserItem
-        item={item}
-        user={this.state.user}
-        disableScroll={() => {
-          this.setState({
-            scrollEnabled: false,
-          });
-        }}
-        enableScroll={() => {
-          this.setState({
-            scrollEnabled: true,
-          });
-        }}
-        deleteEditor={() => this.deleteEditor(item.id)}
-        loggedInUserIsListOwner={this.state.loggedInUserIsListOwner}
-      />
-    );
   }
-  toggleMessage = () => {
-    this.setState(prevstate => ({
-      messageOpen: prevstate.messageOpen ? false : true,
-    }));
-  };
 
-  render() {
-    const {apiError, editors, messageOpen} = this.state;
-    return (
-      <OverlayModal
-        expandModal={this.state.fullyOpen}
-        closeModal={this.props.closeModal}
-        modalTitle="Listmedlemmar"
-        textInputActive={this.state.textInputActive}>
-        {apiError.length > 0 && messageOpen && (
-          <Message
-            messageOpen={() => this.toggleMessage()}
-            message={apiError}
-          />
-        )}
-        {editors.length > 0 && (
-          <KeyboardAwareFlatList
-            scrollEnabled={this.state.scrollEnabled}
-            data={editors}
-            renderItem={({item}) => {
-              return this.renderList({item});
-            }}
-            ItemSeparatorComponent={this.FlatListItemSeparator}
-            keyExtractor={item => item.id}
-            ListFooterComponent={this.addUserTextInput}
-          />
-        )}
-      </OverlayModal>
-    );
+  async function addEditor(email) {
+    try {
+      await validateEmail(email);
+      await addListEditor({
+        variables: {input: {email, listid: props.groceryList.id}},
+      });
+    } catch (error) {
+      setApiError('Could not add the editor.');
+    }
   }
-}
 
-class UserItem extends React.Component {
-  state = {
-    viewWidth: 0,
-    viewHeight: 0,
-  };
-  render() {
+  async function deleteEditor(userid) {
+    try {
+      if (!props.groceryList.isOwner || userid === props.groceryList.owner.id) {
+        throw 'Could not delete the owner';
+      }
+      await deleteListEditor({
+        variables: {input: {listid: props.groceryList.id, userid}},
+      });
+    } catch (error) {
+      setApiError('Could not delete the editor.');
+    }
+  }
+
+  function renderEditor(editor) {
     return (
       <View
         onLayout={event => {
-          var {height, width} = event.nativeEvent.layout;
-          this.setState({viewWidth: width, viewHeight: height});
+          const {width} = event.nativeEvent.layout;
+          setViewWidth(width);
         }}
         style={styles.item}>
         <Swipeout
-          user={this.props.user}
-          disableScroll={() => this.props.disableScroll()}
-          enableScroll={() => this.props.enableScroll()}
-          swipeoutEnabled={this.props.item.listOwner ? false : true}
-          viewWidth={this.state.viewWidth}
-          delete={() => this.props.deleteEditor(this.props.item.id)}>
+          user={userData.user}
+          disableScroll={() => toggleScroll(false)}
+          enableScroll={() => toggleScroll(true)}
+          swipeoutEnabled={
+            props.groceryList.isOwner && // only the owner can delete an editor
+            editor.id !== props.groceryList.owner.id // the owner can't be deleted
+          }
+          viewWidth={viewWidth}
+          delete={() => deleteEditor(editor.id)}>
           <TouchableWithoutFeedback>
             <View style={styles.textAndIcon}>
               <Text style={[textStyles.default, {fontSize: 15}]}>
-                {this.props.item.email}
+                {editor.email}
               </Text>
-              {this.props.item.listOwner && (
+              {editor.id === props.groceryList.owner.id && (
                 <Icon size={30} name={'ios-key'} color={'black'} />
               )}
             </View>
@@ -280,6 +157,43 @@ class UserItem extends React.Component {
       </View>
     );
   }
+
+  function addUserTextInput() {
+    return (
+      props.groceryList.isOwner && (
+        <View style={styles.textInput}>
+          <AddUser
+            expandModal={() => toggleModalExpand(true)}
+            addEditor={email => {
+              addEditor(email);
+              toggleModalExpand(false);
+            }}
+          />
+        </View>
+      )
+    );
+  }
+
+  return (
+    <OverlayModal
+      expandModal={modalExpanded}
+      closeModal={props.closeModal}
+      modalTitle="Listmedlemmar">
+      {apiError.length > 0 && messageOpen && (
+        <Message messageOpen={() => toggleMessage(false)} message={apiError} />
+      )}
+      {editorsData && editorsData.getListEditors && (
+        <KeyboardAwareFlatList
+          scrollEnabled={scrollEnabled}
+          data={editorsData.getListEditors}
+          renderItem={({item}) => renderEditor(item)}
+          ItemSeparatorComponent={() => <View style={styles.separator} />}
+          keyExtractor={item => item.id}
+          ListFooterComponent={addUserTextInput}
+        />
+      )}
+    </OverlayModal>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -304,6 +218,9 @@ const styles = StyleSheet.create({
 
 ListSettingsModal.propTypes = {
   closeModal: PropTypes.func.isRequired,
-  groceryList: PropTypes.shape().isRequired,
-  user: PropTypes.shape().isRequired,
+  groceryList: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    isOwner: PropTypes.bool.isRequired,
+    owner: PropTypes.shape({id: PropTypes.string.isRequired}).isRequired,
+  }).isRequired,
 };

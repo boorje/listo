@@ -17,10 +17,10 @@ module.exports.createStore = () => {
   );
 
   // defining schemas
-  const users = db.define("user", {
+  const User = db.define("user", {
     id: {
       type: Sequelize.UUIDV4,
-      defaultValue: Sequelize.UUIDV4, // TODO: should not create id. Should come from auth provider
+      defaultValue: Sequelize.UUIDV4, // TODO: should not provide default value id. Should come from auth provider
       primaryKey: true
     },
     email: {
@@ -34,7 +34,7 @@ module.exports.createStore = () => {
       type: Sequelize.DATE
     }
   });
-  const groceryLists = db.define("grocerylist", {
+  const GroceryList = db.define("grocerylist", {
     id: {
       type: Sequelize.UUIDV4,
       defaultValue: Sequelize.UUIDV4,
@@ -51,7 +51,7 @@ module.exports.createStore = () => {
       type: Sequelize.DATE
     }
   });
-  const groceryItems = db.define("groceryitem", {
+  const GroceryItem = db.define("groceryitem", {
     id: {
       type: Sequelize.UUIDV4,
       defaultValue: Sequelize.UUIDV4,
@@ -69,24 +69,38 @@ module.exports.createStore = () => {
   });
 
   // defining the relations
-  groceryLists.belongsTo(users, {
+  GroceryList.belongsTo(User, {
     foreignKey: "owner",
     targetKey: "id",
-    onDelete: "CASCADE"
+    onDelete: "CASCADE",
+    as: "listOwner"
   });
-  groceryLists.hasMany(groceryItems, {
+  GroceryList.hasMany(GroceryItem, {
     foreignKey: "list",
-    targetKey: "id"
+    targetKey: "id",
+    as: "items"
   });
-  users.hasMany(groceryLists, {
-    foreignKey: "owner",
-    targetKey: "id"
-  });
-  groceryItems.belongsTo(groceryLists, {
+  GroceryItem.belongsTo(GroceryList, {
     foreignKey: "list",
     targetKey: "id",
     onDelete: "CASCADE"
   });
-
-  return { groceryLists, groceryItems, users };
+  User.hasMany(GroceryList, {
+    foreignKey: "owner",
+    targetKey: "id",
+    as: "listOwner"
+  });
+  // creates the model ListEditors with user and list as PK.
+  // default onDelete is CASCADE
+  GroceryList.belongsToMany(User, {
+    through: "listeditors",
+    foreignKey: "listid",
+    as: "listEditors"
+  });
+  User.belongsToMany(GroceryList, {
+    through: "listeditors",
+    foreignKey: "userid",
+    as: "listEditors"
+  });
+  return { GroceryList, GroceryItem, User, ListEditor: db.models.listeditors };
 };

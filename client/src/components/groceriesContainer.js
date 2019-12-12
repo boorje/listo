@@ -82,6 +82,7 @@ export default function GroceriesContainer(props) {
     {
       variables: {list: props.listId},
       notifyOnNetworkStatusChange: true,
+      fetchPolicy: 'cache-first',
     },
   );
   const [deleteItem] = useMutation(mutations.DELETE_GROCERY_LIST_ITEM, {

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {
   StyleSheet,
   TextInput,
@@ -7,28 +7,27 @@ import {
   TouchableHighlight,
 } from 'react-native';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
-import textStyles from '../styles/textStyles';
 import PropTypes from 'prop-types';
-import * as colors from '../styles/colors';
 import LinearGradient from 'react-native-linear-gradient';
+import {useMutation} from '@apollo/react-hooks';
+// styles
+import * as colors from '../styles/colors';
+import textStyles from '../styles/textStyles';
+// api
+import * as mutations from '../api/mutations';
 
 function ScreenHeader(props) {
   const [textInputActive, setTextInputActive] = useState(false);
-  const [textInputValue, setTextInputValue] = useState(props.headerTitle);
-  const [user, setUser] = useState(props.user || {});
-  const [groceryList, setGroceryList] = useState(props.groceryList || {});
+  const [textInputValue, setTextInputValue] = useState(props.groceryList.title);
 
-  useEffect(() => {
-    setTextInputValue(props.headerTitle);
-  }, [props.headerTitle]);
-
-  useEffect(() => {
-    setUser(props.user);
-  }, [props.user]);
-
-  useEffect(() => {
-    setGroceryList(props.groceryList);
-  }, [props.groceryList]);
+  const [updateListTitle] = useMutation(mutations.UPDATE_LIST_TITLE, {
+    onError() {
+      console.log('Could not update title.'); // TODO: UI for user
+    },
+    onCompleted({updateListTitle: updatedList}) {
+      setTextInputValue(updatedList.list.title);
+    },
+  });
 
   return (
     <LinearGradient colors={colors.testShade} style={styles.container}>
@@ -46,13 +45,14 @@ function ScreenHeader(props) {
           <TouchableHighlight
             underlayColor={'transparent'}
             style={styles.headerTitle}
+            disabled={!props.groceryList.isOwner}
             onPress={() => {
-              if (user.id === groceryList.owner) {
+              if (props.groceryList.isOwner) {
                 setTextInputActive(true);
               }
             }}>
             <View>
-              <Text style={[textStyles.listTitle]}>{props.headerTitle}</Text>
+              <Text style={[textStyles.listTitle]}>{textInputValue}</Text>
               {/* <Text style={[textStyles.listTitle]}>{groceryList.owner}</Text> */}
             </View>
           </TouchableHighlight>
@@ -61,7 +61,11 @@ function ScreenHeader(props) {
             value={textInputValue}
             onChangeText={text => setTextInputValue(text)}
             onSubmitEditing={() => {
-              props.renameList(textInputValue);
+              updateListTitle({
+                variables: {
+                  input: {id: props.groceryList.id, title: textInputValue},
+                },
+              });
               setTextInputActive(false);
             }}
             placeholder="List name..."
