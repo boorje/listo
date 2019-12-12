@@ -14,13 +14,16 @@ import * as mutations from '../api/mutations';
 import * as colors from '../styles/colors';
 
 export default function ListScreen(props) {
-  const [list, setList] = useState({});
-  const [user] = useState({});
+  const [list] = useState(props.navigation.getParam('list', {}));
   const [historyOpen, toggleHistory] = useState(false);
   const [listSettingsOpen, toggleSettings] = useState(false);
   const [messageOpen, toggleMessage] = useState(false);
   const [apiError, setApiError] = useState('');
   const [addItemOpen, toggleAddItem] = useState(false);
+
+  // useEffect(() => {
+  //   console.log('LISTSCREEN: ', props.navigation.getParam('list', {}));
+  // }, [props]);
 
   const [addGroceryItem] = useMutation(mutations.CREATE_GROCERY_LIST_ITEM, {
     update(cache, {data}) {
@@ -40,13 +43,9 @@ export default function ListScreen(props) {
       });
     },
     onError(error) {
-      setApiError('Haha');
+      setApiError(error);
     },
   });
-
-  useEffect(() => {
-    setList(props.navigation.getParam('list', {}));
-  }, [props.navigation]);
 
   return (
     <View style={styles.container}>
@@ -56,7 +55,6 @@ export default function ListScreen(props) {
       {listSettingsOpen && (
         <ListSettingsModal
           groceryList={list}
-          user={user}
           closeModal={() => toggleSettings(false)}
         />
       )}
@@ -71,6 +69,7 @@ export default function ListScreen(props) {
         leftIcon={'ios-arrow-round-back'}
         //rightIcon1={'md-hourglass'}
         rightIcon2={'md-person-add'}
+        groceryList={list}
       />
       <View style={{flex: 11}}>
         <GroceriesContainer
