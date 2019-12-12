@@ -24,11 +24,6 @@ const typeDefs = gql`
     list: GroceryList!
   }
 
-  # type Editors {
-  #   listid: ID!
-  #   userid: ID!
-  # }
-
   type Query {
     getUserGroceryLists(owner: ID!): [GroceryList]
     getGroceryListItems(list: ID!): [GroceryItem]
@@ -39,8 +34,8 @@ const typeDefs = gql`
     createGroceryList(
       input: CreateGroceryListInput!
     ): CreateGroceryListMutationResponse!
-    updateGroceryList(
-      input: UpdateGroceryListInput!
+    updateListTitle(
+      input: UpdateListTitleInput!
     ): CreateGroceryListMutationResponse!
     createGroceryItem(
       input: CreateGroceryItemInput!
@@ -66,10 +61,9 @@ const typeDefs = gql`
     owner: String
   }
 
-  input UpdateGroceryListInput {
+  input UpdateListTitleInput {
     id: ID!
-    title: String
-    # owner: String
+    title: String!
   }
 
   input CreateGroceryItemInput {

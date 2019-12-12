@@ -1,3 +1,5 @@
+const { AuthenticationError } = require("apollo-server");
+
 const authenticated = next => (root, args, context, info) => {
   if (!context.user || !context.user.id) {
     //TODO: throw new AuthenticationError();
@@ -24,9 +26,11 @@ module.exports = {
     createGroceryList: authenticated(async (_, { input }, { dataSources }) => {
       const list = await dataSources.db.createGroceryList({ input });
       const response = {
-        code: list ? 200 : 500,
+        code: list ? 200 : 400,
         success: list ? true : false,
-        message: "Successfully created the list",
+        message: list
+          ? "Successfully created the list."
+          : "The list could not be created.",
         list
       };
       return response;
@@ -34,9 +38,11 @@ module.exports = {
     createListEditor: authenticated(async (_, { input }, { dataSources }) => {
       const editor = await dataSources.db.createListEditor(input);
       const response = {
-        code: editor ? 200 : 500,
+        code: editor ? 200 : 400,
         success: editor ? true : false,
-        message: "Successfully created the editor",
+        message: editor
+          ? "The user has been added as an editor."
+          : "Could not add user as editor.",
         editor
       };
       return response;
@@ -48,6 +54,16 @@ module.exports = {
         success: item ? true : false,
         message: "Successfully created the item",
         item
+      };
+      return response;
+    }),
+    updateListTitle: authenticated(async (_, { input }, { dataSources }) => {
+      const list = await dataSources.db.updateListTitle(input);
+      const response = {
+        code: list ? 200 : 500,
+        success: list ? true : false,
+        message: "Successfully updated the list tile",
+        list
       };
       return response;
     }),
@@ -122,6 +138,11 @@ module.exports = {
     },
     editors: (parent, _, { dataSources }) => {
       return dataSources.db.getListEditors({ listid: parent.id });
+    }
+  },
+  MutationResponse: {
+    __resolveType(mutationResponse, context, info) {
+      return null;
     }
   }
 };

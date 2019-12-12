@@ -112,13 +112,27 @@ class DB extends DataSource {
 
   // -- UPDATE --
 
+  async updateListTitle({ id, title }) {
+    const updatedList = await this.store.GroceryList.update(
+      { title },
+      {
+        where: { id },
+        fields: ["title"],
+        returning: true,
+        plain: true
+      }
+    );
+    return updatedList[1] ? updatedList[1].get({ plain: true }) : null;
+  }
+
   async updateGroceryItem({ input }) {
     const res = await this.store.GroceryItem.update(input, {
       where: { id: input.id },
+      // fields: ["name", "quantity", "unit"],
       returning: true,
       plain: true
     });
-    return res && res[1] && res[1].dataValues ? res[1].dataValues : null;
+    return res[1] ? res[1].get({ plain: true }) : null;
   }
 
   // -- DELETE --

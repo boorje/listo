@@ -1,4 +1,4 @@
-const { ApolloServer } = require("apollo-server");
+const { ApolloServer, AuthenticationError } = require("apollo-server");
 const jwt = require("jsonwebtoken");
 const jwkToPem = require("jwk-to-pem");
 const jwks = require("../jwks");
@@ -45,7 +45,7 @@ const server = new ApolloServer({
         const userId = decodedToken.username;
         return { user: { id: userId } };
       } catch (e) {
-        //TODO: throw new AuthenticationError(e);
+        //TODO: throw new AuthenticationError();
       }
     }
   }
