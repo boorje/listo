@@ -26,18 +26,21 @@ class DB extends DataSource {
         {
           model: this.store.User,
           as: "listOwner"
-        },
-        {
-          model: this.store.GroceryItem,
-          as: "items"
         }
+        // {
+        //   model: this.store.GroceryItem,
+        //   as: "items"
+        // }
       ]
     });
     return lists
-      ? lists.map(list => {
+      ? lists.map(async list => {
           list = list.get({ plain: true });
           list.isOwner = list.owner === owner;
           list.owner = list.listOwner;
+          list.itemCount = await this.store.GroceryItem.count({
+            where: { list: list.id }
+          });
           return list;
         })
       : null;
