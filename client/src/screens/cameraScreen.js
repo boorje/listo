@@ -1,22 +1,8 @@
-import React, {useState, useEffect} from 'react';
-import {
-  PanResponder,
-  StyleSheet,
-  Dimensions,
-  TouchableHighlight,
-  View,
-  Text,
-  Image,
-  LayoutAnimation,
-  Animated,
-  TouchableOpacity,
-} from 'react-native';
+import React from 'react';
+import {StyleSheet, TouchableHighlight, View, Text} from 'react-native';
 import {RNCamera} from 'react-native-camera';
 import ExitButton from '../components/exitButton';
 import textStyles from '../styles/textStyles';
-import * as colors from '../styles/colors';
-import {a} from '@aws-amplify/ui';
-import {validateYupSchema} from 'formik';
 
 export default function CameraScreen(props) {
   async function takePhoto() {
