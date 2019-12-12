@@ -114,6 +114,9 @@ export default function ListSettingsModal(props) {
 
   async function deleteEditor(userid) {
     try {
+      if (!props.groceryList.isOwner || userid === props.groceryList.owner.id) {
+        throw 'Could not delete the owner';
+      }
       await deleteListEditor({
         variables: {input: {listid: props.groceryList.id, userid}},
       });
@@ -134,7 +137,10 @@ export default function ListSettingsModal(props) {
           user={userData.user}
           disableScroll={() => toggleScroll(false)}
           enableScroll={() => toggleScroll(true)}
-          swipeoutEnabled={props.groceryList.isOwner}
+          swipeoutEnabled={
+            props.groceryList.isOwner && // only the owner can delete an editor
+            editor.id !== props.groceryList.owner.id // the owner can't be deleted
+          }
           viewWidth={viewWidth}
           delete={() => deleteEditor(editor.id)}>
           <TouchableWithoutFeedback>
