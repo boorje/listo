@@ -47,30 +47,6 @@ export default function LoginScreen(props) {
     toggleLoading(false);
   }
 
-  function toggleLogin() {
-    toggleForm(!formOpen);
-    const values = {
-      backgroundY: {
-        toValue: formOpen ? -height / 1.2 : 0,
-        duration: 500,
-      },
-      loginFormOpacity: {
-        toValue: formOpen ? 1 : 0,
-        duration: 800,
-      },
-    };
-    Animated.sequence([
-      Animated.timing(backgroundY, {
-        toValue: values.backgroundY.toValue,
-        duration: values.backgroundY.duration,
-      }),
-      Animated.timing(loginFormOpacity, {
-        toValue: values.loginFormOpacity.toValue,
-        duration: values.loginFormOpacity.duration,
-      }),
-    ]).start();
-  }
-
   return (
     <View style={styles.container}>
       {signinError.length > 0 && messageOpen && (
@@ -87,10 +63,10 @@ export default function LoginScreen(props) {
           justifyContent: 'center',
         }}>
         <LoginForm
-          //focus={this.state.textInputFocus} // ! doesn't exist
-          handleSubmit={handleLogin}
+          focus={this.state.textInputFocus}
+          handleSubmit={this.handleLogin}
           loading={loading}
-          register={() => props.navigation.navigate('Signup')}
+          register={() => this.props.navigation.navigate('Signup')}
         />
       </KeyboardAwareScrollView>
     </View>

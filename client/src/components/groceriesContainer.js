@@ -34,13 +34,7 @@ function GroceryItem(props) {
         }
       }}
       underlayColor={'transparent'}>
-      <Animated.View
-        style={[
-          styles.container2,
-          // {
-          //   opacity: this.state.removeId === grocery.id ? this.itemX : 1,
-          // },
-        ]}>
+      <Animated.View style={[styles.container2]}>
         <View style={{flex: 1, paddingLeft: '5%'}}>
           {detailsOpen ? (
             <View>
@@ -117,8 +111,6 @@ export default function GroceriesContainer(props) {
         data.getGroceryListItems &&
         data.getGroceryListItems.length > 0 ? (
           <KeyboardAwareFlatList
-            //ref="flatList" //! USE TO ADJUST LIST WHEN ADDING ITEMS. BEHAVIOR IS NOT OPTIMAL.
-            //onContentSizeChange={() => this.refs.flatList.scrollToEnd()}
             contentContainerStyle={{marginBottom: 10}}
             scrollEnabled={true}
             refreshControl={

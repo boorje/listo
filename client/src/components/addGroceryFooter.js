@@ -1,5 +1,7 @@
 import React from 'react';
 import {View, StyleSheet, Animated, Dimensions} from 'react-native';
+import ImagePicker from 'react-native-image-picker';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import GroceryForm from './forms/groceryForm';
 import textStyles from '../styles/textStyles';
@@ -52,28 +54,42 @@ export default class AddGroceryFooter extends React.Component {
     this.formOpacity.setValue(0);
   };
 
+  addImage = () => {
+    const options = {
+      storageOptions: {
+        skipBackup: true,
+        path: 'images',
+      },
+    };
+
+    ImagePicker.launchImageLibrary(options, response => {
+      if (!response.didCancel) {
+        this.props.navigation.navigate('ImageCropper', {uri: response.uri});
+      }
+    });
+  };
+
   render() {
     return (
       <View style={styles.container}>
-        {/* {!this.props.addItemOpen && (
-          // TODO: Add when applicable
+        {!this.props.addItemOpen && (
           <View style={styles.sideIconsView}>
-            <Icon
+            <Ionicons
               style={styles.sideIconStyle}
-              size={40}
-              name={'image'}
-              color={'black'}
-              onPress={() => {}}
+              size={45}
+              name={'ios-camera'}
+              color={colors.primaryColor}
+              onPress={() => this.props.navigation.navigate('Camera')}
             />
-            <Icon
+            <Ionicons
               style={styles.sideIconStyle}
-              size={40}
-              name={'camera'}
-              color={'black'}
-              onPress={() => {}}
+              size={35}
+              name={'ios-images'}
+              color={colors.primaryColor}
+              onPress={() => this.addImage()}
             />
           </View>
-        )} */}
+        )}
         <Animated.View
           style={[
             styles.addIcon,
@@ -146,6 +162,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: '10%',
+    paddingBottom: '20%',
   },
 
   addIcon: {

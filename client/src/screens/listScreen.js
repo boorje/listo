@@ -85,6 +85,7 @@ export default function ListScreen(props) {
             addGroceryItem({variables: {input: item}});
           }}
           addItemOpen={addItemOpen}
+          navigation={props.navigation}
           showAddGrocery={() => toggleAddItem(!addItemOpen)}
         />
       </View>

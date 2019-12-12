@@ -16,11 +16,11 @@ const PrimaryButton = props => {
     <TouchableHighlight
       onPress={() => onPress()}
       disabled={disabled ? disabled : false}
-      underlayColor="white"
+      underlayColor={colors.primaryColorFaded}
       style={[
         styles.button,
         {
-          backgroundColor: disabled ? '#aaa' : colors.submitColor,
+          backgroundColor: disabled ? '#aaa' : 'white',
         },
       ]}>
       {loading ? (

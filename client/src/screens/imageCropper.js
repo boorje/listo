@@ -1,22 +1,21 @@
-import React, {PureComponent, useState, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   PanResponder,
   StyleSheet,
   Dimensions,
-  TouchableHighlight,
   View,
   Image,
   LayoutAnimation,
   Animated,
   TouchableOpacity,
 } from 'react-native';
-import {RNCamera} from 'react-native-camera';
+
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ImageEditor from '@react-native-community/image-editor';
 import animations from '../styles/animations';
+import ExitButton from '../components/exitButton';
+import PropTypes from 'prop-types';
 import * as colors from '../styles/colors';
-import {a} from '@aws-amplify/ui';
-import {validateYupSchema} from 'formik';
 
 const exImageH =
   'https://images.unsplash.com/photo-1539108842340-ae72fbf39857?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=700&q=80';
@@ -28,8 +27,7 @@ const handleSize = 30;
 
 function ImageCropper(props) {
   // STATES
-  const [cameraActive, setCamera] = useState(props.cameraActive || false);
-  const [capture, setCapture] = useState(props.imageUri || exImageH);
+  const [capture, setCapture] = useState(props.navigation.getParam('uri', {}));
   const [cropped, setCropped] = useState(false);
   const [cropActive, setCropActive] = useState(false);
 
@@ -51,9 +49,11 @@ function ImageCropper(props) {
     new ValueXY({x: 0, y: 0}),
   );
 
-  const limit = Animated.subtract(topRightPos.x, topLeftPos.x);
-
   // USE EFFECTS
+  useEffect(() => {
+    setCapture(props.navigation.getParam('uri', {}));
+  }, [props.navigation]);
+
   useEffect(() => {
     Image.getSize(
       capture,
@@ -90,7 +90,7 @@ function ImageCropper(props) {
 
   function resetImageAndPositions() {
     setCropActive(false);
-    setCapture(props.imageUri || exImageH);
+    setCapture(props.navigation.getParam('uri', {}));
     cropHeight.setValue(initialHeight);
     cropWidth.setValue(initialWidth);
     topLeftPos.setValue({x: 0, y: 0});
@@ -588,21 +588,6 @@ function ImageCropper(props) {
     }
   }
 
-  async function takePhoto() {
-    const cameraOptions = {base64: true};
-
-    try {
-      if (!this.camera) {
-        throw 'Could not take a photo. Please try again';
-      }
-      const response = await this.camera.takePictureAsync(cameraOptions);
-      setCapture(response.uri);
-      setCamera(false);
-    } catch (error) {
-      throw 'Could not take a photo. Please try again';
-    }
-  }
-
   function getSize() {
     return new Promise((resolve, reject) => {
       Image.getSize(
@@ -653,14 +638,16 @@ function ImageCropper(props) {
           name === 'crop'
             ? cropActive
               ? cropImage()
-              : props.useImage()
+              : props.navigation.navigate('ItemSelection')
             : null;
-          name === 'arrow-forward' && props.useImage();
+          if (name === 'arrow-forward')
+            props.navigation.navigate('ItemSelection');
           if (name === 'refresh') {
             LayoutAnimation.configureNext(animations.default);
             setCropped(false);
             resetImageAndPositions();
           }
+          if (name === 'camera-alt') props.navigation.goBack();
         }}>
         <Icon size={30} color={'white'} name={name} />
       </TouchableOpacity>
@@ -669,17 +656,8 @@ function ImageCropper(props) {
 
   return (
     <View style={styles.container}>
-      {cameraActive ? (
-        <TouchableHighlight style={styles.camera} onPress={() => takePhoto()}>
-          <RNCamera
-            style={styles.camera}
-            ref={ref => {
-              this.camera = ref;
-            }}
-            captureAudio={false}
-          />
-        </TouchableHighlight>
-      ) : initialHeight ? (
+      <ExitButton exit={() => props.navigation.pop(2)} color={'white'} />
+      {initialHeight ? (
         <View
           style={{
             justifyContent: 'center',
@@ -713,6 +691,7 @@ function ImageCropper(props) {
               alignItems: 'center',
               marginTop: 20,
             }}>
+            {!cropped && icon('camera-alt')}
             {!cropped
               ? !cropActive
                 ? icon('arrow-forward')

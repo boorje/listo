@@ -197,10 +197,13 @@ export default function ListSettingsModal(props) {
 }
 
 const styles = StyleSheet.create({
-  item: {},
   textAndIcon: {
-    flexDirection: 'row',
+    position: 'absolute',
+    bottom: '-50%',
+    height: '100%',
+    width: '100%',
     alignItems: 'center',
+    flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: '5%',
   },

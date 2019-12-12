@@ -4,6 +4,10 @@
 <dict>
   <key>NSCameraUsageDescription</key>
   <string>Your own description of the purpose</string>
+  <key>NSPhotoLibraryUsageDescription</key>
+  <string>Your own description of the purpose</string>
+  <key>NSPhotoLibraryAddUsageDescription</key>
+  <string>Your own description of the purpose</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
