@@ -3,7 +3,7 @@ import {
   PanResponder,
   StyleSheet,
   Dimensions,
-  TouchableHighlight,
+  Text,
   View,
   Image,
   LayoutAnimation,
@@ -14,6 +14,7 @@ import {RNCamera} from 'react-native-camera';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ImageEditor from '@react-native-community/image-editor';
 import animations from '../styles/animations';
+import textStyles from '../styles/textStyles';
 import * as colors from '../styles/colors';
 import {a} from '@aws-amplify/ui';
 import {validateYupSchema} from 'formik';
@@ -28,8 +29,7 @@ const handleSize = 30;
 
 function ImageCropper(props) {
   // STATES
-  const [cameraActive, setCamera] = useState(props.cameraActive || false);
-  const [capture, setCapture] = useState(props.imageUri || exImageH);
+  const [capture, setCapture] = useState(props.navigation.getParam('uri', {}));
   const [cropped, setCropped] = useState(false);
   const [cropActive, setCropActive] = useState(false);
 
@@ -51,9 +51,11 @@ function ImageCropper(props) {
     new ValueXY({x: 0, y: 0}),
   );
 
-  const limit = Animated.subtract(topRightPos.x, topLeftPos.x);
-
   // USE EFFECTS
+  useEffect(() => {
+    setCapture(props.navigation.getParam('uri', {}));
+  }, [props.navigation]);
+
   useEffect(() => {
     Image.getSize(
       capture,
@@ -90,7 +92,7 @@ function ImageCropper(props) {
 
   function resetImageAndPositions() {
     setCropActive(false);
-    setCapture(props.imageUri || exImageH);
+    setCapture(props.navigation.getParam('uri', {}));
     cropHeight.setValue(initialHeight);
     cropWidth.setValue(initialWidth);
     topLeftPos.setValue({x: 0, y: 0});
@@ -588,21 +590,6 @@ function ImageCropper(props) {
     }
   }
 
-  async function takePhoto() {
-    const cameraOptions = {base64: true};
-
-    try {
-      if (!this.camera) {
-        throw 'Could not take a photo. Please try again';
-      }
-      const response = await this.camera.takePictureAsync(cameraOptions);
-      setCapture(response.uri);
-      setCamera(false);
-    } catch (error) {
-      throw 'Could not take a photo. Please try again';
-    }
-  }
-
   function getSize() {
     return new Promise((resolve, reject) => {
       Image.getSize(
@@ -661,6 +648,7 @@ function ImageCropper(props) {
             setCropped(false);
             resetImageAndPositions();
           }
+          if (name === 'camera') props.navigation.goBack();
         }}>
         <Icon size={30} color={'white'} name={name} />
       </TouchableOpacity>
@@ -669,17 +657,7 @@ function ImageCropper(props) {
 
   return (
     <View style={styles.container}>
-      {cameraActive ? (
-        <TouchableHighlight style={styles.camera} onPress={() => takePhoto()}>
-          <RNCamera
-            style={styles.camera}
-            ref={ref => {
-              this.camera = ref;
-            }}
-            captureAudio={false}
-          />
-        </TouchableHighlight>
-      ) : initialHeight ? (
+      {initialHeight ? (
         <View
           style={{
             justifyContent: 'center',
@@ -713,6 +691,7 @@ function ImageCropper(props) {
               alignItems: 'center',
               marginTop: 20,
             }}>
+            {!cropped && icon('camera')}
             {!cropped
               ? !cropActive
                 ? icon('arrow-forward')

@@ -55,8 +55,7 @@ export default class AddGroceryFooter extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        {/* {!this.props.addItemOpen && (
-          // TODO: Add when applicable
+        {!this.props.addItemOpen && (
           <View style={styles.sideIconsView}>
             <Icon
               style={styles.sideIconStyle}
@@ -70,10 +69,10 @@ export default class AddGroceryFooter extends React.Component {
               size={40}
               name={'camera'}
               color={'black'}
-              onPress={() => {}}
+              onPress={() => this.props.navigation.navigate('Camera')}
             />
           </View>
-        )} */}
+        )}
         <Animated.View
           style={[
             styles.addIcon,
