@@ -91,6 +91,7 @@ module.exports.createStore = () => {
     as: "listOwner"
   });
   // creates the model ListEditors with user and list as PK.
+  // default onDelete is CASCADE
   GroceryList.belongsToMany(User, {
     through: "listeditors",
     foreignKey: "listid",

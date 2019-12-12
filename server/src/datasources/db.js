@@ -76,7 +76,19 @@ class DB extends DataSource {
   async createGroceryList({ input }) {
     const { title, owner } = input;
     const res = await this.store.GroceryList.create({ title, owner });
-    return res && res.dataValues ? res.dataValues : null;
+    return res ? res.get({ plain: true }) : null;
+  }
+
+  async createListEditor({ input }) {
+    const { listid, email } = input;
+    const user = await this.store.User.findOne({
+      where: { email },
+      attributes: ["id"]
+    });
+    if (!user) return null; // TODO: error message should be that the user doesn't exist
+    const userid = user.get({ plain: true }).id;
+    const editor = await this.store.ListEditor.create({ listid, userid });
+    return editor ? { email } : null;
   }
 
   async createGroceryItem({ input }) {
@@ -95,6 +107,7 @@ class DB extends DataSource {
   }
 
   // -- UPDATE --
+
   async updateGroceryItem({ input }) {
     const res = await this.store.GroceryItem.update(input, {
       where: { id: input.id },

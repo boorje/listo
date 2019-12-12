@@ -31,6 +31,16 @@ module.exports = {
       };
       return response;
     }),
+    createListEditor: authenticated(async (_, { input }, { dataSources }) => {
+      const editor = await dataSources.db.createListEditor({ input });
+      const response = {
+        code: editor ? 200 : 500,
+        success: editor ? true : false,
+        message: "Successfully created the editor",
+        editor
+      };
+      return response;
+    }),
     createGroceryItem: authenticated(async (_, { input }, { dataSources }) => {
       const item = await dataSources.db.createGroceryItem({ input });
       const response = {

@@ -45,7 +45,7 @@ const server = new ApolloServer({
         const userId = decodedToken.username;
         return { user: { id: userId } };
       } catch (e) {
-        //throw new AuthenticationError(e);
+        //TODO: throw new AuthenticationError(e);
       }
     }
   }
