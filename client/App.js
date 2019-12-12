@@ -22,7 +22,7 @@ IoniconsIcon.loadFont();
 
 const MainStack = createStackNavigator(
   {
-    Home: ItemSelectionScreen,
+    Home: ListScreen,
     List: ListScreen,
     Settings: SettingsScreen,
     Camera: CameraScreen,
@@ -50,7 +50,7 @@ export default createAppContainer(
       Auth: AuthStack,
     },
     {
-      initialRouteName: 'Authenticator',
+      initialRouteName: 'App',
     },
   ),
 );

@@ -6,6 +6,7 @@ import {
   View,
   Animated,
   LayoutAnimation,
+  Easing,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
@@ -63,6 +64,7 @@ class Swipeout extends React.Component {
           Animated.timing(this.xWidth, {
             toValue: this.state.viewWidth,
             duration: 300,
+            easing: Easing.elastic(0.5),
           }),
           Animated.timing(this.xWidth2, {
             toValue: 0,

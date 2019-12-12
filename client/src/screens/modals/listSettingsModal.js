@@ -29,7 +29,7 @@ export default class ListSettingsModal extends React.Component {
   state = {
     groceryList: this.props.groceryList || {},
     user: this.props.user || {},
-    editors: [],
+    editors: [{id: '1', email: 'adam@olivegren.se'}],
     apiError: '',
     loggedInUserIsListOwner: false,
     fullyOpen: false,
@@ -283,10 +283,13 @@ class UserItem extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  item: {},
   textAndIcon: {
-    flexDirection: 'row',
+    position: 'absolute',
+    bottom: '-50%',
+    height: '100%',
+    width: '100%',
     alignItems: 'center',
+    flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: '5%',
   },
