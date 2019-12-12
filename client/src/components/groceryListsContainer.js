@@ -9,6 +9,7 @@ import {
 import {KeyboardAwareFlatList} from 'react-native-keyboard-aware-scroll-view';
 import PropTypes from 'prop-types';
 import {useQuery, useMutation} from '@apollo/react-hooks';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 // components
 import Swipeout from '../components/swipeout';
 import textStyles from '../styles/textStyles';
@@ -40,9 +41,10 @@ function GroceryListItem(props) {
           onPress={() => props.goToGroceryList(props.item)}>
           <View style={GroceryListItemStyles.container2}>
             <Text style={textStyles.default}>{props.item.title}</Text>
-            {/* {this.props.isShared && (
-                    <Icon size={30} name={'people'} color={'black'} />
-                  )} */}
+            {props.item.isOwner && (
+              <Icon size={30} name={'pan-tool'} color={'black'} />
+            )}
+            <Text>{props.item.itemCount}</Text>
           </View>
         </TouchableWithoutFeedback>
       </Swipeout>
@@ -90,7 +92,6 @@ export default function GroceryListsContainerHook(props) {
       renderItem={({item}) => (
         <GroceryListItem
           user={props.user}
-          //isShared={list.owner === props.user.id ? true : false} // TODO: When possible, adjust
           item={item}
           goToGroceryList={props.goToGroceryList}
           numberOfItems={props.numberOfItems}

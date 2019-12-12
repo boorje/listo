@@ -10,11 +10,7 @@ export const GET_USERS_LISTS = gql`
         email
       }
       isOwner
-      # is items necessary here?
-      items {
-        id
-        name
-      }
+      itemCount
     }
   }
 `;
