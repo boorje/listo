@@ -87,6 +87,7 @@ export const UPDATE_LIST_TITLE = gql`
       code
       success
       list {
+        id
         title
       }
     }
