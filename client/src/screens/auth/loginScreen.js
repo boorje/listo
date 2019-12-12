@@ -54,34 +54,6 @@ class LoginScreen extends React.Component {
     }
   };
 
-  openLogin = () => {
-    this.setState({formOpen: true});
-    Animated.sequence([
-      Animated.timing(this.backgroundY, {
-        toValue: -height / 1.2,
-        duration: 500,
-      }),
-      Animated.timing(this.loginFormOpacity, {
-        toValue: 1,
-        duration: 800,
-      }),
-    ]).start();
-  };
-
-  closeLogin = () => {
-    this.setState({formOpen: false});
-    Animated.sequence([
-      Animated.timing(this.loginFormOpacity, {
-        toValue: 0,
-        duration: 100,
-      }),
-      Animated.timing(this.backgroundY, {
-        toValue: 0,
-        duration: 400,
-      }),
-    ]).start();
-  };
-
   toggleMessage = () => {
     this.setState(prevstate => ({
       messageOpen: prevstate.messageOpen ? false : true,

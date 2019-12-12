@@ -56,15 +56,16 @@ export default class AddGroceryFooter extends React.Component {
 
   addImage = () => {
     const options = {
-      title: 'Select Avatar',
-      customButtons: [{name: 'fb', title: 'Choose Photo from Facebook'}],
       storageOptions: {
         skipBackup: true,
         path: 'images',
       },
     };
+
     ImagePicker.launchImageLibrary(options, response => {
-      this.props.navigation.navigate('ImageCropper', {uri: response.uri});
+      if (!response.didCancel) {
+        this.props.navigation.navigate('ImageCropper', {uri: response.uri});
+      }
     });
   };
 
@@ -75,7 +76,7 @@ export default class AddGroceryFooter extends React.Component {
           <View style={styles.sideIconsView}>
             <Ionicons
               style={styles.sideIconStyle}
-              size={40}
+              size={45}
               name={'ios-camera'}
               color={colors.primaryColor}
               onPress={() => this.props.navigation.navigate('Camera')}
@@ -161,6 +162,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: '10%',
+    paddingBottom: '20%',
   },
 
   addIcon: {

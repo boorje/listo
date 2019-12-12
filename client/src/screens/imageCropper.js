@@ -640,6 +640,8 @@ function ImageCropper(props) {
               ? cropImage()
               : props.navigation.navigate('ItemSelection')
             : null;
+          if (name === 'arrow-forward')
+            props.navigation.navigate('ItemSelection');
           if (name === 'refresh') {
             LayoutAnimation.configureNext(animations.default);
             setCropped(false);
