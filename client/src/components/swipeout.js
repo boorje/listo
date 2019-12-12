@@ -5,11 +5,12 @@ import {
   PanResponder,
   View,
   Animated,
-  Vibration,
+  LayoutAnimation,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
+import animations from '../styles/animations';
 
 const {Value} = Animated;
 const options = {
@@ -19,8 +20,10 @@ const options = {
 class Swipeout extends React.Component {
   constructor(props) {
     super(props);
+    this.height = this.props.swipeOutHeight;
     this.xWidth = new Value(this.state.viewWidth);
     this.xWidth2 = new Value(0);
+    this.iconMargin = Animated.multiply(this.xWidth2, 0.7);
     this._panResponder = PanResponder.create({
       onMoveShouldSetPanResponder: (evt, gestureState) => {
         return (
@@ -30,24 +33,25 @@ class Swipeout extends React.Component {
       },
 
       onPanResponderMove: (evt, gestureState) => {
-        this.props.disableScroll();
-        this.setState({swipeActive: true});
         if (
           gestureState.dx < 0 &&
           Math.abs(gestureState.dx) < this.state.initialWidth / 2
         ) {
+          this.props.disableScroll();
+          this.setState({swipeActive: true});
           this.xWidth.setValue(
             this.getRatio(gestureState.dx) * this.state.viewWidth,
           );
           this.xWidth2.setValue(
             (1 - this.getRatio(gestureState.dx)) * this.state.viewWidth,
           );
+
           this.setState({trashActive: false});
-        }
-        if (Math.abs(gestureState.dx) >= this.state.viewWidth / 3) {
-          if (!this.state.trashActive)
-            ReactNativeHapticFeedback.trigger('impactHeavy', options);
-          this.setState({trashActive: true});
+          if (Math.abs(gestureState.dx) >= this.state.viewWidth / 3) {
+            if (!this.state.trashActive)
+              ReactNativeHapticFeedback.trigger('impactHeavy', options);
+            this.setState({trashActive: true});
+          }
         }
       },
       onPanResponderRelease: (evt, gestureState) => {
@@ -118,10 +122,10 @@ class Swipeout extends React.Component {
         <Animated.View
           style={[
             {
+              height: this.props.swipeOutHeight,
               width: this.state.swipeActive
                 ? this.xWidth
                 : this.state.viewWidth,
-              paddingVertical: '3%',
             },
           ]}
           {...this._panResponder.panHandlers}>
@@ -131,16 +135,12 @@ class Swipeout extends React.Component {
           style={[
             styles.deleteView,
             {
+              height: this.props.swipeOutHeight,
               width: this.xWidth2,
               backgroundColor: trashActive ? 'red' : 'gray',
             },
           ]}>
-          <IoniconsIcon
-            style={styles.iconStyle}
-            size={40}
-            color={'white'}
-            name={this.state.swipeIcon}
-          />
+          <IoniconsIcon size={40} color={'white'} name={this.state.swipeIcon} />
         </Animated.View>
       </View>
     );
@@ -158,10 +158,6 @@ const styles = StyleSheet.create({
   deleteView: {
     justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: '2%',
-  },
-  iconStyle: {
-    //position: 'absolute',
   },
 });
 

@@ -12,6 +12,7 @@ import AuthScreen from './src/screens/auth/authScreen';
 import LoginScreen from './src/screens/auth/loginScreen';
 import SignupScreen from './src/screens/auth/signupScreen';
 import VerifyScreen from './src/screens/auth/verifyScreen';
+import ImageCropper from './src/screens/imageCropper';
 
 Icon.loadFont();
 IoniconsIcon.loadFont();
