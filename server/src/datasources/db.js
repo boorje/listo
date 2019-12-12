@@ -41,8 +41,10 @@ class DB extends DataSource {
   }
 
   async getListEditors({ listid }) {
-    const list = await this.store.GroceryList.findByPk(listid, {
+    const listItem = await this.store.GroceryList.findByPk(listid, {
+      attributes: [],
       include: [
+        { as: "listOwner", model: this.store.User },
         {
           as: "listEditors",
           model: this.store.User,
@@ -50,7 +52,10 @@ class DB extends DataSource {
         }
       ]
     });
-    return list ? list.get({ plain: true }).listEditors : null;
+    const list = listItem.get({ plain: true });
+    //? Append listOwner: true?
+    list.listEditors.push(list.listOwner);
+    return list ? list.listEditors : null;
   }
 
   async findOrCreateUser({ id, attributes }) {
@@ -79,8 +84,7 @@ class DB extends DataSource {
     return res ? res.get({ plain: true }) : null;
   }
 
-  async createListEditor({ input }) {
-    const { listid, email } = input;
+  async createListEditor({ listid, email }) {
     const user = await this.store.User.findOne({
       where: { email },
       attributes: ["id"]
@@ -121,6 +125,18 @@ class DB extends DataSource {
   async deleteGroceryList({ id }) {
     const res = await this.store.GroceryList.destroy({ where: { id } });
     return res && res === 1 ? { id } : null;
+  }
+
+  async deleteListEditor({ listid, email }) {
+    const user = await this.store.User.findOne({
+      where: { email },
+      attributes: ["id"]
+    });
+    const userid = user.get({ plain: true }).id;
+    const deleted = await this.store.ListEditor.destroy({
+      where: { listid, userid }
+    });
+    return deleted === 1 ? { email } : null;
   }
 
   async deleteGroceryListItem({ id }) {

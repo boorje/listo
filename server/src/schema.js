@@ -49,6 +49,9 @@ const typeDefs = gql`
       input: UpdateGroceryItemInput!
     ): UpdateGroceryItemMutationResponse!
     deleteGroceryList(id: ID!): DeleteGroceryListMutationResponse!
+    deleteListEditor(
+      input: DeleteListEditorInput!
+    ): DeleteListEdtiorMutationResponse!
     deleteGroceryListItem(id: ID!): DeleteGroceryListItemMutationResponse!
     signup(input: CreateUserInput!): CreateUserMutationResponse!
     signin(input: CreateUserInput!): CreateUserMutationResponse!
@@ -83,6 +86,11 @@ const typeDefs = gql`
     quantity: Int
     unit: String
     list: ID
+  }
+
+  input DeleteListEditorInput {
+    listid: ID!
+    email: String!
   }
 
   input CreateUserInput {
@@ -134,6 +142,13 @@ const typeDefs = gql`
     success: Boolean!
     message: String!
     list: GroceryList
+  }
+
+  type DeleteListEdtiorMutationResponse implements MutationResponse {
+    code: String!
+    success: Boolean!
+    message: String!
+    editor: User
   }
 
   type DeleteGroceryListItemMutationResponse implements MutationResponse {

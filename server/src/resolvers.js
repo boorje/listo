@@ -32,7 +32,7 @@ module.exports = {
       return response;
     }),
     createListEditor: authenticated(async (_, { input }, { dataSources }) => {
-      const editor = await dataSources.db.createListEditor({ input });
+      const editor = await dataSources.db.createListEditor(input);
       const response = {
         code: editor ? 200 : 500,
         success: editor ? true : false,
@@ -68,6 +68,16 @@ module.exports = {
         success: res ? true : false,
         message: "Successfully deleted the item",
         list: res
+      };
+      return response;
+    }),
+    deleteListEditor: authenticated(async (_, { input }, { dataSources }) => {
+      const editor = await dataSources.db.deleteListEditor(input);
+      const response = {
+        code: editor ? 200 : 500,
+        success: editor ? true : false,
+        message: "Successfully deleted the item",
+        editor
       };
       return response;
     }),
