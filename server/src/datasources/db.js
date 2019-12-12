@@ -1,4 +1,5 @@
 const { DataSource } = require("apollo-datasource");
+const Sequelize = require("sequelize");
 
 class DB extends DataSource {
   constructor({ store }) {
@@ -13,12 +14,14 @@ class DB extends DataSource {
   // -- READ --
   async getUserGroceryLists({ owner }) {
     const lists = await this.store.GroceryList.findAll({
+      where: {
+        [Sequelize.Op.or]: [{ owner }, { "$listEditors.id$": owner }]
+      },
       include: [
         {
           as: "listEditors",
           model: this.store.User,
-          through: { attributes: [] },
-          where: { id: owner }
+          through: { attributes: [] }
         },
         {
           model: this.store.User,
@@ -33,6 +36,7 @@ class DB extends DataSource {
     return lists
       ? lists.map(list => {
           list = list.get({ plain: true });
+          console.log(list);
           list.isOwner = list.owner === owner;
           list.owner = list.listOwner;
           return list;
