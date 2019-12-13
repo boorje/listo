@@ -1,9 +1,11 @@
 import React, {useState, useEffect} from 'react';
 import {View, Animated, StyleSheet} from 'react-native';
-import * as colors from '../styles/colors';
+// components
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
 import LoadingComponent from '../components/loadingComponent';
+// styles
+import * as colors from '../styles/colors';
 
 export default function LoadingScreen(props) {
   return (
@@ -20,5 +22,4 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-evenly',
   },
-  icons: {},
 });

@@ -33,6 +33,15 @@ const textStyles = StyleSheet.create({
     color: 'rgba(52, 52, 52, 1)',
     padding: 5,
   },
+  warning: {
+    fontSize: 20,
+    fontFamily: 'Avenir Next',
+    color: 'rgba(52, 52, 52, 1)',
+    padding: 5,
+    color: 'white',
+    textAlign: 'center',
+    marginTop: '10%',
+  },
   groceryDetails: {
     fontSize: 15,
     fontFamily: 'Avenir Next',

@@ -1,80 +1,78 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, StyleSheet, Text, Dimensions} from 'react-native';
+
+// api
+import {Auth} from 'aws-amplify';
+// components
+import PrimaryButton from '../components/buttons/primaryButton';
 import Svg, {ClipPath, Circle, Rect} from 'react-native-svg';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
-import {Auth} from 'aws-amplify';
-//components
-import PrimaryButton from '../components/buttons/primaryButton';
-//styles
+// styles
 import * as colors from '../styles/colors';
 import textStyles from '../styles/textStyles';
 
 const {height, width} = Dimensions.get('window');
 
-class SettingsScreen extends React.Component {
-  state = {
-    user: {},
-  };
+export default function SettingsScreen(props) {
+  const [user, setUser] = useState({});
 
-  componentDidMount = async () => {
-    try {
-      const user = await this.props.navigation.getParam('user', null);
-      this.setState({user});
-    } catch (error) {
-      console.log(error);
+  useEffect(() => {
+    async function defineUser() {
+      try {
+        await setUser(props.navigation.getParam('user', null));
+      } catch (error) {
+        console.log(error);
+      }
     }
-  };
+    defineUser();
+  }, []);
 
-  _logout = async () => {
+  async function _logout() {
     try {
       await Auth.signOut();
-      this.props.navigation.navigate('Authenticator');
+      props.navigation.navigate('Authenticator');
     } catch (error) {
-      this.props.navigation.navigate('Authenticator');
+      props.navigation.navigate('Authenticator');
     }
-  };
-
-  render() {
-    const {user} = this.state;
-    return (
-      <View style={styles.container}>
-        <IoniconsIcon
-          style={styles.backIcon}
-          size={50}
-          name={'ios-arrow-round-back'}
-          color={'white'}
-          onPress={() => this.props.navigation.goBack()}
-        />
-        <View style={styles.emailText}>
-          {Object.entries(user).length > 0 && user.constructor === Object && (
-            <Text style={textStyles.listTitle}>{user.email}</Text>
-          )}
-        </View>
-
-        <Svg height={height * 0.4} width={width * 1.5}>
-          <ClipPath id="clip">
-            <Circle r={height * 0.4} cx={width / 2} />
-          </ClipPath>
-          <Rect
-            width={width}
-            height={height * 1.1}
-            fill={colors.primaryColor}
-            clipPath="url(#clip)"
-          />
-        </Svg>
-        <View style={styles.profileIcon}>
-          <Icon size={120} name={'person'} color={colors.primaryColor} />
-        </View>
-
-        <View style={styles.logoutButton}>
-          <PrimaryButton title="Sign out" onPress={() => this._logout()} />
-        </View>
-      </View>
-    );
   }
+
+  return (
+    <View style={styles.container}>
+      <IoniconsIcon
+        style={styles.backIcon}
+        size={50}
+        name={'ios-arrow-round-back'}
+        color={'white'}
+        onPress={() => props.navigation.goBack()}
+      />
+      <View style={styles.emailText}>
+        {Object.entries(user).length > 0 && user.constructor === Object && (
+          <Text style={textStyles.listTitle}>{user.email}</Text>
+        )}
+      </View>
+
+      <Svg height={height * 0.4} width={width * 1.5}>
+        <ClipPath id="clip">
+          <Circle r={height * 0.4} cx={width / 2} />
+        </ClipPath>
+        <Rect
+          width={width}
+          height={height * 1.1}
+          fill={colors.primaryColor}
+          clipPath="url(#clip)"
+        />
+      </Svg>
+      <View style={styles.profileIcon}>
+        <Icon size={120} name={'person'} color={colors.primaryColor} />
+      </View>
+
+      <View style={styles.logoutButton}>
+        <PrimaryButton title="Sign out" onPress={() => _logout()} />
+      </View>
+    </View>
+  );
 }
-export default SettingsScreen;
 
 const styles = StyleSheet.create({
   container: {

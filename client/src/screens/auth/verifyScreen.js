@@ -11,17 +11,12 @@ import * as colors from '../../styles/colors';
 // -- api --
 import * as mutations from '../../api/mutations';
 
-// // TODO: Mutation signin
-// const res = await signin({variables: {email}});
-// console.log(res);
-
 export default function VerifyScreen(props) {
   const [error, setError] = useState('');
   const [cognitoUser] = useState(
     props.navigation.getParam('cognitoUser', null),
   );
   const [loading, toggleLoading] = useState(false);
-  const [messageOpen, toggleMessage] = useState(false);
   const client = useApolloClient();
 
   const [signin, {loading: signinLoading, error: signError}] = useMutation(
@@ -84,12 +79,11 @@ export default function VerifyScreen(props) {
 
   return (
     <SafeAreaView style={styles.container}>
-      {error.length > 0 && messageOpen && (
-        <Message
-          messageOpen={() => toggleMessage(!messageOpen)}
-          message={error}
-        />
-      )}
+      <Message
+        messageOpen={error.length > 0}
+        message={error}
+        closeMessage={() => setError('')}
+      />
       {/* <Logo /> */}
       <CodeForm
         handleSubmit={confirmSignin}
@@ -105,94 +99,6 @@ export default function VerifyScreen(props) {
       )}
     </SafeAreaView>
   );
-}
-
-class VerifyScreen2 extends React.Component {
-  state = {
-    verificationError: '',
-    cognitoUser: this.props.navigation.getParam('cognitoUser', null),
-    loading: false,
-    messageOpen: false,
-  };
-
-  _validateCode = code => {
-    return new Promise((resolve, reject) => {
-      if (code === null) {
-        reject({
-          code: 'ValidationError',
-        });
-      } else {
-        resolve();
-      }
-    });
-  };
-
-  confirmSignin = async ({code}) => {
-    try {
-      this.setState({loading: true});
-      await this._validateCode(code);
-      const cognitoUser = await Auth.sendCustomChallengeAnswer(
-        this.state.cognitoUser,
-        code,
-      );
-      await Auth.currentSession(); // checks if the user has entered the correct code
-      // Todo: findorcreate(user) in DB in BE before moving forward
-      this.props.navigation.navigate('Authenticator');
-      this.setState({loading: false});
-    } catch (error) {
-      this.setState({loading: false});
-      switch (error.code) {
-        case 'ValidationError':
-          this.setState({
-            sendEmailError: 'Please provide a valid verification code.',
-          });
-          break;
-        case 'CodeMismatchException':
-          this.setState({
-            verificationError: 'The code is incorrect. Please try again.',
-          });
-          break;
-        default:
-          this.setState({
-            verificationError: 'Code not verify the code. Please try again.',
-          });
-          break;
-      }
-    }
-  };
-
-  toggleMessage = () => {
-    this.setState(prevstate => ({
-      messageOpen: prevstate.messageOpen ? false : true,
-    }));
-  };
-
-  render() {
-    const {loading, verificationError, user, messageOpen} = this.state;
-    return (
-      <SafeAreaView style={styles.container}>
-        {verificationError.length > 0 && messageOpen && (
-          <Message
-            messageOpen={() => this.toggleMessage()}
-            message={verificationError}
-          />
-        )}
-        {/* <Logo /> */}
-        <CodeForm
-          handleSubmit={this.confirmSignin}
-          loading={loading}
-          submitTitle="VERIFY CODE"
-        />
-
-        {user && user.username && (
-          <Text style={styles.textInfo}>
-            A verification code has been sent to{' '}
-            <Text style={styles.email}>{user.username}</Text>.
-          </Text>
-        )}
-      </SafeAreaView>
-    );
-  }
 }
 
 const styles = StyleSheet.create({

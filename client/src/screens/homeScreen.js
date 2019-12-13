@@ -15,14 +15,14 @@ import * as colors from '../styles/colors';
 
 export default function HomeScreen(props) {
   const [modalOpen, toggleModal] = useState(false);
-  const [messageOpen, toggleMessage] = useState(false);
   const [apiError, setApiError] = useState('');
   const {
     data: {user},
     loading: loadingUser,
     error: userError,
   } = useQuery(queries.GET_USER);
-  if (userError) props.navigation.navigate('Authenticator');
+
+  if (userError) props.navigation.navigate('Authenticator'); // ! ADJUST
   const [newList, {loading: mutationLoading, error}] = useMutation(
     mutations.CREATE_GROCERY_LIST,
     {
@@ -45,7 +45,6 @@ export default function HomeScreen(props) {
       onError(error) {
         console.log(error);
         setApiError('API Error');
-        toggleMessage(true);
       },
     },
   );
@@ -67,12 +66,11 @@ export default function HomeScreen(props) {
       <HomeScreenBackground
         openSettings={() => props.navigation.navigate('Settings', {user: user})}
       />
-      {apiError.length > 0 && messageOpen && (
-        <Message
-          messageOpen={() => toggleMessage(messageOpen ? false : true)}
-          message={apiError}
-        />
-      )}
+      <Message
+        messageOpen={apiError.length > 0}
+        message={apiError}
+        closeMessage={() => setApiError('')}
+      />
       <SafeAreaView style={{flex: 5, marginTop: '3%'}}>
         <GroceryListsContainer
           user={user}
