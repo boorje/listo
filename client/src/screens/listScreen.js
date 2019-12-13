@@ -17,7 +17,7 @@ export default function ListScreen(props) {
   const [list] = useState(props.navigation.getParam('list', {}));
   const [historyOpen, toggleHistory] = useState(false);
   const [listSettingsOpen, toggleSettings] = useState(false);
-  const [apiError, setApiError] = useState('hej');
+  const [apiError, setApiError] = useState('');
   const [addItemOpen, toggleAddItem] = useState(false);
 
   // useEffect(() => {
