@@ -63,6 +63,7 @@ export default class AddGroceryFooter extends React.Component {
     };
 
     ImagePicker.launchImageLibrary(options, response => {
+      // const source = { uri: 'data:image/jpeg;base64,' + response.data };
       if (!response.didCancel) {
         this.props.navigation.navigate('ImageCropper', {uri: response.uri});
       }

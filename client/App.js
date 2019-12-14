@@ -15,7 +15,7 @@ import VerifyScreen from './src/screens/auth/verifyScreen';
 import ImageCropperScreen from './src/screens/imageCropper';
 import CameraScreen from './src/screens/cameraScreen';
 import ItemSelectionScreen from './src/screens/itemSelection';
-import LoadingScreen from './src/screens/loadingScreen';
+import DetectTextScreen from './src/screens/detectTextScreen';
 
 Icon.loadFont();
 IoniconsIcon.loadFont();
@@ -28,7 +28,7 @@ const MainStack = createStackNavigator(
     Camera: CameraScreen,
     ImageCropper: ImageCropperScreen,
     ItemSelection: ItemSelectionScreen,
-    Loading: LoadingScreen,
+    DetectText: DetectTextScreen,
   },
   {headerMode: 'none'},
 );
@@ -50,7 +50,7 @@ export default createAppContainer(
       Auth: AuthStack,
     },
     {
-      initialRouteName: 'App',
+      initialRouteName: 'Authenticator',
     },
   ),
 );

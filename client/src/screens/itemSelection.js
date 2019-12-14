@@ -79,32 +79,9 @@ function GroceryItem(props) {
 }
 
 export default function ItemSelection(props) {
-  const [groceries, setGroceries] = useState([
-    {
-      id: '1',
-      name: 'Cola',
-      quantity: 2,
-      unit: 'kg',
-    },
-    {
-      id: '2',
-      name: 'Fanta',
-      quantity: 2,
-      unit: 'kg',
-    },
-    {
-      id: '3',
-      name: 'Sprite',
-      quantity: 2,
-      unit: 'kg',
-    },
-    {
-      id: '4',
-      name: '7Up',
-      quantity: 2,
-      unit: 'kg',
-    },
-  ]);
+  const [groceries, setGroceries] = useState(
+    props.navigation.getParam('detectedItems', null),
+  );
 
   function addButton() {
     return (
@@ -114,16 +91,16 @@ export default function ItemSelection(props) {
     );
   }
 
-  return (
+  return groceries ? (
     <View style={styles.container}>
       <ExitButton exit={() => props.navigation.pop(3)} color={'white'} />
-      <ScreenHeader
+      {/* <ScreenHeader
         leftIconPress={props.navigation.goBack}
         rightIcon1Press={() => {}}
         rightIcon2Press={() => {}}
-        headerTitle={'Results'}
+        headerTitle="Results"
         leftIcon={'ios-arrow-round-back'}
-      />
+      /> */}
       <KeyboardAwareFlatList
         style={{marginTop: 10}}
         scrollEnabled={true}
@@ -142,6 +119,10 @@ export default function ItemSelection(props) {
         keyboardShouldPersistTaps="always"
         ListFooterComponent={addButton}
       />
+    </View>
+  ) : (
+    <View>
+      <Text>Loading..</Text>
     </View>
   );
 }

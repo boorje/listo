@@ -17,11 +17,6 @@ import ExitButton from '../components/exitButton';
 import PropTypes from 'prop-types';
 import * as colors from '../styles/colors';
 
-const exImageH =
-  'https://images.unsplash.com/photo-1539108842340-ae72fbf39857?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=700&q=80';
-const exImageW =
-  'https://images.unsplash.com/photo-1512397739299-fe5a4327d192?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80';
-
 const {Value, ValueXY} = Animated;
 const handleSize = 30;
 
@@ -638,10 +633,10 @@ function ImageCropper(props) {
           name === 'crop'
             ? cropActive
               ? cropImage()
-              : props.navigation.navigate('ItemSelection')
+              : props.navigation.navigate('DetectText', {image: capture})
             : null;
           if (name === 'arrow-forward')
-            props.navigation.navigate('ItemSelection');
+            props.navigation.navigate('DetectText', {image: capture});
           if (name === 'refresh') {
             LayoutAnimation.configureNext(animations.default);
             setCropped(false);
