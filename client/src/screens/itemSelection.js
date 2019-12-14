@@ -1,5 +1,6 @@
 import React, {PureComponent, useState, useEffect} from 'react';
 import {
+  SafeAreaView,
   StyleSheet,
   View,
   Text,
@@ -79,20 +80,16 @@ function GroceryItem(props) {
 }
 
 export default function ItemSelection(props) {
-  const [groceries, setGroceries] = useState(
+  const [groceries] = useState(
     props.navigation.getParam('detectedItems', null),
   );
 
-  function addButton() {
-    return (
-      <View style={styles.button}>
-        <PrimaryButton title="Add" onPress={() => {}} />
-      </View>
-    );
+  function addItems(listOfItems) {
+    // TODO: add to ist
   }
 
   return groceries ? (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <ExitButton exit={() => props.navigation.pop(3)} color={'white'} />
       {/* <ScreenHeader
         leftIconPress={props.navigation.goBack}
@@ -117,13 +114,17 @@ export default function ItemSelection(props) {
         keyExtractor={item => item.id}
         ItemSeparatorComponent={() => <View style={styles.separator} />}
         keyboardShouldPersistTaps="always"
-        ListFooterComponent={addButton}
+        ListFooterComponent={() => (
+          <View style={styles.button}>
+            <PrimaryButton title="Add" onPress={() => {}} />
+          </View>
+        )}
       />
-    </View>
+    </SafeAreaView>
   ) : (
-    <View>
+    <SafeAreaView>
       <Text>Loading..</Text>
-    </View>
+    </SafeAreaView>
   );
 }
 

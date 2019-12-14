@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import {KeyboardAwareFlatList} from 'react-native-keyboard-aware-scroll-view';
 import PropTypes from 'prop-types';
-import {useQuery, useMutation} from '@apollo/react-hooks';
+import {useApolloClient, useQuery, useMutation} from '@apollo/react-hooks';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 // components
 import Swipeout from '../components/swipeout';
@@ -37,8 +37,7 @@ function GroceryListItem(props) {
         enableScroll={() => {}}
         viewWidth={viewWidth}
         delete={() => props.removeGroceryList(props.item.id)}>
-        <TouchableWithoutFeedback
-          onPress={() => props.goToGroceryList(props.item)}>
+        <TouchableWithoutFeedback onPress={() => props.goToList(props.item)}>
           <View style={GroceryListItemStyles.container2}>
             <Text style={textStyles.default}>{props.item.title}</Text>
             {props.item.isOwner && (
@@ -52,7 +51,17 @@ function GroceryListItem(props) {
   );
 }
 
-export default function GroceryListsContainerHook(props) {
+GroceryListItem.propTypes = {
+  item: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    isOwner: PropTypes.bool.isRequired,
+    itemCount: PropTypes.number.isRequired,
+  }).isRequired,
+};
+
+export default function GroceryListsContainer(props) {
+  const client = useApolloClient();
   const {data, loading, error, refetch, networkStatus} = useQuery(
     queries.GET_USERS_LISTS,
     {
@@ -85,16 +94,30 @@ export default function GroceryListsContainerHook(props) {
   if (loading) return <Text>loading...</Text>;
   if (error) console.log(error);
 
+  function goToList(list) {
+    const {id, title} = list;
+    client.writeData({
+      data: {
+        list: {
+          __typename: 'GroceryList',
+          id,
+          title,
+        },
+      },
+    });
+
+    props.goToList(list);
+  }
+
   return data && data.getUserGroceryLists ? (
     <KeyboardAwareFlatList
       style={{paddingTop: '3%'}}
-      data={data ? data.getUserGroceryLists : []}
+      data={data.getUserGroceryLists}
       renderItem={({item}) => (
         <GroceryListItem
+          goToList={goToList}
           user={props.user}
           item={item}
-          goToGroceryList={props.goToGroceryList}
-          numberOfItems={props.numberOfItems}
           removeGroceryList={id => deleteList({variables: {id}})}
         />
       )}
@@ -147,6 +170,7 @@ const GroceryListItemStyles = StyleSheet.create({
   },
 });
 
-GroceryListsContainerHook.propTypes = {
-  goToGroceryList: PropTypes.func.isRequired,
+GroceryListsContainer.propTypes = {
+  goToList: PropTypes.func.isRequired,
+  user: PropTypes.shape({id: PropTypes.string.isRequired}).isRequired,
 };

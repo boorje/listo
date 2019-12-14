@@ -56,7 +56,7 @@ export default class Message extends React.Component {
 
 Message.propTypes = {
   message: PropTypes.string.isRequired,
-  type: PropTypes.string,
+  type: PropTypes.oneOf(['SUCCESS']),
 };
 
 const styles = StyleSheet.create({

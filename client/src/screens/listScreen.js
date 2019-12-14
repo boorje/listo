@@ -14,16 +14,20 @@ import * as mutations from '../api/mutations';
 import * as colors from '../styles/colors';
 
 export default function ListScreen(props) {
-  const [list] = useState(props.navigation.getParam('list', {}));
   const [historyOpen, toggleHistory] = useState(false);
   const [listSettingsOpen, toggleSettings] = useState(false);
   const [messageOpen, toggleMessage] = useState(false);
   const [apiError, setApiError] = useState('');
   const [addItemOpen, toggleAddItem] = useState(false);
 
-  // useEffect(() => {
-  //   console.log('LISTSCREEN: ', props.navigation.getParam('list', {}));
-  // }, [props]);
+  const {
+    data: {list},
+    loading: fetchingList,
+    error: listError,
+  } = useQuery(queries.GET_ACTIVE_LIST);
+
+  if (fetchingList) console.log('Fetching list..');
+  if (listError) console.log('LISTERRORFETCH: ', listError);
 
   const [addGroceryItem] = useMutation(mutations.CREATE_GROCERY_LIST_ITEM, {
     update(cache, {data}) {

@@ -22,8 +22,12 @@ export default function HomeScreen(props) {
     loading: loadingUser,
     error: userError,
   } = useQuery(queries.GET_USER);
-  if (userError) props.navigation.navigate('Authenticator');
-  const [newList, {loading: mutationLoading, error}] = useMutation(
+
+  if (userError) {
+    props.navigation.navigate('Authenticator');
+  }
+
+  const [newList, {loading: creatingList}] = useMutation(
     mutations.CREATE_GROCERY_LIST,
     {
       update(cache, {data}) {
@@ -49,8 +53,10 @@ export default function HomeScreen(props) {
       },
     },
   );
-  if (mutationLoading) console.log('Adding new list'); // TODO: Add loading component
-
+  if (loadingUser || creatingList) {
+    // TODO: Add loading component
+    console.log('Loading user or creatingList');
+  }
   function addGroceryList(title) {
     newList({variables: {input: {title}}});
   }
@@ -76,7 +82,7 @@ export default function HomeScreen(props) {
       <SafeAreaView style={{flex: 5, marginTop: '3%'}}>
         <GroceryListsContainer
           user={user}
-          goToGroceryList={groceryList =>
+          goToList={groceryList =>
             props.navigation.navigate('List', {list: groceryList})
           }
         />
