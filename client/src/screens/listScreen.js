@@ -73,7 +73,6 @@ export default function ListScreen(props) {
         leftIcon={'ios-arrow-round-back'}
         //rightIcon1={'md-hourglass'}
         rightIcon2={'md-person-add'}
-        groceryList={list}
       />
       <View style={{flex: 11}}>
         <GroceriesContainer

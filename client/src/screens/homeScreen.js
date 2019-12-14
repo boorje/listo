@@ -17,13 +17,11 @@ export default function HomeScreen(props) {
   const [modalOpen, toggleModal] = useState(false);
   const [messageOpen, toggleMessage] = useState(false);
   const [apiError, setApiError] = useState('');
-  const {
-    data: {user},
-    loading: loadingUser,
-    error: userError,
-  } = useQuery(queries.GET_USER);
+  const {data: userData, loading: loadingUser, error: userError} = useQuery(
+    queries.GET_USER,
+  );
 
-  if (userError) {
+  if (userError || !userData) {
     // Navigate to auth screen if the user is not stored in cache
     props.navigation.navigate('Authenticator');
   }
@@ -34,11 +32,11 @@ export default function HomeScreen(props) {
       update(cache, {data}) {
         const {getUserGroceryLists} = cache.readQuery({
           query: queries.GET_USERS_LISTS,
-          variables: {owner: user.id},
+          variables: {owner: userData.user.id},
         });
         cache.writeQuery({
           query: queries.GET_USERS_LISTS,
-          variables: {owner: user.id},
+          variables: {owner: userData.user.id},
           data: {
             getUserGroceryLists: [
               ...getUserGroceryLists,
@@ -70,7 +68,9 @@ export default function HomeScreen(props) {
         />
       )}
       <HomeScreenBackground
-        openSettings={() => props.navigation.navigate('Settings', {user: user})}
+        openSettings={() =>
+          props.navigation.navigate('Settings', {user: userData.user})
+        }
       />
       {apiError.length > 0 && messageOpen && (
         <Message
@@ -80,7 +80,7 @@ export default function HomeScreen(props) {
       )}
       <SafeAreaView style={{flex: 5, marginTop: '3%'}}>
         <GroceryListsContainer
-          user={user}
+          user={userData.user}
           goToList={() => props.navigation.navigate('List')}
         />
       </SafeAreaView>

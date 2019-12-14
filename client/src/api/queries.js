@@ -60,6 +60,7 @@ export const GET_ACTIVE_LIST = gql`
     list @client {
       id
       title
+      isOwner
     }
   }
 `;

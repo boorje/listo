@@ -20,7 +20,7 @@ import ExitButton from '../components/exitButton';
 
 function GroceryItem(props) {
   const [detailsOpen, toggleDetails] = useState(false);
-  const [selected, select] = useState(false);
+  const [selected, select] = useState(true);
   const {addItemOpen, grocery, removeGrocery, updateGrocery} = props;
   return (
     <TouchableHighlight
@@ -89,15 +89,15 @@ export default function ItemSelection(props) {
   }
 
   return groceries ? (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <ExitButton exit={() => props.navigation.pop(3)} color={'white'} />
-      {/* <ScreenHeader
-        leftIconPress={props.navigation.goBack}
+      <ScreenHeader
+        leftIconPress={() => props.navigation.pop(2)}
         rightIcon1Press={() => {}}
         rightIcon2Press={() => {}}
-        headerTitle="Results"
+        // headerTitle="Results"
         leftIcon={'ios-arrow-round-back'}
-      /> */}
+      />
       <KeyboardAwareFlatList
         style={{marginTop: 10}}
         scrollEnabled={true}
@@ -120,7 +120,7 @@ export default function ItemSelection(props) {
           </View>
         )}
       />
-    </SafeAreaView>
+    </View>
   ) : (
     <SafeAreaView>
       <Text>Loading..</Text>
