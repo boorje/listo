@@ -24,6 +24,7 @@ export default function HomeScreen(props) {
   } = useQuery(queries.GET_USER);
 
   if (userError) {
+    // Navigate to auth screen if the user is not stored in cache
     props.navigation.navigate('Authenticator');
   }
 
@@ -53,12 +54,10 @@ export default function HomeScreen(props) {
       },
     },
   );
+
   if (loadingUser || creatingList) {
     // TODO: Add loading component
     console.log('Loading user or creatingList');
-  }
-  function addGroceryList(title) {
-    newList({variables: {input: {title}}});
   }
 
   return (
@@ -67,7 +66,7 @@ export default function HomeScreen(props) {
         <AddGroceryListModal
           closeModal={() => toggleModal(modalOpen ? false : true)}
           placeholder="Add list..."
-          addGroceryList={addGroceryList}
+          addGroceryList={title => newList({variables: {input: {title}}})}
         />
       )}
       <HomeScreenBackground
@@ -82,9 +81,7 @@ export default function HomeScreen(props) {
       <SafeAreaView style={{flex: 5, marginTop: '3%'}}>
         <GroceryListsContainer
           user={user}
-          goToList={groceryList =>
-            props.navigation.navigate('List', {list: groceryList})
-          }
+          goToList={() => props.navigation.navigate('List')}
         />
       </SafeAreaView>
       <View style={styles.addIcon}>

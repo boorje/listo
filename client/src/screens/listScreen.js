@@ -1,13 +1,13 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {useQuery, useMutation} from '@apollo/react-hooks';
 // components
 import GroceriesContainer from '../components/groceriesContainer';
 import Message from '../components/message';
 import ScreenHeader from '../components/screenHeader';
+import AddGroceryFooter from '../components/addGroceryFooter';
 import PreviousGroceriesModal from './modals/previousGroceriesModal';
 import ListSettingsModal from './modals/listSettingsModal';
-import AddGroceryFooter from '../components/addGroceryFooter';
 //api
 import * as queries from '../api/queries';
 import * as mutations from '../api/mutations';
