@@ -46,6 +46,11 @@ class DB extends DataSource {
       : null;
   }
 
+  async getGroceryList(list) {
+    const groceryList = await this.store.GroceryList.findByPk(list);
+    console.log(groceryList);
+  }
+
   async getListEditors({ listid }) {
     const listItem = await this.store.GroceryList.findByPk(listid, {
       attributes: [],

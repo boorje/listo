@@ -13,6 +13,10 @@ module.exports = {
       async (_, { owner }, { dataSources }) =>
         await dataSources.db.getUserGroceryLists({ owner })
     ),
+    getGroceryList: authenticated(
+      async (_, { list }, { dataSources }) =>
+        await dataSources.db.getGroceryList(list)
+    ),
     getGroceryListItems: authenticated(
       async (_, { list }, { dataSources }) =>
         await dataSources.db.getGroceryListItems({ list })

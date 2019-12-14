@@ -27,6 +27,7 @@ const typeDefs = gql`
 
   type Query {
     getUserGroceryLists(owner: ID!): [GroceryList]
+    getGroceryList(list: ID!): GroceryList
     getGroceryListItems(list: ID!): [GroceryItem]
     getListEditors(listid: ID!): [User]
   }
