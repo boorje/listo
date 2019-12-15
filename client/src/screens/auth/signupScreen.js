@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Auth} from 'aws-amplify';
 //components
@@ -18,15 +18,12 @@ function getRandomString(bytes) {
     .slice(-8);
 }
 
-class SignupScreen extends React.Component {
-  state = {
-    signupError: '',
-    loading: false,
-    messageOpen: false,
-  };
+export default function SignupScreen(props) {
+  const [signupError, setError] = useState('');
+  const [loading, toggleLoading] = useState(false);
 
-  handleSubmit = async ({email}) => {
-    this.setState({loading: true});
+  async function handleSubmit({email}) {
+    toggleLoading(true);
     const params = {
       username: email,
       password: getRandomString(30),
@@ -36,63 +33,51 @@ class SignupScreen extends React.Component {
       const res = await Auth.signUp(params);
       // TODO: userSub should be added to db.
       await Auth.signIn(params);
-      this.props.navigation.navigate('Authenticator');
+      props.navigation.navigate('Authenticator');
     } catch (error) {
-      this.setState({loading: false});
+      toggleLoading(false);
       switch (error.code) {
         case 'ValidationError':
-          this.setState({signupError: error.message});
+          setError(error.message);
           break;
         case 'UsernameExistsException':
-          this.setState({signupError: 'The email is already used.'});
+          setError('The email is already used.');
           break;
         default:
-          this.setState({
-            signupError: 'Something went wrong. Please try again.',
-          });
+          setError('Something went wrong. Please try again.');
       }
-      this.setState({messageOpen: true});
     }
-  };
-  toggleMessage = () => {
-    this.setState(prevstate => ({
-      messageOpen: prevstate.messageOpen ? false : true,
-    }));
-  };
-  render() {
-    const {loading, signupError, messageOpen} = this.state;
-    return (
-      <View style={styles.container}>
-        {signupError.length > 0 && messageOpen && (
-          <Message
-            messageOpen={() => this.toggleMessage()}
-            message={signupError}
-          />
-        )}
-        <Logo />
-        <KeyboardAwareScrollView
-          scrollEnabled={false}
-          contentContainerStyle={{
-            flex: 1,
-            justifyContent: 'center',
-          }}>
-          <SignupForm
-            handleSubmit={this.handleSubmit}
-            loading={loading}
-            goBack={() => this.props.navigation.navigate('Login')}
-          />
-        </KeyboardAwareScrollView>
-      </View>
-    );
   }
-}
 
-export default SignupScreen;
+  return (
+    <View style={styles.container}>
+      <Message
+        messageOpen={signupError.length > 0}
+        message={signupError}
+        closeMessage={() => setError('')}
+      />
+      <Logo />
+      <KeyboardAwareScrollView
+        scrollEnabled={false}
+        contentContainerStyle={styles.scrollView}>
+        <SignupForm
+          handleSubmit={handleSubmit}
+          loading={loading}
+          goBack={() => props.navigation.navigate('Login')}
+        />
+      </KeyboardAwareScrollView>
+    </View>
+  );
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
     backgroundColor: colors.primaryColor,
+  },
+  scrollView: {
+    flex: 1,
+    justifyContent: 'center',
   },
 });

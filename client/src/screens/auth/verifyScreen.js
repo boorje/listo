@@ -17,7 +17,6 @@ export default function VerifyScreen(props) {
     props.navigation.getParam('cognitoUser', null),
   );
   const [loading, toggleLoading] = useState(false);
-  const [messageOpen, toggleMessage] = useState(false);
   const client = useApolloClient();
 
   const [signin, {loading: signinLoading, error: signError}] = useMutation(
@@ -80,12 +79,11 @@ export default function VerifyScreen(props) {
 
   return (
     <SafeAreaView style={styles.container}>
-      {error.length > 0 && messageOpen && (
-        <Message
-          messageOpen={() => toggleMessage(!messageOpen)}
-          message={error}
-        />
-      )}
+      <Message
+        messageOpen={error.length > 0}
+        message={error}
+        closeMessage={() => setError('')}
+      />
       {/* <Logo /> */}
       <CodeForm
         handleSubmit={confirmSignin}

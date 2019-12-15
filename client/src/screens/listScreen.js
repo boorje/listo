@@ -16,7 +16,6 @@ import * as colors from '../styles/colors';
 export default function ListScreen(props) {
   const [historyOpen, toggleHistory] = useState(false);
   const [listSettingsOpen, toggleSettings] = useState(false);
-  const [messageOpen, toggleMessage] = useState(false);
   const [apiError, setApiError] = useState('');
   const [addItemOpen, toggleAddItem] = useState(false);
 
@@ -63,9 +62,11 @@ export default function ListScreen(props) {
           closeModal={() => toggleSettings(false)}
         />
       )}
-      {apiError.length > 0 && messageOpen && (
-        <Message messageOpen={() => toggleMessage(true)} message={apiError} />
-      )}
+      <Message
+        messageOpen={apiError.length > 0}
+        message={apiError}
+        closeMessage={() => setApiError('')}
+      />
       <ScreenHeader
         leftIconPress={props.navigation.goBack}
         rightIcon1Press={() => toggleHistory(true)}

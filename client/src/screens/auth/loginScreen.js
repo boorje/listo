@@ -10,16 +10,9 @@ import Logo from '../../components/logo';
 import validateEmail from '../../helpers/validateEmail';
 import * as colors from '../../styles/colors';
 
-const {height} = Dimensions.get('window');
-const {Value} = Animated;
-
 export default function LoginScreen(props) {
-  const [backgroundY] = useState(new Value(0));
-  const [loginFormOpacity] = useState(new Value(0));
   const [signinError, setError] = useState('');
   const [loading, toggleLoading] = useState(false);
-  const [formOpen, toggleForm] = useState(false);
-  const [messageOpen, toggleMessage] = useState(false);
 
   async function handleLogin(values) {
     try {
@@ -42,28 +35,22 @@ export default function LoginScreen(props) {
         default:
           setError('Could not login. Please try again.');
       }
-      toggleMessage(true);
     }
     toggleLoading(false);
   }
 
   return (
     <View style={styles.container}>
-      {signinError.length > 0 && messageOpen && (
-        <Message
-          messageOpen={() => toggleMessage(!messageOpen)}
-          message={signinError}
-        />
-      )}
+      <Message
+        messageOpen={signinError.length > 0}
+        message={signinError}
+        closeMessage={() => setError('')}
+      />
       <Logo />
       <KeyboardAwareScrollView
         scrollEnabled={false}
-        contentContainerStyle={{
-          flex: 1,
-          justifyContent: 'center',
-        }}>
+        contentContainerStyle={styles.scrollView}>
         <LoginForm
-          focus={this.state.textInputFocus}
           handleSubmit={this.handleLogin}
           loading={loading}
           register={() => this.props.navigation.navigate('Signup')}
@@ -77,5 +64,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.primaryColor,
+  },
+  scrollView: {
+    flex: 1,
+    justifyContent: 'center',
   },
 });
