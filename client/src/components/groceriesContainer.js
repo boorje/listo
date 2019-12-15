@@ -191,5 +191,5 @@ const styles = StyleSheet.create({
 
 GroceriesContainer.propTypes = {
   listId: PropTypes.string.isRequired,
-  addItemOpen: PropTypes.string.isRequired,
+  addItemOpen: PropTypes.bool.isRequired,
 };

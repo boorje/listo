@@ -56,7 +56,7 @@ export default function ListScreen(props) {
       {historyOpen && (
         <PreviousGroceriesModal closeModal={() => toggleHistory(false)} />
       )}
-      {listSettingsOpen && (
+      {list && listSettingsOpen && (
         <ListSettingsModal
           groceryList={list}
           closeModal={() => toggleSettings(false)}

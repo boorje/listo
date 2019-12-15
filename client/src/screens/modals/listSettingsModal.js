@@ -33,6 +33,7 @@ export default function ListSettingsModal(props) {
   } = useQuery(queries.GET_LIST_EDITORS, {
     variables: {listid: props.groceryList.id},
   });
+
   const [
     addListEditor,
     {loading: mutationLoading, error: mutationError},
@@ -55,6 +56,7 @@ export default function ListSettingsModal(props) {
       toggleMessage(true);
     },
   });
+
   const [deleteListEditor] = useMutation(mutations.DELETE_LIST_EDITOR, {
     update(cache, {data}) {
       const {getListEditors} = cache.readQuery({
@@ -173,6 +175,8 @@ export default function ListSettingsModal(props) {
       )
     );
   }
+
+  console.log(props);
 
   return (
     <OverlayModal

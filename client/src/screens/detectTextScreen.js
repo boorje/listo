@@ -1,5 +1,5 @@
-import React, {useEffect} from 'react';
-import {View, Animated, StyleSheet} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {Animated, InteractionManager, View, StyleSheet} from 'react-native';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
 import {Storage, Predictions} from 'aws-amplify';
@@ -11,11 +11,26 @@ import LoadingComponent from '../components/loadingComponent';
 import * as colors from '../styles/colors';
 
 export default function DetectTextScreen(props) {
+  const [loadingFinished, steLoadingFinished] = useState(false);
+  const [detectedItems, setDetectedItems] = useState([]);
+
   useEffect(() => {
     const image = props.navigation.getParam('image', null);
     processImage(image);
+    startTimer(2000);
     // processImageAWS(image);
   }, []);
+
+  // naivgates to next screen if timer is completed and items are found
+  useEffect(() => {
+    if (loadingFinished && detectedItems.length > 0) {
+      props.navigation.navigate('ItemSelection', {detectedItems});
+    }
+  }, [loadingFinished, detectedItems, props.navigation]);
+
+  function startTimer(ms) {
+    setTimeout(() => steLoadingFinished(true), ms);
+  }
 
   // GOOGLE
   async function processImage(imageFile) {
@@ -25,7 +40,7 @@ export default function DetectTextScreen(props) {
       }
       const detectedLines = await detectText(imageFile);
       const detectedItems = await analyzeDetectedItems(detectedLines);
-      props.navigation.navigate('ItemSelection', {detectedItems});
+      setDetectedItems(detectedItems);
     } catch (error) {
       console.log(error);
       // TODO: Add error message
@@ -112,7 +127,7 @@ export default function DetectTextScreen(props) {
     try {
       const key = await uploadToS3(imageFile);
       const detection = await detectText(key);
-      const detectedItems = await textAnalyzer(detection);
+      const detectedItems = await textAnalyzerAWS(detection);
       props.navigation.navigate('ItemSelection', {detectedItems});
     } catch (error) {
       console.log('ERROR PROCESS IMAGE: ', error);

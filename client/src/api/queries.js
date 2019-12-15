@@ -61,6 +61,9 @@ export const GET_ACTIVE_LIST = gql`
       id
       title
       isOwner
+      owner {
+        id
+      }
     }
   }
 `;
