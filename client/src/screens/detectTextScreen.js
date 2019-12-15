@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Animated, InteractionManager, View, StyleSheet} from 'react-native';
-import IoniconsIcon from 'react-native-vector-icons/Ionicons';
+import {StyleSheet} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {Storage, Predictions} from 'aws-amplify';
 import env from 'react-native-config';
