@@ -93,7 +93,6 @@ export default function GroceryListsContainer(props) {
 
   if (loading) return <Text>loading...</Text>;
   if (error) console.log('fetch lists error: ', error);
-  console.log('DATA: ', data);
 
   function goToList(list) {
     const {id, title} = list;

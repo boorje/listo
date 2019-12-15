@@ -47,6 +47,7 @@ export default function ListScreen(props) {
       });
     },
     onError(error) {
+      console.log('additem error', error);
       setApiError(error);
     },
   });
@@ -85,7 +86,7 @@ export default function ListScreen(props) {
         <AddGroceryFooter
           addGrocery={input => {
             const item = {...input, list: list.id};
-            addGroceryItem({variables: {input: item}});
+            addGroceryItem({variables: {item}});
           }}
           addItemOpen={addItemOpen}
           navigation={props.navigation}

@@ -1,4 +1,4 @@
-import React, {PureComponent, useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {
   SafeAreaView,
   StyleSheet,

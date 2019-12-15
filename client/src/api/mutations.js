@@ -9,7 +9,12 @@ export const CREATE_GROCERY_LIST = gql`
       list {
         id
         title
-        owner
+        owner {
+          id
+          email
+        }
+        isOwner
+        itemCount
       }
     }
   }
@@ -30,13 +35,13 @@ export const CREATE_LIST_EDITOR = gql`
 `;
 
 export const CREATE_GROCERY_LIST_ITEM = gql`
-  mutation createGroceryItem($input: CreateGroceryItemInput!) {
-    createGroceryItem(input: $input) {
+  mutation createGroceryItem($item: CreateGroceryItemInput!) {
+    createGroceryItem(input: $item) {
       item {
+        id
         name
         quantity
         unit
-        id
       }
     }
   }
