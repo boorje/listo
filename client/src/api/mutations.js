@@ -42,6 +42,22 @@ export const CREATE_GROCERY_LIST_ITEM = gql`
   }
 `;
 
+export const CREATE_GROCERY_LIST_ITEMS = gql`
+  mutation createGroceryItems($items: [CreateGroceryItemInput]!) {
+    createGroceryItems(input: $items) {
+      code
+      message
+      success
+      items {
+        id
+        name
+        quantity
+        unit
+      }
+    }
+  }
+`;
+
 export const DELETE_GROCERY_LIST = gql`
   mutation deleteGroceryList($id: ID!) {
     deleteGroceryList(id: $id) {

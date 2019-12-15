@@ -148,10 +148,10 @@ const styles = StyleSheet.create({
 });
 
 ScreenHeader.propTypes = {
-  leftIcon: PropTypes.string.isRequired,
-  leftIconPress: PropTypes.func.isRequired,
+  leftIcon: PropTypes.string,
+  leftIconPress: PropTypes.func,
   rightIcon1: PropTypes.string,
-  rightIcon1Press: PropTypes.func.isRequired,
-  rightIcon2: PropTypes.string.isRequired,
-  rightIcon2Press: PropTypes.func.isRequired,
+  rightIcon1Press: PropTypes.func,
+  rightIcon2: PropTypes.string,
+  rightIcon2Press: PropTypes.func,
 };

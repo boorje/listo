@@ -25,10 +25,20 @@ export const GET_LIST_EDITORS = gql`
 `;
 
 export const GET_GROCERY_LIST = gql`
-  query list($list: ID!) {
-    getGroceryList(list: $list) {
+  query getGroceryList($listid: ID!) {
+    getGroceryList(listid: $listid) {
       id
       title
+      owner {
+        id
+        email
+      }
+      items {
+        id
+        name
+        quantity
+        unit
+      }
     }
   }
 `;

@@ -10,7 +10,7 @@ import LoadingComponent from '../components/loadingComponent';
 import * as colors from '../styles/colors';
 
 export default function DetectTextScreen(props) {
-  const [loadingFinished, steLoadingFinished] = useState(false);
+  const [loadingFinished, setLoadingFinished] = useState(false);
   const [detectedItems, setDetectedItems] = useState([]);
 
   useEffect(() => {
@@ -28,7 +28,7 @@ export default function DetectTextScreen(props) {
   }, [loadingFinished, detectedItems, props.navigation]);
 
   function startTimer(ms) {
-    setTimeout(() => steLoadingFinished(true), ms);
+    setTimeout(() => setLoadingFinished(true), ms);
   }
 
   // GOOGLE
@@ -90,22 +90,22 @@ export default function DetectTextScreen(props) {
       'msk',
     ];
     let detectedItems = [];
-    textLines.map(line => {
+    textLines.map((line, index) => {
       if (line.length > 0) {
-        let item = {name: '', quantity: null, unit: null};
+        let item = {name: '', quantity: null, unit: null, index};
         let longestWord = '';
         line.split(' ').map(word => {
           if (parseInt(word)) {
             const divsion = word.split('/');
             if (divsion.length > 1) {
               const nr = divsion[0] / divsion[1];
-              item.quantity = nr.toString();
+              item.quantity = nr;
             } else {
-              item.quantity = word;
+              item.quantity = parseFloat(word);
             }
           } else if (parseFloat(word.replace(/,/, '.'))) {
             const float = parseFloat(word.replace(/,/, '.'));
-            item.quantity = float.toString(); // handle float
+            item.quantity = float; // handle float
           } else if (units.includes(word)) {
             item.unit = word;
           } else {
