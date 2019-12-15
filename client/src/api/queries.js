@@ -24,6 +24,25 @@ export const GET_LIST_EDITORS = gql`
   }
 `;
 
+export const GET_GROCERY_LIST = gql`
+  query getGroceryList($listid: ID!) {
+    getGroceryList(listid: $listid) {
+      id
+      title
+      owner {
+        id
+        email
+      }
+      items {
+        id
+        name
+        quantity
+        unit
+      }
+    }
+  }
+`;
+
 export const GET_GROCERY_LIST_ITEMS = gql`
   query getGroceryListItems($list: ID!) {
     getGroceryListItems(list: $list) {
@@ -35,11 +54,26 @@ export const GET_GROCERY_LIST_ITEMS = gql`
   }
 `;
 
+// local cache
+
 export const GET_USER = gql`
   query getUser {
     user @client {
       id
       email
+    }
+  }
+`;
+
+export const GET_ACTIVE_LIST = gql`
+  query activeList {
+    list @client {
+      id
+      title
+      isOwner
+      owner {
+        id
+      }
     }
   }
 `;

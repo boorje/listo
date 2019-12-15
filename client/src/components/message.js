@@ -42,8 +42,7 @@ export default function Message(props) {
 
 Message.propTypes = {
   message: PropTypes.string.isRequired,
-  closeMessage: PropTypes.func.isRequired,
-  type: PropTypes.string,
+  type: PropTypes.oneOf(['SUCCESS']),
 };
 
 const styles = StyleSheet.create({

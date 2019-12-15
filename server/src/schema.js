@@ -20,13 +20,14 @@ const typeDefs = gql`
   type GroceryItem {
     id: ID!
     name: String!
-    quantity: Int
+    quantity: Float
     unit: String
     list: GroceryList!
   }
 
   type Query {
     getUserGroceryLists(owner: ID!): [GroceryList]
+    getGroceryList(listid: ID!): GroceryList
     getGroceryListItems(list: ID!): [GroceryItem]
     getListEditors(listid: ID!): [User]
   }
@@ -41,6 +42,9 @@ const typeDefs = gql`
     createGroceryItem(
       input: CreateGroceryItemInput!
     ): CreateGroceryItemMutationResponse!
+    createGroceryItems(
+      input: [CreateGroceryItemInput]!
+    ): CreateGroceryItemsMutationResponse!
     updateGroceryItem(
       input: UpdateGroceryItemInput!
     ): UpdateGroceryItemMutationResponse!
@@ -70,7 +74,7 @@ const typeDefs = gql`
   input CreateGroceryItemInput {
     id: ID
     name: String!
-    quantity: Int
+    quantity: Float
     unit: String
     list: ID!
   }
@@ -78,7 +82,7 @@ const typeDefs = gql`
   input UpdateGroceryItemInput {
     id: ID!
     name: String!
-    quantity: Int
+    quantity: Float
     unit: String
     list: ID
   }
@@ -123,6 +127,13 @@ const typeDefs = gql`
     success: Boolean!
     message: String!
     item: GroceryItem
+  }
+
+  type CreateGroceryItemsMutationResponse implements MutationResponse {
+    code: String!
+    success: Boolean!
+    message: String!
+    items: [GroceryItem]
   }
 
   type CreateUserMutationResponse implements MutationResponse {

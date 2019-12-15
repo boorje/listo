@@ -8,14 +8,16 @@ import {setContext} from 'apollo-link-context';
 import {ApolloProvider} from '@apollo/react-hooks';
 import {resolvers} from './src/api/resolvers';
 import Amplify, {Auth} from 'aws-amplify';
-import env from 'react-native-config';
+import {AmazonAIPredictionsProvider} from '@aws-amplify/predictions';
 
+import env from 'react-native-config';
 import App from './App';
 import {name as appName} from './app.json';
 
 // configure aws
 import awsconfig from './aws-exports';
 Amplify.configure(awsconfig);
+Amplify.addPluggable(new AmazonAIPredictionsProvider());
 
 // apollo config
 const cache = new InMemoryCache();
