@@ -26,9 +26,6 @@ export default function LoadingScreen(props) {
     new Value(width),
     new Value(width * 2),
   ]);
-  const [page1] = useState(new Value(0));
-  const [page2] = useState(new Value(width));
-  const [page3] = useState(new Value(width * 2));
 
   function dots() {
     return (
@@ -58,56 +55,49 @@ export default function LoadingScreen(props) {
   const _panResponder = PanResponder.create({
     onMoveShouldSetPanResponder: (evt, gestureState) => true,
     onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
-    onPanResponderGrant: (evt, gestureState) => {
-      pages[0].setOffset(pages[0]._value);
-      pages[0].setValue(0);
-      pages[1].setOffset(pages[1]._value);
-      pages[1].setValue(0);
-      pages[2].setOffset(pages[2]._value);
-      pages[2].setValue(0);
+    onPanResponderGrant: (evt, gestureState) => {},
+    onPanResponderMove: (evt, gestureState) => {
+      // TODO: Should not swipe towards ends
+      Animated.event([
+        null,
+        {
+          dx: pages[pageActive],
+          dy: null,
+        },
+      ])(evt, gestureState);
     },
-    onPanResponderMove: (evt, gestureState) => {},
     onPanResponderRelease: (evt, gestureState) => {
       if (gestureState.dx < 0 && pageActive < pages.length - 1) {
         swipeLeft();
       } else if (pageActive > 0 && gestureState.dx > 0) {
         swipeRight();
       }
-      pages[0].flattenOffset();
-      pages[1].flattenOffset();
-      pages[2].flattenOffset();
     },
   });
 
   function swipeLeft() {
-    Animated.stagger(0, [
-      Animated.sequence([
-        Animated.timing(pages[pageActive], {
-          toValue: -width,
-          duration: 200,
-        }),
-        Animated.timing(pages[pageActive + 1], {
-          toValue: 0,
-          duration: 200,
-        }),
-      ]),
-    ]).start();
+    Animated.timing(pages[pageActive], {
+      toValue: -width,
+      duration: 200,
+    }).start();
+    Animated.timing(pages[pageActive + 1], {
+      toValue: 0,
+      delay: 100,
+      duration: 200,
+    }).start();
     setPage(pageActive + 1);
   }
 
   function swipeRight() {
-    Animated.stagger(50, [
-      Animated.sequence([
-        Animated.timing(pages[pageActive], {
-          toValue: width,
-          duration: 200,
-        }),
-        Animated.timing(pages[pageActive - 1], {
-          toValue: 0,
-          duration: 200,
-        }),
-      ]),
-    ]).start();
+    Animated.timing(pages[pageActive], {
+      toValue: width,
+      duration: 200,
+    }).start();
+    Animated.timing(pages[pageActive - 1], {
+      toValue: 0,
+      delay: 100,
+      duration: 200,
+    }).start();
     setPage(pageActive - 1);
   }
 
@@ -166,7 +156,6 @@ const styles = StyleSheet.create({
     width: undefined,
     height: undefined,
   },
-  text: {flex: 1},
   dotView: {
     position: 'absolute',
     bottom: '8%',
