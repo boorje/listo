@@ -8,18 +8,21 @@ import {
   Text,
   Dimensions,
 } from 'react-native';
-// components
-import IoniconsIcon from 'react-native-vector-icons/Ionicons';
-import LinearGradient from 'react-native-linear-gradient';
+
 // styles
 import * as colors from '../styles/colors';
 
 const {height, width} = Dimensions.get('window');
 const {Value} = Animated;
+const animationDuration = 150;
 
 export default function LoadingScreen(props) {
   const [pageActive, setPage] = useState(0);
-  const images = ['../assets/groceries2.jpg', '2'];
+  const images = [
+    require('../assets/groceries2.jpg'),
+    require('../assets/groceries2.jpg'),
+    require('../assets/groceries2.jpg'),
+  ];
   const imageInfo = [];
   const [pages] = useState([
     new Value(0),
@@ -78,12 +81,12 @@ export default function LoadingScreen(props) {
   function swipeLeft() {
     Animated.timing(pages[pageActive], {
       toValue: -width,
-      duration: 200,
+      duration: animationDuration,
     }).start();
     Animated.timing(pages[pageActive + 1], {
       toValue: 0,
-      delay: 100,
-      duration: 200,
+      delay: animationDuration / 1.5,
+      duration: animationDuration,
     }).start();
     setPage(pageActive + 1);
   }
@@ -91,12 +94,12 @@ export default function LoadingScreen(props) {
   function swipeRight() {
     Animated.timing(pages[pageActive], {
       toValue: width,
-      duration: 200,
+      duration: animationDuration,
     }).start();
     Animated.timing(pages[pageActive - 1], {
       toValue: 0,
-      delay: 100,
-      duration: 200,
+      delay: animationDuration / 1.5,
+      duration: animationDuration,
     }).start();
     setPage(pageActive - 1);
   }
@@ -106,31 +109,17 @@ export default function LoadingScreen(props) {
       <Animated.View
         style={[styles.page, {left: pages[0]}]}
         {..._panResponder.panHandlers}>
-        <Image
-          source={require('../assets/groceries2.jpg')}
-          style={styles.image}
-          resizeMode="contain"
-        />
+        <Image source={images[0]} style={styles.image} resizeMode="contain" />
       </Animated.View>
       <Animated.View
         style={[styles.page, {left: pages[1]}]}
         {..._panResponder.panHandlers}>
-        <Image
-          // source={require('../assets/groceries.jpeg')}
-          source={require('../assets/groceries2.jpg')}
-          style={styles.image}
-          resizeMode="contain"
-        />
+        <Image source={images[1]} style={styles.image} resizeMode="contain" />
       </Animated.View>
       <Animated.View
         style={[styles.page, {left: pages[2]}]}
         {..._panResponder.panHandlers}>
-        <Image
-          // source={require('../assets/winestand.jpg')}
-          source={require('../assets/groceries2.jpg')}
-          style={styles.image}
-          resizeMode="contain"
-        />
+        <Image source={images[2]} style={styles.image} resizeMode="contain" />
       </Animated.View>
 
       {dots()}
