@@ -29,7 +29,6 @@ export default function AddUser(props) {
   function addEditor() {
     if (emailInput.length > 0) {
       props.addEditor(emailInput);
-      this.toggleIcon();
       setEmailInput('');
     }
   }
