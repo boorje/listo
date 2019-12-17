@@ -69,7 +69,7 @@ class DB extends DataSource {
     const listItem = await this.store.GroceryList.findByPk(listid, {
       attributes: [],
       include: [
-        { model: this.store.User },
+        { model: this.store.User, as: "listOwner" },
         {
           as: "listEditors",
           model: this.store.User,
