@@ -1,9 +1,10 @@
 import React, {useState, useEffect} from 'react';
 import {StyleSheet, View, TextInput, Animated, Dimensions} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import textStyles from '../styles/textStyles';
 import PropTypes from 'prop-types';
+//styles
 import * as colors from '../styles/colors';
+import textStyles from '../styles/textStyles';
 
 const {width} = Dimensions.get('window');
 
@@ -51,16 +52,16 @@ export default function AddUser(props) {
             autoCapitalize="none"
             autoFocus={true}
             autoCorrect={false}
-            placeholder="Skriv in e-mail..."
-            placeholderTextColor="white"
+            placeholder="Enter email"
+            placeholderTextColor="#fff"
           />
         </View>
       )}
       <Icon
-        style={[styles.icon]}
+        style={styles.icon}
         size={40}
-        name={'person-add'}
-        color={'white'}
+        name="person-add"
+        color="#fff"
         onPress={() => toggleIcon()}
       />
     </Animated.View>
@@ -90,4 +91,8 @@ const styles = StyleSheet.create({
   textInput: {color: 'white'},
 });
 
-AddUser.propTypes = {};
+AddUser.propTypes = {
+  expandModal: PropTypes.func.isRequired,
+  modalExpanded: PropTypes.bool.isRequired,
+  addEditor: PropTypes.func.isRequired,
+};
