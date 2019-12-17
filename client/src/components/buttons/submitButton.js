@@ -24,7 +24,7 @@ const PrimaryButton = props => {
         },
       ]}>
       {loading ? (
-        <ActivityIndicator size="small" color="#fff" />
+        <ActivityIndicator size="small" color="black" />
       ) : (
         <Text
           style={[textStyles.button, {color: disabled ? 'white' : 'black'}]}>
@@ -47,10 +47,11 @@ PrimaryButton.propTypes = {
 const styles = StyleSheet.create({
   button: {
     height: 59,
-    borderRadius: 30,
+    borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 10,
+    width: '100%',
   },
   text: {
     color: '#fff',
