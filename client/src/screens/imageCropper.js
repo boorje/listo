@@ -73,7 +73,8 @@ function ImageCropper(props) {
     setInitialHeight(initialWidth / (imageSize.w / imageSize.h));
     if (imageSize.h > imageSize.w) {
       const newWidth = (imageSize.w * maxImageH) / imageSize.h;
-      if (newWidth === width) setInitialWidth(newWidth * 0.9);
+      if (newWidth >= width * 0.9 && newWidth <= width)
+        setInitialWidth(newWidth * 0.9);
       else setInitialWidth(newWidth);
     }
 
@@ -668,15 +669,11 @@ function ImageCropper(props) {
     <View style={styles.container}>
       <ExitButton exit={() => props.navigation.pop(2)} color={'white'} />
       {initialHeight ? (
-        <View
-          style={{
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
+        <View>
           <View>
             <Animated.Image
               style={{
-                width: initialWidth,
+                width: !cropped ? initialWidth : width * 0.8,
                 height: !cropped ? initialHeight : height * 0.6,
               }}
               source={{uri: capture}}
@@ -694,13 +691,7 @@ function ImageCropper(props) {
             {handle('bottomRight')}
           </View>
 
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'center',
-              alignItems: 'center',
-              marginTop: 20,
-            }}>
+          <View style={styles.iconView}>
             {!cropped && icon('camera-alt')}
             {!cropped
               ? !cropActive
@@ -725,11 +716,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'black',
   },
-  camera: {
-    flex: 1,
-    width: '100%',
-    height: '100%',
-  },
   handle: {
     position: 'absolute',
     width: handleSize,
@@ -747,5 +733,11 @@ const styles = StyleSheet.create({
     padding: 10,
     marginHorizontal: 10,
     backgroundColor: colors.primaryColor,
+  },
+  iconView: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 20,
   },
 });

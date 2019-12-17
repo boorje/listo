@@ -23,7 +23,7 @@ IoniconsIcon.loadFont();
 
 const MainStack = createStackNavigator(
   {
-    Home: ListScreen,
+    Home: IntroScreen,
     List: ListScreen,
     Settings: SettingsScreen,
     Camera: CameraScreen,

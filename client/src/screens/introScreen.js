@@ -15,14 +15,30 @@ import LinearGradient from 'react-native-linear-gradient';
 import * as colors from '../styles/colors';
 
 const {height, width} = Dimensions.get('window');
+const {Value} = Animated;
 
 export default function LoadingScreen(props) {
-  const [pageActive, setPage] = useState(1);
-  const test = new Animated.Value(1);
+  const [pageActive, setPage] = useState(0);
+  const images = ['../assets/groceries2.jpg', '2'];
+  const imageInfo = [];
+  const [pages] = useState([
+    new Value(0),
+    new Value(width),
+    new Value(width * 2),
+  ]);
+  const [page1] = useState(new Value(0));
+  const [page2] = useState(new Value(width));
+  const [page3] = useState(new Value(width * 2));
 
   function dots() {
     return (
       <View style={styles.dotView}>
+        <View
+          style={[
+            styles.dot,
+            {backgroundColor: pageActive === 0 ? colors.primaryColor : 'gray'},
+          ]}
+        />
         <View
           style={[
             styles.dot,
@@ -35,12 +51,6 @@ export default function LoadingScreen(props) {
             {backgroundColor: pageActive === 2 ? colors.primaryColor : 'gray'},
           ]}
         />
-        <View
-          style={[
-            styles.dot,
-            {backgroundColor: pageActive === 3 ? colors.primaryColor : 'gray'},
-          ]}
-        />
       </View>
     );
   }
@@ -48,44 +58,91 @@ export default function LoadingScreen(props) {
   const _panResponder = PanResponder.create({
     onMoveShouldSetPanResponder: (evt, gestureState) => true,
     onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
-    onPanResponderGrant: (evt, gestureState) => {},
+    onPanResponderGrant: (evt, gestureState) => {
+      pages[0].setOffset(pages[0]._value);
+      pages[0].setValue(0);
+      pages[1].setOffset(pages[1]._value);
+      pages[1].setValue(0);
+      pages[2].setOffset(pages[2]._value);
+      pages[2].setValue(0);
+    },
     onPanResponderMove: (evt, gestureState) => {},
     onPanResponderRelease: (evt, gestureState) => {
-      if (gestureState.dx < 0) {
-        setPage(pageActive + 1);
-      } else if (pageActive > 1 && gestureState.dx > 0) {
-        setPage(pageActive - 1);
+      if (gestureState.dx < 0 && pageActive < pages.length - 1) {
+        swipeLeft();
+      } else if (pageActive > 0 && gestureState.dx > 0) {
+        swipeRight();
       }
-      console.log(pageActive);
-      Animated.timing(test, {
-        toValue: 0.5,
-        duration: 1000,
-      }).start();
+      pages[0].flattenOffset();
+      pages[1].flattenOffset();
+      pages[2].flattenOffset();
     },
   });
 
-  function page(x) {
-    let image = '../assets/groceries.jpeg';
-    switch (pageActive) {
-      case 1:
-        image = '../assets/groceries.jpeg';
-    }
-    return (
-      <Animated.View
-        style={[styles.page, {opacity: test}]}
-        {..._panResponder.panHandlers}>
-        <Image
-          source={require('../assets/groceries.jpeg')}
-          style={styles.image}
-          resizeMode="contain"
-        />
-      </Animated.View>
-    );
+  function swipeLeft() {
+    Animated.stagger(0, [
+      Animated.sequence([
+        Animated.timing(pages[pageActive], {
+          toValue: -width,
+          duration: 200,
+        }),
+        Animated.timing(pages[pageActive + 1], {
+          toValue: 0,
+          duration: 200,
+        }),
+      ]),
+    ]).start();
+    setPage(pageActive + 1);
+  }
+
+  function swipeRight() {
+    Animated.stagger(50, [
+      Animated.sequence([
+        Animated.timing(pages[pageActive], {
+          toValue: width,
+          duration: 200,
+        }),
+        Animated.timing(pages[pageActive - 1], {
+          toValue: 0,
+          duration: 200,
+        }),
+      ]),
+    ]).start();
+    setPage(pageActive - 1);
   }
 
   return (
     <View style={styles.container}>
-      {page(pageActive)}
+      <Animated.View
+        style={[styles.page, {left: pages[0]}]}
+        {..._panResponder.panHandlers}>
+        <Image
+          source={require('../assets/groceries2.jpg')}
+          style={styles.image}
+          resizeMode="contain"
+        />
+      </Animated.View>
+      <Animated.View
+        style={[styles.page, {left: pages[1]}]}
+        {..._panResponder.panHandlers}>
+        <Image
+          // source={require('../assets/groceries.jpeg')}
+          source={require('../assets/groceries2.jpg')}
+          style={styles.image}
+          resizeMode="contain"
+        />
+      </Animated.View>
+      <Animated.View
+        style={[styles.page, {left: pages[2]}]}
+        {..._panResponder.panHandlers}>
+        <Image
+          // source={require('../assets/winestand.jpg')}
+          source={require('../assets/groceries2.jpg')}
+          style={styles.image}
+          resizeMode="contain"
+        />
+      </Animated.View>
+
       {dots()}
     </View>
   );
@@ -101,12 +158,14 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: width,
     height: '70%',
-
     justifyContent: 'center',
-    backgroundColor: 'blue',
     flexDirection: 'row',
   },
-  image: {flex: 1, width: '70%', height: undefined, backgroundColor: 'green'},
+  image: {
+    flex: 1,
+    width: undefined,
+    height: undefined,
+  },
   text: {flex: 1},
   dotView: {
     position: 'absolute',
