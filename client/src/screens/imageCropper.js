@@ -73,7 +73,8 @@ function ImageCropper(props) {
     setInitialHeight(initialWidth / (imageSize.w / imageSize.h));
     if (imageSize.h > imageSize.w) {
       const newWidth = (imageSize.w * maxImageH) / imageSize.h;
-      setInitialWidth(newWidth);
+      if (newWidth === width) setInitialWidth(newWidth * 0.9);
+      else setInitialWidth(newWidth);
     }
 
     setTopLeftPos(new ValueXY({x: 0, y: 0}));
@@ -677,7 +678,6 @@ function ImageCropper(props) {
               style={{
                 width: initialWidth,
                 height: !cropped ? initialHeight : height * 0.6,
-                backgroundColor: 'yellow',
               }}
               source={{uri: capture}}
               resizeMode="contain"
