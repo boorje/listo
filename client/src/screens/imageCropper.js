@@ -27,19 +27,23 @@ const handleSize = 30;
 
 function ImageCropper(props) {
   // STATES
+
   const [capture, setCapture] = useState(props.navigation.getParam('uri', {}));
   const [cropped, setCropped] = useState(false);
   const [cropActive, setCropActive] = useState(false);
 
   // STATES - DIMENSIONS
   const {height, width} = Dimensions.get('window');
-  const [initialWidth] = useState(width * 0.8);
+  const maxImageW = width * 0.8;
+  const maxImageH = height * 0.6;
+
+  const [initialWidth, setInitialWidth] = useState(maxImageW);
   const [imageSize, setImageSize] = useState({});
-  const [initialHeight, setInitialHeight] = useState(initialWidth);
+  const [initialHeight, setInitialHeight] = useState(maxImageH);
 
   // ANIMATED VALUES - USED FOR CROP VIEW
-  const [cropWidth] = useState(new Value(initialWidth));
-  const [cropHeight, setCropHeight] = useState(new Value(0));
+  const [cropWidth] = useState(new Value(0));
+  const [cropHeight] = useState(new Value(0));
 
   //HANDLE POSITIONS
   const [topLeftPos, setTopLeftPos] = useState(new ValueXY({x: 0, y: 0}));
@@ -59,6 +63,7 @@ function ImageCropper(props) {
       capture,
       (w, h) => {
         setImageSize({w, h});
+        console.log(w, h);
       },
       err => console.log(err),
     );
@@ -66,7 +71,11 @@ function ImageCropper(props) {
 
   useEffect(() => {
     setInitialHeight(initialWidth / (imageSize.w / imageSize.h));
-    setCropHeight(new Value(initialWidth / (imageSize.w / imageSize.h)));
+    if (imageSize.h > imageSize.w) {
+      const newWidth = (imageSize.w * maxImageH) / imageSize.h;
+      setInitialWidth(newWidth);
+    }
+
     setTopLeftPos(new ValueXY({x: 0, y: 0}));
     setTopRightPos(
       new ValueXY({
@@ -86,7 +95,7 @@ function ImageCropper(props) {
         y: initialWidth / (imageSize.w / imageSize.h) - handleSize,
       }),
     );
-  }, [imageSize.w, imageSize.h, initialWidth]);
+  }, [initialWidth, imageSize.w, imageSize.h, initialHeight, maxImageH]);
 
   function resetImageAndPositions() {
     setCropActive(false);
@@ -668,6 +677,7 @@ function ImageCropper(props) {
               style={{
                 width: initialWidth,
                 height: !cropped ? initialHeight : height * 0.6,
+                backgroundColor: 'yellow',
               }}
               source={{uri: capture}}
               resizeMode="contain"
