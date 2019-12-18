@@ -89,7 +89,8 @@ module.exports.createStore = () => {
   GroceryItem.belongsTo(GroceryList, {
     foreignKey: "list",
     targetKey: "id",
-    onDelete: "CASCADE"
+    onDelete: "CASCADE",
+    as: "items"
   });
   // creates the model ListEditors with user and list as PK.
   // default onDelete is CASCADE
