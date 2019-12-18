@@ -8,6 +8,7 @@ import {
   Text,
   Dimensions,
 } from 'react-native';
+import {Easing} from 'react-native';
 
 // styles
 import * as colors from '../styles/colors';
@@ -34,11 +35,7 @@ export default function LoadingScreen(props) {
     'By using OCR technolgy the app recognizes grocery items in, let´s say a recipe.',
     'Select the items recognized by the app that you need.',
   ];
-  const [pages] = useState([
-    new Value(0),
-    new Value(width),
-    new Value(width * 2),
-  ]);
+  const [pages] = useState([new Value(0), new Value(width), new Value(width)]);
 
   function dots() {
     return (
@@ -89,11 +86,13 @@ export default function LoadingScreen(props) {
   function swipeLeft() {
     Animated.timing(pages[pageActive], {
       toValue: -width,
+      easing: Easing.linear,
       duration: animationDuration,
     }).start();
     Animated.timing(pages[pageActive + 1], {
       toValue: 0,
       delay: animationDuration / 1.5,
+      easing: Easing.linear,
       duration: animationDuration,
     }).start();
     setPage(pageActive + 1);
@@ -102,11 +101,13 @@ export default function LoadingScreen(props) {
   function swipeRight() {
     Animated.timing(pages[pageActive], {
       toValue: width,
+      easing: Easing.linear,
       duration: animationDuration,
     }).start();
     Animated.timing(pages[pageActive - 1], {
       toValue: 0,
       delay: animationDuration / 1.5,
+      easing: Easing.linear,
       duration: animationDuration,
     }).start();
     setPage(pageActive - 1);

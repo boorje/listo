@@ -75,12 +75,12 @@ export default function HomeScreen(props) {
         message={apiError}
         closeMessage={() => setApiError('')}
       />
-      <SafeAreaView style={{flex: 5, marginTop: '3%'}}>
+      <View style={{flex: 5}}>
         <GroceryListsContainer
           user={userData.user}
           goToList={() => props.navigation.navigate('List')}
         />
-      </SafeAreaView>
+      </View>
       <View style={styles.addIcon}>
         <Icon
           size={80}

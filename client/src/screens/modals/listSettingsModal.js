@@ -151,7 +151,7 @@ export default function ListSettingsModal(props) {
                 {editor.email}
               </Text>
               {editor.id === props.groceryList.owner.id && (
-                <Icon size={30} name={'ios-key'} color={'black'} />
+                <Text style={{fontSize: 22}}>👑</Text>
               )}
             </View>
           </TouchableWithoutFeedback>

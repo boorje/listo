@@ -47,11 +47,11 @@ PrimaryButton.propTypes = {
 const styles = StyleSheet.create({
   button: {
     height: 59,
-    borderRadius: 10,
+    borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 10,
-    width: '100%',
+    width: '70%',
   },
   text: {
     color: '#fff',

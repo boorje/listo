@@ -8,6 +8,7 @@ import Message from '../../components/message';
 import Logo from '../../components/logo';
 //styles
 import * as colors from '../../styles/colors';
+import textStyles from '../../styles/textStyles';
 // -- api --
 import * as mutations from '../../api/mutations';
 
@@ -87,14 +88,14 @@ export default function VerifyScreen(props) {
         message={error}
         closeMessage={() => setError('')}
       />
-      {/* <Logo /> */}
+      <Logo />
       <CodeForm
         handleSubmit={confirmSignin}
         loading={loading}
         submitTitle="Verify code"
       />
       {cognitoUser && cognitoUser.username && (
-        <Text style={styles.textInfo}>
+        <Text style={[textStyles.smallText, styles.textInfo]}>
           A code has been sent to{' '}
           <Text style={styles.email}>{cognitoUser.username}</Text>.
         </Text>
@@ -106,12 +107,13 @@ export default function VerifyScreen(props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
     backgroundColor: colors.primaryColor,
   },
   textInfo: {
     textAlign: 'center',
     paddingVertical: '5%',
+    color: 'white',
   },
   email: {
     fontWeight: 'bold',

@@ -34,19 +34,18 @@ class Swipeout extends React.Component {
       },
 
       onPanResponderMove: (evt, gestureState) => {
+        this.props.disableScroll();
+        this.setState({swipeActive: true});
         if (
           gestureState.dx < 0 &&
           Math.abs(gestureState.dx) < this.state.initialWidth / 2
         ) {
-          this.props.disableScroll();
-          this.setState({swipeActive: true});
           this.xWidth.setValue(
             this.getRatio(gestureState.dx) * this.state.viewWidth,
           );
           this.xWidth2.setValue(
             (1 - this.getRatio(gestureState.dx)) * this.state.viewWidth,
           );
-
           this.setState({trashActive: false});
           if (Math.abs(gestureState.dx) >= this.state.viewWidth / 3) {
             if (!this.state.trashActive)
@@ -64,7 +63,6 @@ class Swipeout extends React.Component {
           Animated.timing(this.xWidth, {
             toValue: this.state.viewWidth,
             duration: 300,
-            easing: Easing.elastic(0.5),
           }),
           Animated.timing(this.xWidth2, {
             toValue: 0,
