@@ -17,6 +17,7 @@ import CameraScreen from './src/screens/cameraScreen';
 import ItemSelectionScreen from './src/screens/itemSelection';
 import LoadingScreen from './src/screens/loadingScreen';
 import IntroScreen from './src/screens/introScreen';
+import DetectTextScreen from './src/screens/detectTextScreen';
 
 Icon.loadFont();
 IoniconsIcon.loadFont();
@@ -31,6 +32,7 @@ const MainStack = createStackNavigator(
     ItemSelection: ItemSelectionScreen,
     Loading: LoadingScreen,
     Intro: IntroScreen,
+    DetectText: DetectTextScreen,
   },
   {headerMode: 'none'},
 );

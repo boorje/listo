@@ -46,11 +46,30 @@ class DB extends DataSource {
       : null;
   }
 
+  async getGroceryList(listid) {
+    const list = await this.store.GroceryList.findByPk(listid, {
+      include: [
+        {
+          model: this.store.User,
+          as: "listOwner"
+        },
+        {
+          model: this.store.GroceryItem,
+          as: "items"
+        }
+      ]
+    });
+    let foundList = list.get({ plain: true });
+    foundList.owner = foundList.listOwner;
+    console.log(foundList);
+    return foundList;
+  }
+
   async getListEditors({ listid }) {
     const listItem = await this.store.GroceryList.findByPk(listid, {
       attributes: [],
       include: [
-        { as: "listOwner", model: this.store.User },
+        { model: this.store.User, as: "listOwner" },
         {
           as: "listEditors",
           model: this.store.User,
@@ -83,11 +102,23 @@ class DB extends DataSource {
     return items ? items : null;
   }
 
+  async getUser(id) {
+    const user = await this.store.User.findByPk(id);
+    return user ? user.get({ plain: true }) : null;
+  }
+
   // -- CREATE --
-  async createGroceryList({ input }) {
-    const { title, owner } = input;
-    const res = await this.store.GroceryList.create({ title, owner });
-    return res ? res.get({ plain: true }) : null;
+  async createGroceryList({ title }) {
+    const res = await this.store.GroceryList.create({
+      title,
+      owner: this.context.user.id
+    });
+    let createdList = res.get({ plain: true });
+    createdList.isOwner = true;
+    createdList.itemCount = 0;
+    const user = await this.store.User.findByPk(this.context.user.id);
+    createdList.owner = user.get({ plain: true });
+    return createdList;
   }
 
   async createListEditor({ listid, email }) {
@@ -101,9 +132,20 @@ class DB extends DataSource {
     return editor ? { id: userid, email } : null;
   }
 
-  async createGroceryItem({ input }) {
+  async createGroceryItem(input) {
     const res = await this.store.GroceryItem.create(input);
-    return res && res.dataValues ? res.dataValues : null;
+    return res ? res.get({ plain: true }) : null;
+  }
+
+  async createGroceryItems({ input }) {
+    const createdItems = await this.store.GroceryItem.bulkCreate(input, {
+      validate: true,
+      fields: ["name", "list", "quantity", "unit"],
+      returning: true
+    });
+    return createdItems
+      ? createdItems.map(item => item.get({ plain: true }))
+      : null;
   }
 
   async createUser(input) {

@@ -1,28 +1,32 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {useQuery, useMutation} from '@apollo/react-hooks';
 // components
 import GroceriesContainer from '../components/groceriesContainer';
 import Message from '../components/message';
 import ScreenHeader from '../components/screenHeader';
+import AddGroceryFooter from '../components/addGroceryFooter';
 import PreviousGroceriesModal from './modals/previousGroceriesModal';
 import ListSettingsModal from './modals/listSettingsModal';
-import AddGroceryFooter from '../components/addGroceryFooter';
 //api
 import * as queries from '../api/queries';
 import * as mutations from '../api/mutations';
 import * as colors from '../styles/colors';
 
 export default function ListScreen(props) {
-  const [list] = useState(props.navigation.getParam('list', {}));
   const [historyOpen, toggleHistory] = useState(false);
   const [listSettingsOpen, toggleSettings] = useState(false);
   const [apiError, setApiError] = useState('');
   const [addItemOpen, toggleAddItem] = useState(false);
 
-  // useEffect(() => {
-  //   console.log('LISTSCREEN: ', props.navigation.getParam('list', {}));
-  // }, [props]);
+  const {
+    data: {list},
+    loading: fetchingList,
+    error: listError,
+  } = useQuery(queries.GET_ACTIVE_LIST);
+
+  if (fetchingList) console.log('Fetching list..');
+  if (listError) console.log('LISTERRORFETCH: ', listError);
 
   const [addGroceryItem] = useMutation(mutations.CREATE_GROCERY_LIST_ITEM, {
     update(cache, {data}) {
@@ -42,6 +46,7 @@ export default function ListScreen(props) {
       });
     },
     onError(error) {
+      console.log('additem error', error);
       setApiError(error);
     },
   });
@@ -51,7 +56,7 @@ export default function ListScreen(props) {
       {historyOpen && (
         <PreviousGroceriesModal closeModal={() => toggleHistory(false)} />
       )}
-      {listSettingsOpen && (
+      {list && listSettingsOpen && (
         <ListSettingsModal
           groceryList={list}
           closeModal={() => toggleSettings(false)}
@@ -70,7 +75,6 @@ export default function ListScreen(props) {
         leftIcon={'ios-arrow-round-back'}
         //rightIcon1={'md-hourglass'}
         rightIcon2={'md-person-add'}
-        groceryList={list}
       />
       <View style={{flex: 11}}>
         <GroceriesContainer
@@ -83,7 +87,7 @@ export default function ListScreen(props) {
         <AddGroceryFooter
           addGrocery={input => {
             const item = {...input, list: list.id};
-            addGroceryItem({variables: {input: item}});
+            addGroceryItem({variables: {item}});
           }}
           addItemOpen={addItemOpen}
           navigation={props.navigation}

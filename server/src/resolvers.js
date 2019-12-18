@@ -2,7 +2,7 @@ const { AuthenticationError } = require("apollo-server");
 
 const authenticated = next => (root, args, context, info) => {
   if (!context.user || !context.user.id) {
-    //TODO: throw new AuthenticationError();
+    throw new AuthenticationError();
   }
   return next(root, args, context, info);
 };
@@ -12,6 +12,10 @@ module.exports = {
     getUserGroceryLists: authenticated(
       async (_, { owner }, { dataSources }) =>
         await dataSources.db.getUserGroceryLists({ owner })
+    ),
+    getGroceryList: authenticated(
+      async (_, { listid }, { dataSources }) =>
+        await dataSources.db.getGroceryList(listid)
     ),
     getGroceryListItems: authenticated(
       async (_, { list }, { dataSources }) =>
@@ -24,7 +28,7 @@ module.exports = {
   },
   Mutation: {
     createGroceryList: authenticated(async (_, { input }, { dataSources }) => {
-      const list = await dataSources.db.createGroceryList({ input });
+      const list = await dataSources.db.createGroceryList(input);
       const response = {
         code: list ? 200 : 400,
         success: list ? true : false,
@@ -48,12 +52,22 @@ module.exports = {
       return response;
     }),
     createGroceryItem: authenticated(async (_, { input }, { dataSources }) => {
-      const item = await dataSources.db.createGroceryItem({ input });
+      const item = await dataSources.db.createGroceryItem(input);
       const response = {
         code: item ? 200 : 500,
         success: item ? true : false,
         message: "Successfully created the item",
         item
+      };
+      return response;
+    }),
+    createGroceryItems: authenticated(async (_, { input }, { dataSources }) => {
+      const items = await dataSources.db.createGroceryItems({ input });
+      const response = {
+        code: items.length > 0 ? 200 : 500,
+        success: items.length > 0 ? true : false,
+        message: "Successfully created the items",
+        items
       };
       return response;
     }),
@@ -139,6 +153,9 @@ module.exports = {
     editors: (parent, _, { dataSources }) => {
       return dataSources.db.getListEditors({ listid: parent.id });
     }
+    // owner: ({ owner }, _, { dataSources }) => {
+    //   return dataSources.db.getUser(owner);
+    // }
   },
   MutationResponse: {
     __resolveType(mutationResponse, context, info) {

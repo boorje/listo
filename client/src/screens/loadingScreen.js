@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react';
-import {View, Animated, StyleSheet} from 'react-native';
+import React from 'react';
+import {StyleSheet} from 'react-native';
 // components
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';

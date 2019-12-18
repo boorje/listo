@@ -13,24 +13,16 @@ const LoginForm = props => (
   <View style={styles.container}>
     <Formik
       initialValues={{email: ''}}
-      onSubmit={values => props.handleSubmit(values)}
+      onSubmit={values => props.handleLogin(values)}
       validationSchema={yup.object().shape({
         email: yup
           .string()
           .email()
           .required(),
       })}>
-      {({
-        values,
-        handleChange,
-        errors,
-        setFieldTouched,
-        touched,
-        isValid,
-        handleSubmit,
-      }) => (
+      {({values, handleChange, errors, touched, isValid, handleSubmit}) => (
         <React.Fragment>
-          <View style={styles.loginForm}>
+          <View style={styles.form}>
             <View style={styles.textBox}>
               <Icon
                 size={20}
@@ -41,12 +33,12 @@ const LoginForm = props => (
               <TextInput
                 value={values.email}
                 onChangeText={handleChange('email')}
-                onSubmitEditing={() => setFieldTouched('email')}
+                onSubmitEditing={handleSubmit}
                 placeholder="E-mail"
                 returnKeyType="done"
                 placeholderTextColor="white"
                 autoCapitalize="none"
-                autoCorrect="none"
+                autoCorrect={false}
                 autoFocus={false}
                 style={styles.textInput}
               />
@@ -60,9 +52,6 @@ const LoginForm = props => (
                 {errors.email}
               </Text>
             </View>
-          </View>
-
-          <View style={styles.button}>
             <SubmitButton
               title="Sign in"
               disabled={!isValid}
@@ -99,14 +88,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: '11%',
   },
-  loginForm: {width: '100%', alignItems: 'center'},
+  form: {width: '80%', alignItems: 'center'},
   textBox: {
-    width: '80%',
+    width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 30,
     backgroundColor: 'rgba(255, 255, 255, 0.3)',
     borderRadius: 10,
+    height: 59,
   },
   textInput: {
     flex: 1,
@@ -117,7 +107,7 @@ const styles = StyleSheet.create({
   },
   icon: {
     position: 'absolute',
-    left: '2%',
+    left: '4%',
   },
   inputErrorView: {marginTop: '2%', paddingLeft: '10%'},
   inputError: {
@@ -125,13 +115,9 @@ const styles = StyleSheet.create({
     color: 'red',
     fontFamily: 'Avenir Next',
   },
-  button: {
-    width: '70%',
-    marginTop: '5%',
-  },
 });
 
 LoginForm.propTypes = {
-  handleSubmit: PropTypes.func.isRequired,
+  handleLogin: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
 };

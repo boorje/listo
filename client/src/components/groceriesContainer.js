@@ -70,6 +70,16 @@ function GroceryItem(props) {
   );
 }
 
+GroceryItem.propTypes = {
+  grocery: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+  }).isRequired,
+  addItemOpen: PropTypes.bool.isRequired,
+  removeGrocery: PropTypes.func.isRequired,
+  updateGrocery: PropTypes.func.isRequired,
+};
+
 export default function GroceriesContainer(props) {
   const {data, loading, error, refetch, networkStatus} = useQuery(
     queries.GET_GROCERY_LIST_ITEMS,
@@ -126,7 +136,6 @@ export default function GroceriesContainer(props) {
                 grocery={item}
                 addItemOpen={props.addItemOpen}
                 removeGrocery={id => deleteItem({variables: {id}})}
-                showGroceryForm={() => {}}
                 updateGrocery={input => updateItem({variables: {input}})}
               />
             )}
@@ -180,4 +189,7 @@ const styles = StyleSheet.create({
   },
 });
 
-GroceriesContainer.propTypes = {};
+GroceriesContainer.propTypes = {
+  listId: PropTypes.string.isRequired,
+  addItemOpen: PropTypes.bool.isRequired,
+};

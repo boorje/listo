@@ -33,6 +33,7 @@ export default function ListSettingsModal(props) {
   } = useQuery(queries.GET_LIST_EDITORS, {
     variables: {listid: props.groceryList.id},
   });
+
   const [
     addListEditor,
     {loading: mutationLoading, error: mutationError},
@@ -55,6 +56,7 @@ export default function ListSettingsModal(props) {
       toggleMessage(true);
     },
   });
+
   const [deleteListEditor] = useMutation(mutations.DELETE_LIST_EDITOR, {
     update(cache, {data}) {
       const {getListEditors} = cache.readQuery({
@@ -164,6 +166,7 @@ export default function ListSettingsModal(props) {
         <View style={styles.textInput}>
           <AddUser
             expandModal={() => toggleModalExpand(true)}
+            modalExpanded={modalExpanded}
             addEditor={email => {
               addEditor(email);
               toggleModalExpand(false);
@@ -182,16 +185,14 @@ export default function ListSettingsModal(props) {
       {apiError.length > 0 && messageOpen && (
         <Message messageOpen={() => toggleMessage(false)} message={apiError} />
       )}
-      {editorsData && editorsData.getListEditors && (
-        <KeyboardAwareFlatList
-          scrollEnabled={scrollEnabled}
-          data={editorsData.getListEditors}
-          renderItem={({item}) => renderEditor(item)}
-          ItemSeparatorComponent={() => <View style={styles.separator} />}
-          keyExtractor={item => item.id}
-          ListFooterComponent={addUserTextInput}
-        />
-      )}
+      <KeyboardAwareFlatList
+        scrollEnabled={scrollEnabled}
+        data={editorsData ? editorsData.getListEditors : null}
+        renderItem={({item}) => renderEditor(item)}
+        ItemSeparatorComponent={() => <View style={styles.separator} />}
+        keyExtractor={item => item.id}
+        ListFooterComponent={addUserTextInput}
+      />
     </OverlayModal>
   );
 }

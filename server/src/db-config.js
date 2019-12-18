@@ -75,6 +75,12 @@ module.exports.createStore = () => {
     onDelete: "CASCADE",
     as: "listOwner"
   });
+  User.hasMany(GroceryList, {
+    foreignKey: "owner",
+    targetKey: "id",
+    as: "listOwner"
+  });
+
   GroceryList.hasMany(GroceryItem, {
     foreignKey: "list",
     targetKey: "id",
@@ -84,11 +90,6 @@ module.exports.createStore = () => {
     foreignKey: "list",
     targetKey: "id",
     onDelete: "CASCADE"
-  });
-  User.hasMany(GroceryList, {
-    foreignKey: "owner",
-    targetKey: "id",
-    as: "listOwner"
   });
   // creates the model ListEditors with user and list as PK.
   // default onDelete is CASCADE

@@ -33,7 +33,7 @@ export default class GroceryForm extends React.Component {
 
   handleSubmitEditing = () => {
     const {name, quantity, unit, id} = this.state;
-    let data = {name, unit, quantity: parseInt(quantity)};
+    let data = {name, unit, quantity: parseFloat(quantity)};
     if (id) data.id = id;
     this.props.addGrocery(data);
     this.setState({name: '', quantity: null, unit: null});

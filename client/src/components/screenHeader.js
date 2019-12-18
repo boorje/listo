@@ -9,16 +9,29 @@ import {
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 import PropTypes from 'prop-types';
 import LinearGradient from 'react-native-linear-gradient';
-import {useMutation} from '@apollo/react-hooks';
+import {useMutation, useQuery} from '@apollo/react-hooks';
 // styles
 import * as colors from '../styles/colors';
 import textStyles from '../styles/textStyles';
 // api
+import * as queries from '../api/queries';
 import * as mutations from '../api/mutations';
 
-function ScreenHeader(props) {
+// TODO: Move icon logic to screenheader instead of parent. Provide different cases
+export default function ScreenHeader(props) {
   const [textInputActive, setTextInputActive] = useState(false);
-  const [textInputValue, setTextInputValue] = useState(props.groceryList.title);
+  const [textInputValue, setTextInputValue] = useState('');
+
+  const {
+    data: {list},
+    loading: fetchingList,
+    error: listError,
+  } = useQuery(queries.GET_ACTIVE_LIST);
+
+  if (fetchingList) console.log('Fetching list..');
+  if (listError) console.log('LISTERRORFETCH: ', listError);
+  if (textInputValue.length < 1 && list && !textInputActive)
+    setTextInputValue(list.title);
 
   const [updateListTitle] = useMutation(mutations.UPDATE_LIST_TITLE, {
     onError() {
@@ -45,9 +58,9 @@ function ScreenHeader(props) {
           <TouchableHighlight
             underlayColor={'transparent'}
             style={styles.headerTitle}
-            disabled={!props.groceryList.isOwner}
+            disabled={!list.isOwner}
             onPress={() => {
-              if (props.groceryList.isOwner) {
+              if (list.isOwner) {
                 setTextInputActive(true);
               }
             }}>
@@ -102,8 +115,6 @@ function ScreenHeader(props) {
   );
 }
 
-export default ScreenHeader;
-
 const styles = StyleSheet.create({
   container: {
     top: 0,
@@ -137,6 +148,10 @@ const styles = StyleSheet.create({
 });
 
 ScreenHeader.propTypes = {
-  leftIconPress: PropTypes.func.isRequired,
-  leftIcon: PropTypes.string.isRequired,
+  leftIcon: PropTypes.string,
+  leftIconPress: PropTypes.func,
+  rightIcon1: PropTypes.string,
+  rightIcon1Press: PropTypes.func,
+  rightIcon2: PropTypes.string,
+  rightIcon2Press: PropTypes.func,
 };
