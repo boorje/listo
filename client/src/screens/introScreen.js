@@ -20,12 +20,20 @@ const animationDuration = 150;
 export default function LoadingScreen(props) {
   const [pageActive, setPage] = useState(0);
   const images = [
-    require('../assets/groceries2.jpg'),
-    require('../assets/groceries2.jpg'),
-    require('../assets/groceries2.jpg'),
+    require('../assets/iphoneX.png'),
+    require('../assets/iphoneX.png'),
+    require('../assets/iphoneX.png'),
   ];
-  const imageTitle = ['1', '2', '3'];
-  const imageText = ['First page', 'Second page', 'Third page'];
+  const imageTitle = [
+    'Sharing is caring ❤️',
+    'Scan for ingredients 📸',
+    'Select only what you need ✅',
+  ];
+  const imageText = [
+    'Share your lists with family and friends and keep track of what needs to be bought.',
+    'By using OCR technolgy the app recognizes grocery items in, let´s say a recipe.',
+    'Select the items recognized by the app that you need.',
+  ];
   const [pages] = useState([
     new Value(0),
     new Value(width),
@@ -112,7 +120,7 @@ export default function LoadingScreen(props) {
         <Image source={images[0]} style={styles.image} resizeMode="contain" />
         <View style={styles.textView}>
           <Text style={[textStyles.default]}>{imageTitle[0]}</Text>
-          <Text>{imageText[0]}</Text>
+          <Text style={styles.text}>{imageText[0]}</Text>
         </View>
       </Animated.View>
       <Animated.View
@@ -121,7 +129,7 @@ export default function LoadingScreen(props) {
         <Image source={images[1]} style={styles.image} resizeMode="contain" />
         <View style={styles.textView}>
           <Text style={[textStyles.default]}>{imageTitle[1]}</Text>
-          <Text>{imageText[1]}</Text>
+          <Text style={styles.text}>{imageText[1]}</Text>
         </View>
       </Animated.View>
       <Animated.View
@@ -130,10 +138,17 @@ export default function LoadingScreen(props) {
         <Image source={images[2]} style={styles.image} resizeMode="contain" />
         <View style={styles.textView}>
           <Text style={[textStyles.default]}>{imageTitle[2]}</Text>
-          <Text>{imageText[2]}</Text>
+          <Text style={styles.text}>{imageText[2]}</Text>
         </View>
       </Animated.View>
 
+      <View style={styles.skipButton}>
+        <Text
+          onPress={() => props.navigation.navigate('Login')}
+          style={{color: colors.primaryColor}}>
+          Skip
+        </Text>
+      </View>
       {dots()}
     </View>
   );
@@ -148,19 +163,22 @@ const styles = StyleSheet.create({
   page: {
     position: 'absolute',
     width: width,
-    height: '70%',
+    height: '75%',
     justifyContent: 'center',
   },
   image: {
-    flex: 4,
+    flex: 5,
     width: undefined,
     height: undefined,
   },
   textView: {
     flex: 1,
+    width: '80%',
+    alignSelf: 'center',
     alignItems: 'center',
     marginTop: '10%',
   },
+  text: {textAlign: 'center', color: 'gray', marginTop: '5%'},
   dotView: {
     position: 'absolute',
     bottom: '8%',
@@ -168,9 +186,14 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   dot: {
-    width: 12,
-    height: 12,
+    width: 9,
+    height: 9,
     borderRadius: 10,
     marginHorizontal: 10,
+  },
+  skipButton: {
+    position: 'absolute',
+    bottom: '8%',
+    right: '12%',
   },
 });
