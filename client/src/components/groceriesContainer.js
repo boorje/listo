@@ -14,6 +14,7 @@ import {KeyboardAwareFlatList} from 'react-native-keyboard-aware-scroll-view';
 // components
 import GroceryForm from './forms/groceryForm';
 import EmptyListInfo from './emptyListInfo';
+import Loading from './loadingComponent';
 // styles
 import textStyles from '../styles/textStyles';
 import * as colors from '../styles/colors';
@@ -81,14 +82,20 @@ GroceryItem.propTypes = {
 };
 
 export default function GroceriesContainer(props) {
+  const [apiError, setApiError] = useState('');
   const {data, loading, error, refetch, networkStatus} = useQuery(
     queries.GET_GROCERY_LIST_ITEMS,
     {
       variables: {list: props.listId},
       notifyOnNetworkStatusChange: true,
       fetchPolicy: 'cache-first',
+      onError(err) {
+        console.log(err);
+        setApiError('Could not fecth list items.');
+      },
     },
   );
+
   const [deleteItem] = useMutation(mutations.DELETE_GROCERY_LIST_ITEM, {
     update(cache, {data}) {
       const {getGroceryListItems} = cache.readQuery({
@@ -105,16 +112,21 @@ export default function GroceriesContainer(props) {
         },
       });
     },
-    onError(error) {
-      console.log('ERROR\n ', error);
+    onError(err) {
+      console.log(err);
+      setApiError('Could not delete item.');
     },
   });
-  const [updateItem] = useMutation(mutations.UPDATE_GROCERY_ITEM);
+  const [updateItem] = useMutation(mutations.UPDATE_GROCERY_ITEM, {
+    onError(err) {
+      console.log(err);
+      setApiError('Could not update item.');
+    },
+  });
 
-  if (loading) return <Text>loading...</Text>;
-  if (error) console.log(error);
-
-  return (
+  return loading ? (
+    <Loading />
+  ) : (
     <View style={{flex: 1}}>
       <View style={styles.groceries}>
         {data &&

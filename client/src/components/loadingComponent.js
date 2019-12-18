@@ -77,7 +77,7 @@ export default function LoadingComponent(props) {
       <IoniconsIcon
         style={styles.iconStyle}
         size={50}
-        color={props.color}
+        color={props.color ? props.color : colors.primaryColor}
         name={name}
       />
     );
