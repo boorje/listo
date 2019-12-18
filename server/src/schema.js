@@ -14,6 +14,7 @@ const typeDefs = gql`
     isOwner: Boolean!
     items: [GroceryItem]
     itemCount: Int!
+    editorCount: Int!
     editors: [User]
   }
 
