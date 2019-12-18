@@ -1,7 +1,6 @@
 const { ApolloServer, AuthenticationError } = require("apollo-server");
 const jwt = require("jsonwebtoken");
 const jwkToPem = require("jwk-to-pem");
-const jwks = require("../jwks");
 
 const typeDefs = require("./schema");
 const resolvers = require("./resolvers");
@@ -17,7 +16,7 @@ const store = createStore();
  */
 function verifyAndDecodeToken(token) {
   return new Promise((resolve, reject) => {
-    const pem = jwkToPem(jwks.keys[1]);
+    const pem = jwkToPem(JSON.parse(process.env.JWKS));
     const verificationOpt = {
       algorithms: ["RS256"],
       client_id: process.env.COGNITO_CLIENT_ID,
@@ -51,6 +50,6 @@ const server = new ApolloServer({
   }
 });
 
-server.listen().then(({ url }) => {
+server.listen({ port: process.env.PORT || 4000 }).then(({ url }) => {
   console.log(`🚀  Server ready at ${url}`);
 });
