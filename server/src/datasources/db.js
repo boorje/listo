@@ -19,13 +19,13 @@ class DB extends DataSource {
       },
       include: [
         {
+          model: this.store.User,
+          as: "listOwner"
+        },
+        {
           as: "listEditors",
           model: this.store.User,
           through: { attributes: [] }
-        },
-        {
-          model: this.store.User,
-          as: "listOwner"
         }
         // {
         //   model: this.store.GroceryItem,
@@ -41,6 +41,7 @@ class DB extends DataSource {
           list.itemCount = await this.store.GroceryItem.count({
             where: { list: list.id }
           });
+          list.editorCount = list.listEditors.length;
           return list;
         })
       : null;
