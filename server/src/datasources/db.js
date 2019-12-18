@@ -117,6 +117,7 @@ class DB extends DataSource {
     let createdList = res.get({ plain: true });
     createdList.isOwner = true;
     createdList.itemCount = 0;
+    createdList.editorCount = 0;
     const user = await this.store.User.findByPk(this.context.user.id);
     createdList.owner = user.get({ plain: true });
     return createdList;
