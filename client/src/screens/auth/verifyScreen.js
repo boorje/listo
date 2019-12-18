@@ -59,9 +59,11 @@ export default function VerifyScreen(props) {
       const {attributes} = await Auth.currentAuthenticatedUser();
       await signin({variables: {input: {email: attributes.email}}});
       await addUserToCache(attributes.sub, attributes.email);
+      toggleLoading(false);
       props.navigation.navigate('Home');
     } catch (err) {
       await Auth.signOut();
+      toggleLoading(false);
       switch (err.code) {
         case 'ValidationError':
           setError('Please provide a valid verification code.');
@@ -74,7 +76,6 @@ export default function VerifyScreen(props) {
           break;
       }
     }
-    toggleLoading(false);
   }
 
   return (
