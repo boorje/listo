@@ -5,6 +5,7 @@ import {Formik} from 'formik';
 import * as yup from 'yup';
 
 import SubmitButton from '../buttons/submitButton';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import formStyles from '../../styles/formStyles';
 
@@ -32,12 +33,19 @@ const CodeForm = props => {
           <React.Fragment>
             <View style={styles.form}>
               <View style={styles.textBox}>
+                <Icon
+                  size={20}
+                  name={'check'}
+                  color={'white'}
+                  style={styles.icon}
+                />
                 <TextInput
                   value={values.code}
                   onChangeText={handleChange('code')}
                   onSubmitEditing={() => setFieldTouched('code')}
                   returnKeyType="done"
                   placeholder="Your verification code"
+                  placeholderTextColor="white"
                   autoFocus={false}
                   style={styles.textInput}
                 />

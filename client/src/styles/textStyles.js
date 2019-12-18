@@ -44,7 +44,7 @@ const textStyles = StyleSheet.create({
     fontSize: 15,
     fontFamily: 'Avenir Next',
     color: 'gray',
-    paddingLeft: '1%',
+    paddingLeft: '2%',
   },
   button: {
     fontSize: 20,

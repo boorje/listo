@@ -48,7 +48,9 @@ export default function SettingsScreen(props) {
       />
       <View style={styles.emailText}>
         {Object.entries(user).length > 0 && user.constructor === Object && (
-          <Text style={textStyles.listTitle}>{user.email}</Text>
+          <Text style={[textStyles.listTitle, {fontSize: 20}]}>
+            {user.email}
+          </Text>
         )}
       </View>
 

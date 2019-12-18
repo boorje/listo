@@ -11,6 +11,7 @@ export const GET_USERS_LISTS = gql`
       }
       isOwner
       itemCount
+      editorCount
     }
   }
 `;

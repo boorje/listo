@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import {
-  SafeAreaView,
   StyleSheet,
   View,
   Text,
@@ -168,7 +167,7 @@ export default function ItemSelection(props) {
         rightIcon1Press={() => props.navigation.pop(3)}
       />
       <KeyboardAwareFlatList
-        style={{marginTop: 10}}
+        style={{paddingTop: 10}}
         scrollEnabled={true}
         data={groceries}
         renderItem={({item}) => (
@@ -194,9 +193,9 @@ export default function ItemSelection(props) {
       />
     </View>
   ) : (
-    <SafeAreaView>
+    <View>
       <Text>Loading..</Text>
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -226,6 +225,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   button: {
+    position: 'absolute',
     width: '60%',
     marginTop: '10%',
     alignSelf: 'center',

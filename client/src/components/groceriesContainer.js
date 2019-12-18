@@ -48,8 +48,12 @@ function GroceryItem(props) {
           ) : (
             <View style={styles.textInfo}>
               <Text style={textStyles.default}>{grocery.name}</Text>
-              <Text style={textStyles.groceryDetails}>{grocery.quantity}</Text>
-              <Text style={textStyles.groceryDetails}>{grocery.unit}</Text>
+              <View style={styles.units}>
+                <Text style={textStyles.groceryDetails}>
+                  {grocery.quantity}
+                </Text>
+                <Text style={textStyles.groceryDetails}>{grocery.unit}</Text>
+              </View>
             </View>
           )}
         </View>
@@ -111,7 +115,6 @@ export default function GroceriesContainer(props) {
   });
   const [updateItem] = useMutation(mutations.UPDATE_GROCERY_ITEM);
 
-  if (loading) return <Text>loading...</Text>;
   if (error) console.log(error);
 
   return (
@@ -168,24 +171,27 @@ const styles = StyleSheet.create({
   container2: {
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    backgroundColor: colors.secondaryColor,
+    alignItems: 'center',
+    backgroundColor: 'transparent',
     borderTopLeftRadius: 10,
     borderBottomLeftRadius: 10,
-    alignItems: 'center',
-    marginLeft: '3%',
+    marginLeft: '2%',
     paddingRight: '3%',
-    paddingBottom: '3%',
-    marginRight: -1,
+    paddingVertical: 6,
   },
   separator: {
-    height: 3,
+    height: 1,
     width: '97%',
     marginLeft: '3%',
+    backgroundColor: 'gray',
   },
   textInfo: {
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  units: {
+    flexDirection: 'row',
+    marginLeft: '3%',
   },
 });
 
