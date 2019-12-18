@@ -35,7 +35,7 @@ export default function VerifyScreen(props) {
     });
   }
 
-  function setTokenInHeader(id, email) {
+  function addUserToCache(id, email) {
     return new Promise(resolve => {
       client.writeData({
         data: {
@@ -57,8 +57,8 @@ export default function VerifyScreen(props) {
       await Auth.sendCustomChallengeAnswer(cognitoUser, code);
       await Auth.currentSession(); // checks if the user has entered the correct code
       const {attributes} = await Auth.currentAuthenticatedUser();
-      await setTokenInHeader(attributes.sub, attributes.email);
       await signin({variables: {input: {email: attributes.email}}});
+      await addUserToCache(attributes.sub, attributes.email);
       props.navigation.navigate('Home');
     } catch (err) {
       await Auth.signOut();
