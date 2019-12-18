@@ -11,6 +11,7 @@ import {
 
 // styles
 import * as colors from '../styles/colors';
+import textStyles from '../styles/textStyles';
 
 const {height, width} = Dimensions.get('window');
 const {Value} = Animated;
@@ -23,7 +24,8 @@ export default function LoadingScreen(props) {
     require('../assets/groceries2.jpg'),
     require('../assets/groceries2.jpg'),
   ];
-  const imageInfo = [];
+  const imageTitle = ['1', '2', '3'];
+  const imageText = ['First page', 'Second page', 'Third page'];
   const [pages] = useState([
     new Value(0),
     new Value(width),
@@ -60,14 +62,12 @@ export default function LoadingScreen(props) {
     onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
     onPanResponderGrant: (evt, gestureState) => {},
     onPanResponderMove: (evt, gestureState) => {
-      // TODO: Should not swipe towards ends
-      Animated.event([
-        null,
-        {
-          dx: pages[pageActive],
-          dy: null,
-        },
-      ])(evt, gestureState);
+      if (
+        (gestureState.dx < 0 && pageActive < pages.length - 1) ||
+        (pageActive > 0 && gestureState.dx > 0)
+      ) {
+        pages[pageActive].setValue(gestureState.dx);
+      }
     },
     onPanResponderRelease: (evt, gestureState) => {
       if (gestureState.dx < 0 && pageActive < pages.length - 1) {
@@ -110,16 +110,28 @@ export default function LoadingScreen(props) {
         style={[styles.page, {left: pages[0]}]}
         {..._panResponder.panHandlers}>
         <Image source={images[0]} style={styles.image} resizeMode="contain" />
+        <View style={styles.textView}>
+          <Text style={[textStyles.default]}>{imageTitle[0]}</Text>
+          <Text>{imageText[0]}</Text>
+        </View>
       </Animated.View>
       <Animated.View
         style={[styles.page, {left: pages[1]}]}
         {..._panResponder.panHandlers}>
         <Image source={images[1]} style={styles.image} resizeMode="contain" />
+        <View style={styles.textView}>
+          <Text style={[textStyles.default]}>{imageTitle[1]}</Text>
+          <Text>{imageText[1]}</Text>
+        </View>
       </Animated.View>
       <Animated.View
         style={[styles.page, {left: pages[2]}]}
         {..._panResponder.panHandlers}>
         <Image source={images[2]} style={styles.image} resizeMode="contain" />
+        <View style={styles.textView}>
+          <Text style={[textStyles.default]}>{imageTitle[2]}</Text>
+          <Text>{imageText[2]}</Text>
+        </View>
       </Animated.View>
 
       {dots()}
@@ -138,12 +150,16 @@ const styles = StyleSheet.create({
     width: width,
     height: '70%',
     justifyContent: 'center',
-    flexDirection: 'row',
   },
   image: {
-    flex: 1,
+    flex: 4,
     width: undefined,
     height: undefined,
+  },
+  textView: {
+    flex: 1,
+    alignItems: 'center',
+    marginTop: '10%',
   },
   dotView: {
     position: 'absolute',

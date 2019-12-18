@@ -4,7 +4,6 @@ const textStyles = StyleSheet.create({
   default: {
     fontSize: 20,
     fontFamily: 'Avenir Next',
-    paddingRight: '5%',
   },
   textInputActive: {
     fontSize: 20,
@@ -36,7 +35,6 @@ const textStyles = StyleSheet.create({
   warning: {
     fontSize: 20,
     fontFamily: 'Avenir Next',
-    color: 'rgba(52, 52, 52, 1)',
     padding: 5,
     color: 'white',
     textAlign: 'center',
