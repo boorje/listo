@@ -51,9 +51,9 @@ export default function LoginScreen(props) {
         scrollEnabled={false}
         contentContainerStyle={styles.scrollView}>
         <LoginForm
-          handleSubmit={this.handleLogin}
+          handleLogin={handleLogin}
           loading={loading}
-          register={() => this.props.navigation.navigate('Signup')}
+          register={() => props.navigation.navigate('Signup')}
         />
       </KeyboardAwareScrollView>
     </View>

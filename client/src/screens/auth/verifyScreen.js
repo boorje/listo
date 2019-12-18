@@ -88,9 +88,8 @@ export default function VerifyScreen(props) {
       <CodeForm
         handleSubmit={confirmSignin}
         loading={loading}
-        submitTitle="VERIFY CODE"
+        submitTitle="Verify code"
       />
-
       {cognitoUser && cognitoUser.username && (
         <Text style={styles.textInfo}>
           A code has been sent to{' '}
@@ -104,10 +103,12 @@ export default function VerifyScreen(props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: 'flex-start',
     backgroundColor: colors.primaryColor,
   },
   textInfo: {
     textAlign: 'center',
+    paddingVertical: '5%',
   },
   email: {
     fontWeight: 'bold',

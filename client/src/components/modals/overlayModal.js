@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Modal,
@@ -6,131 +6,110 @@ import {
   View,
   Text,
   Dimensions,
-  TouchableOpacity,
   Animated,
 } from 'react-native';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 import textStyles from '../../styles/textStyles';
 
-const screenHeight = Dimensions.get('window').height;
+export default function OverlayModal(props) {
+  const [pan, setPan] = useState(new Animated.ValueXY());
+  const [fullyOpen, toggleFullyOpen] = useState(false);
+  const screenHeight = Dimensions.get('window').height;
+  const [translateX, translateY] = [0, pan.y];
+  const viewStyle = {transform: [{translateX}, {translateY}]};
+  const _panResponder = PanResponder.create({
+    onStartShouldSetPanResponder: (evt, gestureState) => true,
+    onStartShouldSetPanResponderCapture: (evt, gestureState) => true,
 
-class OverlayModal extends React.Component {
-  constructor(props) {
-    super(props);
-    this._panResponder = PanResponder.create({
-      onStartShouldSetPanResponder: (evt, gestureState) => true,
-      onStartShouldSetPanResponderCapture: (evt, gestureState) => true,
-
-      onPanResponderGrant: (evt, gestureState) => {
-        if (this.state.fullyOpen) {
-          this.state.pan.setOffset({
-            x: this.state.pan.x._value,
-            y: this.state.pan.y._value,
-          });
+    onPanResponderGrant: (evt, gestureState) => {
+      if (fullyOpen) {
+        pan.setOffset({
+          x: pan.x._value,
+          y: pan.y._value,
+        });
+      }
+      pan.setValue({x: 0, y: 0});
+    },
+    onPanResponderMove: Animated.event([null, {dx: pan.x, dy: pan.y}]),
+    onPanResponderRelease: (evt, gestureState) => {
+      // Modal half open
+      if (!fullyOpen) {
+        if (pan.y._value <= -screenHeight / 7) {
+          Animated.timing(pan, {
+            toValue: {x: 0, y: (-screenHeight * 0.65) / 2},
+            duration: 100,
+          }).start();
+          toggleFullyOpen(true);
+        } else if (pan.y._value >= screenHeight / 7) {
+          props.closeModal();
+        } else {
+          Animated.timing(pan, {
+            toValue: {x: 0, y: 0},
+            duration: 100,
+          }).start();
         }
-        this.state.pan.setValue({x: 0, y: 0});
-      },
-      onPanResponderMove: Animated.event([
-        null,
-        {dx: this.state.pan.x, dy: this.state.pan.y},
-      ]),
-      onPanResponderRelease: (evt, gestureState) => {
-        // Modal half open
-        if (!this.state.fullyOpen) {
-          if (this.state.pan.y._value <= -screenHeight / 7) {
-            Animated.timing(this.state.pan, {
-              toValue: {x: 0, y: (-screenHeight * 0.65) / 2},
-              duration: 100,
-            }).start();
-            this.setState({fullyOpen: true});
-          } else if (this.state.pan.y._value >= screenHeight / 7) {
-            this.props.closeModal();
-          } else {
-            Animated.timing(this.state.pan, {
-              toValue: {x: 0, y: 0},
-              duration: 100,
-            }).start();
-          }
+      }
+      //Modal fully open
+      else {
+        if (pan.y._value >= screenHeight / 3.5) {
+          props.closeModal();
+        } else if (pan.y._value >= screenHeight / 8) {
+          pan.flattenOffset();
+          Animated.timing(pan, {
+            toValue: {x: 0, y: 0},
+            duration: 100,
+          }).start();
+          toggleFullyOpen(false);
+        } else {
+          pan.flattenOffset();
+          Animated.timing(pan, {
+            toValue: {x: 0, y: -(screenHeight * 0.65) / 2},
+            duration: 100,
+          }).start();
         }
-        //Modal fully open
-        else {
-          if (this.state.pan.y._value >= screenHeight / 3.5) {
-            this.props.closeModal();
-          } else if (this.state.pan.y._value >= screenHeight / 8) {
-            this.state.pan.flattenOffset();
-            Animated.timing(this.state.pan, {
-              toValue: {x: 0, y: 0},
-              duration: 100,
-            }).start();
-            this.setState({fullyOpen: false});
-          } else {
-            this.state.pan.flattenOffset();
-            Animated.timing(this.state.pan, {
-              toValue: {x: 0, y: -(screenHeight * 0.65) / 2},
-              duration: 100,
-            }).start();
-          }
-        }
-        this.state.pan.flattenOffset();
-      },
-      onPanResponderTerminationRequest: (evt, gestureState) => true,
-    });
-  }
+      }
+      pan.flattenOffset();
+    },
+    onPanResponderTerminationRequest: (evt, gestureState) => true,
+  });
 
-  state = {
-    pan: new Animated.ValueXY(),
-    fullyOpen: false,
-  };
+  useEffect(() => {
+    if (props.expandModal) expandModal();
+  }, [props.expandModal]);
 
-  expandModal = () => {
-    Animated.timing(this.state.pan, {
+  function expandModal() {
+    Animated.timing(pan, {
       toValue: {x: 0, y: (-screenHeight * 0.65) / 2},
       duration: 300,
     }).start();
-    if (!this.state.fullyOpen) {
-      this.setState({fullyOpen: true});
-    }
-  };
-
-  render() {
-    const {pan} = this.state;
-    const [translateX, translateY] = [0, pan.y];
-    const viewStyle = {transform: [{translateX}, {translateY}]};
-    if (this.props.expandModal) {
-      this.expandModal();
-    }
-    // TODO: Close modal when clicking outside modal.
-    return (
-      <Modal animationType="slide" transparent={true} visible={true}>
-        <Animated.View style={[viewStyle, styles.container]}>
-          <View
-            style={styles.handleContainer}
-            {...this._panResponder.panHandlers}>
-            <View style={styles.dragHandle} />
-          </View>
-          <View style={styles.closeIcon}>
-            <IoniconsIcon
-              size={35}
-              color={'rgba(52, 52, 52, 1)'}
-              name={'ios-close-circle'}
-              onPress={() => this.props.closeModal()}
-            />
-          </View>
-          <View style={styles.headline}>
-            <Text style={textStyles.modalTitle}>{this.props.modalTitle}</Text>
-          </View>
-          {this.props.children}
-        </Animated.View>
-      </Modal>
-    );
+    toggleFullyOpen(true);
   }
-}
 
-export default OverlayModal;
+  return (
+    <Modal animationType="slide" transparent={true} visible={true}>
+      <Animated.View style={[viewStyle, styles.container]}>
+        <View style={styles.handleContainer} {..._panResponder.panHandlers}>
+          <View style={styles.dragHandle} />
+        </View>
+        <View style={styles.closeIcon}>
+          <IoniconsIcon
+            size={35}
+            color={'rgba(52, 52, 52, 1)'}
+            name={'ios-close-circle'}
+            onPress={() => props.closeModal()}
+          />
+        </View>
+        <View style={styles.headline}>
+          <Text style={textStyles.modalTitle}>{props.modalTitle}</Text>
+        </View>
+        {props.children}
+      </Animated.View>
+    </Modal>
+  );
+}
 
 const styles = StyleSheet.create({
   container: {
-    //flex: 1,
     zIndex: 1,
     height: '100%',
     top: '50%',

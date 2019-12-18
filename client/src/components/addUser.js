@@ -1,79 +1,70 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {StyleSheet, View, TextInput, Animated, Dimensions} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import textStyles from '../styles/textStyles';
 import PropTypes from 'prop-types';
+//styles
 import * as colors from '../styles/colors';
+import textStyles from '../styles/textStyles';
 
-const {Value} = Animated;
-const {width, height} = Dimensions.get('window');
-export default class AddUser extends React.Component {
-  constructor(props) {
-    super(props);
-    this.addIconPadding = new Value(0);
-  }
+const {width} = Dimensions.get('window');
 
-  state = {
-    isOpen: false,
-    emailInput: '',
-  };
+export default function AddUser(props) {
+  const [emailInput, setEmailInput] = useState('');
+  const [isOpen, toggleOpen] = useState(false);
+  const [addIconPadding] = useState(new Animated.Value(0));
 
-  openAddIcon = () => {
-    Animated.timing(this.addIconPadding, {
-      toValue: width / 1.5,
+  useEffect(() => {
+    if (props.modalExpanded) toggleIcon();
+  }, [props.modalExpanded]);
+
+  function toggleIcon() {
+    Animated.timing(addIconPadding, {
+      toValue: isOpen ? 0 : width / 1.5,
       duration: 200,
     }).start();
-    this.setState({isOpen: true});
-    this.props.expandModal();
-  };
-  closeAddIcon = () => {
-    Animated.timing(this.addIconPadding, {
-      toValue: 0,
-      duration: 200,
-    }).start();
-    this.setState({isOpen: false});
-  };
-  render() {
-    const {isOpen, emailInput} = this.state;
-    return (
-      <Animated.View
-        style={[
-          styles.container,
-          {
-            paddingLeft: this.addIconPadding,
-          },
-        ]}>
-        {isOpen && (
-          <View style={styles.textInputView}>
-            <TextInput
-              style={[textStyles.default, styles.textInput, {fontSize: 17}]}
-              onChangeText={text => this.setState({emailInput: text})}
-              onSubmitEditing={() => {
-                if (this.state.emailInput !== '') {
-                  this.props.addEditor(emailInput);
-                }
-                this.closeAddIcon();
-                this.setState({emailInput: ''});
-              }}
-              value={this.state.emailInput}
-              autoCapitalize="none"
-              autoFocus={true}
-              autoCorrect={false}
-              placeholder="Skriv in e-mail..."
-              placeholderTextColor="white"
-            />
-          </View>
-        )}
-        <Icon
-          style={[styles.icon]}
-          size={40}
-          name={'person-add'}
-          color={'white'}
-          onPress={() => this.openAddIcon()}
-        />
-      </Animated.View>
-    );
+    toggleOpen(!isOpen);
+    props.expandModal();
   }
+
+  function addEditor() {
+    if (emailInput.length > 0) {
+      props.addEditor(emailInput);
+      setEmailInput('');
+    }
+  }
+
+  return (
+    <Animated.View
+      style={[
+        styles.container,
+        {
+          paddingLeft: addIconPadding,
+        },
+      ]}>
+      {isOpen && (
+        <View style={styles.textInputView}>
+          <TextInput
+            style={[textStyles.default, styles.textInput, {fontSize: 17}]}
+            onChangeText={text => setEmailInput(text)}
+            onSubmitEditing={() => addEditor()}
+            value={emailInput}
+            autoCapitalize="none"
+            autoFocus={true}
+            autoCorrect={false}
+            placeholder="Enter email"
+            placeholderTextColor="#fff"
+          />
+        </View>
+      )}
+      <Icon
+        style={styles.icon}
+        size={40}
+        name="person-add"
+        color="#fff"
+        onPress={() => toggleIcon()}
+      />
+    </Animated.View>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -99,4 +90,8 @@ const styles = StyleSheet.create({
   textInput: {color: 'white'},
 });
 
-AddUser.propTypes = {};
+AddUser.propTypes = {
+  expandModal: PropTypes.func.isRequired,
+  modalExpanded: PropTypes.bool.isRequired,
+  addEditor: PropTypes.func.isRequired,
+};

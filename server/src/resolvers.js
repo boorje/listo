@@ -2,7 +2,7 @@ const { AuthenticationError } = require("apollo-server");
 
 const authenticated = next => (root, args, context, info) => {
   if (!context.user || !context.user.id) {
-    //TODO: throw new AuthenticationError();
+    throw new AuthenticationError();
   }
   return next(root, args, context, info);
 };
