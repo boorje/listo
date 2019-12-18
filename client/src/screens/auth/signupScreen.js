@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Auth} from 'aws-amplify';
+import {useApolloClient, useMutation} from '@apollo/react-hooks';
 //components
 import SignupForm from '../../components/forms/signupForm';
 import Message from '../../components/message';
@@ -10,6 +11,8 @@ import Logo from '../../components/logo';
 import validateEmail from '../../helpers/validateEmail';
 //styles
 import * as colors from '../../styles/colors';
+//api
+import * as mutations from '../../api/mutations';
 
 // TODO: use crypto-browserify
 function getRandomString(bytes) {
@@ -21,6 +24,27 @@ function getRandomString(bytes) {
 export default function SignupScreen(props) {
   const [signupError, setError] = useState('');
   const [loading, toggleLoading] = useState(false);
+  const client = useApolloClient();
+  const [signup] = useMutation(mutations.SIGN_IN, {
+    onError(err) {
+      signupError('Could not register');
+    },
+  });
+
+  function addUserToCache(id, email) {
+    return new Promise(resolve => {
+      client.writeData({
+        data: {
+          user: {
+            __typename: 'User',
+            id,
+            email,
+          },
+        },
+      });
+      resolve();
+    });
+  }
 
   async function handleSubmit({email}) {
     toggleLoading(true);
@@ -30,9 +54,12 @@ export default function SignupScreen(props) {
     };
     try {
       await validateEmail(email);
-      const res = await Auth.signUp(params);
-      // TODO: userSub should be added to db.
-      await Auth.signIn(params);
+      await Auth.signUp(params);
+      const {attributes} = await Auth.signIn(params);
+      await signup({
+        variables: {input: {id: attributes.sub, email: attributes.email}},
+      });
+      await addUserToCache(attributes.sub, attributes.email);
       props.navigation.navigate('Authenticator');
     } catch (error) {
       toggleLoading(false);

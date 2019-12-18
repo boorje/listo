@@ -58,7 +58,6 @@ function ImageCropper(props) {
       capture,
       (w, h) => {
         setImageSize({w, h});
-        console.log(w, h);
       },
       err => console.log(err),
     );

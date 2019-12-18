@@ -20,9 +20,11 @@ export default function VerifyScreen(props) {
   const [loading, toggleLoading] = useState(false);
   const client = useApolloClient();
 
-  const [signin, {loading: signinLoading, error: signError}] = useMutation(
-    mutations.SIGN_IN,
-  );
+  const [signin] = useMutation(mutations.SIGN_IN, {
+    onError(err) {
+      setError('Could not login.');
+    },
+  });
 
   function _validateCode(code) {
     return new Promise((resolve, reject) => {
@@ -36,7 +38,7 @@ export default function VerifyScreen(props) {
     });
   }
 
-  function setTokenInHeader(id, email) {
+  function addUserToCache(id, email) {
     return new Promise(resolve => {
       client.writeData({
         data: {
@@ -58,11 +60,13 @@ export default function VerifyScreen(props) {
       await Auth.sendCustomChallengeAnswer(cognitoUser, code);
       await Auth.currentSession(); // checks if the user has entered the correct code
       const {attributes} = await Auth.currentAuthenticatedUser();
-      await setTokenInHeader(attributes.sub, attributes.email);
       await signin({variables: {input: {email: attributes.email}}});
+      await addUserToCache(attributes.sub, attributes.email);
+      toggleLoading(false);
       props.navigation.navigate('Home');
     } catch (err) {
       await Auth.signOut();
+      toggleLoading(false);
       switch (err.code) {
         case 'ValidationError':
           setError('Please provide a valid verification code.');
@@ -75,7 +79,6 @@ export default function VerifyScreen(props) {
           break;
       }
     }
-    toggleLoading(false);
   }
 
   return (
