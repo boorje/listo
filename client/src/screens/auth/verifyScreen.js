@@ -19,9 +19,11 @@ export default function VerifyScreen(props) {
   const [loading, toggleLoading] = useState(false);
   const client = useApolloClient();
 
-  const [signin, {loading: signinLoading, error: signError}] = useMutation(
-    mutations.SIGN_IN,
-  );
+  const [signin] = useMutation(mutations.SIGN_IN, {
+    onError(err) {
+      setError('Could not login.');
+    },
+  });
 
   function _validateCode(code) {
     return new Promise((resolve, reject) => {
