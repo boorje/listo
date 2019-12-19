@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useCallback, useEffect} from 'react';
 import {
   StyleSheet,
   View,
@@ -6,6 +6,9 @@ import {
   TouchableHighlight,
   Animated,
   RefreshControl,
+  Dimensions,
+  Easing,
+  LayoutAnimation,
 } from 'react-native';
 import {useQuery, useMutation} from '@apollo/react-hooks';
 import PropTypes from 'prop-types';
@@ -17,24 +20,30 @@ import EmptyListInfo from './emptyListInfo';
 // styles
 import textStyles from '../styles/textStyles';
 import * as colors from '../styles/colors';
+import animations from '../styles/animations';
 // api
 import * as queries from '../api/queries';
 import * as mutations from '../api/mutations';
 
+const {width, height} = Dimensions.get('window');
+const {Value} = Animated;
+
 function GroceryItem(props) {
   const [detailsOpen, toggleDetails] = useState(false);
   const {addItemOpen, grocery, removeGrocery, updateGrocery} = props;
+  const itemX = new Value(0);
+
   return (
     <TouchableHighlight
       style={{flex: 1}}
       fontSize={50}
       onPress={() => {
-        if (!addItemOpen) {
+        if (!detailsOpen && !addItemOpen) {
           removeGrocery(grocery.id);
         }
       }}
       underlayColor={'transparent'}>
-      <Animated.View style={[styles.container2]}>
+      <Animated.View style={[styles.container2, {left: itemX}]}>
         <View style={{flex: 1, paddingLeft: '5%'}}>
           {detailsOpen ? (
             <View>
@@ -64,6 +73,7 @@ function GroceryItem(props) {
             color="black"
             onPress={() => {
               if (!addItemOpen) {
+                LayoutAnimation.configureNext(animations.default);
                 toggleDetails(!detailsOpen);
               }
             }}
@@ -138,7 +148,9 @@ export default function GroceriesContainer(props) {
               <GroceryItem
                 grocery={item}
                 addItemOpen={props.addItemOpen}
-                removeGrocery={id => deleteItem({variables: {id}})}
+                removeGrocery={id => {
+                  deleteItem({variables: {id}});
+                }}
                 updateGrocery={input => updateItem({variables: {input}})}
               />
             )}
