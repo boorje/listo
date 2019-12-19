@@ -21,9 +21,9 @@ const animationDuration = 150;
 export default function LoadingScreen(props) {
   const [pageActive, setPage] = useState(0);
   const images = [
-    require('../assets/iphoneX.png'),
-    require('../assets/iphoneX.png'),
-    require('../assets/iphoneX.png'),
+    require('../assets/homeScreen.png'),
+    require('../assets/imageCropper.png'),
+    require('../assets/itemSelection.png'),
   ];
   const imageTitle = [
     'Sharing is caring ❤️',
