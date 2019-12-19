@@ -15,6 +15,7 @@ export const CREATE_GROCERY_LIST = gql`
         }
         isOwner
         itemCount
+        editorCount
       }
     }
   }
