@@ -5,7 +5,7 @@ import {
   PanResponder,
   View,
   Animated,
-  LayoutAnimation,
+  ActionSheetIOS,
   Easing,
 } from 'react-native';
 import PropTypes from 'prop-types';
@@ -56,7 +56,18 @@ class Swipeout extends React.Component {
       },
       onPanResponderRelease: (evt, gestureState) => {
         if (this.state.trashActive) {
-          this.props.delete();
+          ActionSheetIOS.showActionSheetWithOptions(
+            {
+              options: ['Cancel', 'Delete'],
+              destructiveButtonIndex: 1,
+              cancelButtonIndex: 0,
+            },
+            idx => {
+              if (idx === 1) {
+                this.props.delete();
+              }
+            },
+          );
         }
         this.props.disableScroll();
         Animated.parallel([
