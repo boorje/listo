@@ -56,6 +56,7 @@ class Swipeout extends React.Component {
       },
       onPanResponderRelease: (evt, gestureState) => {
         if (this.state.trashActive) {
+          //TODO : should be more of general purpose, not just delete.
           ActionSheetIOS.showActionSheetWithOptions(
             {
               options: ['Cancel', 'Delete'],
