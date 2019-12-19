@@ -11,7 +11,7 @@ import * as colors from '../styles/colors';
 
 export default function DetectTextScreen(props) {
   const [loadingFinished, setLoadingFinished] = useState(false);
-  const [detectedItems, setDetectedItems] = useState([]);
+  const [detectedItems, setDetectedItems] = useState(null);
 
   useEffect(() => {
     const image = props.navigation.getParam('image', null);
@@ -22,7 +22,7 @@ export default function DetectTextScreen(props) {
 
   // naivgates to next screen if timer is completed and items are found
   useEffect(() => {
-    if (loadingFinished && detectedItems.length > 0) {
+    if (loadingFinished && detectedItems !== null) {
       props.navigation.navigate('ItemSelection', {detectedItems});
     }
   }, [loadingFinished, detectedItems, props.navigation]);
@@ -38,8 +38,11 @@ export default function DetectTextScreen(props) {
         throw 'error';
       }
       const detectedLines = await detectText(imageFile);
-      const detectedItems = await analyzeDetectedItems(detectedLines);
-      setDetectedItems(detectedItems);
+      if (detectedLines) {
+        setDetectedItems(await analyzeDetectedItems(detectedLines));
+      } else {
+        setDetectedItems([]);
+      }
     } catch (error) {
       console.log(error);
       // TODO: Add error message
@@ -72,7 +75,11 @@ export default function DetectTextScreen(props) {
       },
     );
     const {responses} = await response.json();
-    return responses[0].fullTextAnnotation.text.split('\n');
+    if (responses && responses[0]) {
+      return responses[0].fullTextAnnotation.text.split('\n');
+    } else {
+      return null;
+    }
   }
 
   async function analyzeDetectedItems(textLines) {

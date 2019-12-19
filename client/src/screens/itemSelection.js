@@ -86,7 +86,7 @@ GroceryItem.propTypes = {
 
 export default function ItemSelection(props) {
   const [groceries, setGroceries] = useState(
-    props.navigation.getParam('detectedItems', null),
+    props.navigation.getParam('detectedItems', []),
   );
   const [selectedGroceries, setSelectedGrocery] = useState([]);
   const {
@@ -158,7 +158,7 @@ export default function ItemSelection(props) {
     setGroceries(groceriesCopy);
   }
 
-  return groceries ? (
+  return (
     <View style={styles.container}>
       <ScreenHeader
         leftIcon="ios-arrow-round-back"
@@ -166,35 +166,41 @@ export default function ItemSelection(props) {
         rightIcon1="ios-close"
         rightIcon1Press={() => props.navigation.pop(3)}
       />
-      <KeyboardAwareFlatList
-        style={{paddingTop: 10}}
-        scrollEnabled={true}
-        data={groceries}
-        renderItem={({item}) => (
-          <GroceryItem
-            grocery={item}
-            updateGrocery={updateGrocery}
-            selectGrocery={selectGrocery}
-            removeSelectedGrocery={removeSelectedGrocery}
+      {groceries.length > 0 ? (
+        <KeyboardAwareFlatList
+          style={{paddingTop: 10}}
+          scrollEnabled={true}
+          data={groceries}
+          renderItem={({item}) => (
+            <GroceryItem
+              grocery={item}
+              updateGrocery={updateGrocery}
+              selectGrocery={selectGrocery}
+              removeSelectedGrocery={removeSelectedGrocery}
+            />
+          )}
+          keyExtractor={(item, index) => `${item.name}-${index}`}
+          ItemSeparatorComponent={() => <View style={styles.separator} />}
+          keyboardShouldPersistTaps="always"
+          ListFooterComponent={() => (
+            <View style={styles.button}>
+              {addingItems ? (
+                <Text>adding items..</Text>
+              ) : (
+                <PrimaryButton title="Add" onPress={() => addItems()} />
+              )}
+            </View>
+          )}
+        />
+      ) : (
+        <View style={styles.container3}>
+          <Text style={styles.textNotFound}>No items detected.</Text>
+          <PrimaryButton
+            title="Try again"
+            onPress={() => props.navigation.pop(2)}
           />
-        )}
-        keyExtractor={(item, index) => `${item.name}-${index}`}
-        ItemSeparatorComponent={() => <View style={styles.separator} />}
-        keyboardShouldPersistTaps="always"
-        ListFooterComponent={() => (
-          <View style={styles.button}>
-            {addingItems ? (
-              <Text>adding items..</Text>
-            ) : (
-              <PrimaryButton title="Add" onPress={() => addItems()} />
-            )}
-          </View>
-        )}
-      />
-    </View>
-  ) : (
-    <View>
-      <Text>Loading..</Text>
+        </View>
+      )}
     </View>
   );
 }
@@ -213,6 +219,11 @@ const styles = StyleSheet.create({
     paddingRight: '3%',
     paddingBottom: '3%',
     marginRight: -1,
+  },
+  container3: {
+    flex: 1,
+    padding: 50,
+    justifyContent: 'flex-start',
   },
   separator: {
     height: 0.5,
@@ -233,5 +244,9 @@ const styles = StyleSheet.create({
   iconStyle: {
     marginRight: '1%',
     marginLeft: '3%',
+  },
+  textNotFound: {
+    marginBottom: 20,
+    alignSelf: 'center',
   },
 });
