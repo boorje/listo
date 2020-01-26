@@ -62,15 +62,14 @@ const SignupForm = props => (
               </Text>
             </View>
           </View>
-          <View style={styles.button}>
-            <SubmitButton
-              title="Create account"
-              disabled={!isValid}
-              onPress={handleSubmit}
-              type="submit"
-              loading={props.loading}
-            />
-          </View>
+          <SubmitButton
+            title="Create account"
+            disabled={!isValid}
+            onPress={handleSubmit}
+            type="submit"
+            loading={props.loading}
+            style={styles.button}
+          />
           <View style={{flexDirection: 'row', marginTop: '2%'}}>
             <Text
               onPress={() => props.register()}
@@ -125,7 +124,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Avenir Next',
   },
   button: {
-    width: '70%',
+    width: '100%',
     marginTop: '5%',
   },
 });

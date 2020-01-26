@@ -58,6 +58,7 @@ const LoginForm = props => (
               onPress={handleSubmit}
               type="submit"
               loading={props.loading}
+              style={styles.button}
             />
           </View>
           <View style={{flexDirection: 'row', marginTop: '2%'}}>
@@ -114,6 +115,10 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: 'red',
     fontFamily: 'Avenir Next',
+  },
+  button: {
+    width: '100%',
+    marginTop: '5%',
   },
 });
 
