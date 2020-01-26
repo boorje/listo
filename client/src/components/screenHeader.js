@@ -76,7 +76,7 @@ export default function ScreenHeader(props) {
             onSubmitEditing={() => {
               updateListTitle({
                 variables: {
-                  input: {id: props.groceryList.id, title: textInputValue},
+                  input: {id: list.id, title: textInputValue},
                 },
               });
               setTextInputActive(false);

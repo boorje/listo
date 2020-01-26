@@ -1,17 +1,19 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {Storage, Predictions} from 'aws-amplify';
 import env from 'react-native-config';
 import RNFS from 'react-native-fs';
 // components
 import LoadingComponent from '../components/loadingComponent';
+import PrimaryButton from '../components/buttons/primaryButton';
 // styles
 import * as colors from '../styles/colors';
 
 export default function DetectTextScreen(props) {
   const [loadingFinished, setLoadingFinished] = useState(false);
   const [detectedItems, setDetectedItems] = useState([]);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const image = props.navigation.getParam('image', null);
@@ -41,7 +43,7 @@ export default function DetectTextScreen(props) {
       const detectedItems = await analyzeDetectedItems(detectedLines);
       setDetectedItems(detectedItems);
     } catch (error) {
-      console.log(error);
+      setError('Could not detect any items.');
       // TODO: Add error message
     }
   }
@@ -213,7 +215,17 @@ export default function DetectTextScreen(props) {
 
   return (
     <LinearGradient colors={colors.testShade} style={styles.container}>
-      <LoadingComponent color={'white'} />
+      {error.length > 0 ? (
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorMsg}>{error}</Text>
+          <PrimaryButton
+            title="Scan again"
+            onPress={() => props.navigation.pop(2)}
+          />
+        </View>
+      ) : (
+        <LoadingComponent color={'white'} />
+      )}
     </LinearGradient>
   );
 }
@@ -225,5 +237,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-evenly',
   },
-  icons: {},
+  errorContainer: {
+    width: '80%',
+  },
+  errorMsg: {
+    fontSize: 18,
+    textAlign: 'center',
+    margin: 20,
+    color: '#fff',
+  },
 });
