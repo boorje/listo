@@ -133,7 +133,15 @@ export default function DetectTextScreen(props) {
     let detectedItems = [];
     textLines.map((line, index) => {
       if (line.length > 0) {
-        let item = {name: '', quantity: null, unit: null, index};
+        let item = {
+          name: '',
+          quantity: null,
+          unit: null,
+          index,
+          id: Math.random()
+            .toString(36)
+            .substring(7),
+        };
         let longestWord = '';
         line.split(' ').map(word => {
           if (parseInt(word)) {
